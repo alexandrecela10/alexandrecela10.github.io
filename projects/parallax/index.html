@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BDC Mark Tape | Alexandre Cela</title>
+<!-- Lato matches the LinkedIn banner typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Colours taken from the LinkedIn banner: navy background, blue accent */
+  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 Lato, system-ui, sans-serif; }
+  main { max-width:880px; margin:0 auto; padding:56px 24px 80px; }
+  h1 { font-size:44px; font-weight:900; margin:0 0 6px; }
+  /* display:table keeps the blue rule as wide as the text but forces its own line */
+  h2 { font-size:20px; margin:44px 0 12px; padding-top:12px; border-top:2px solid var(--accent); display:table; }
+  .sub { color:var(--dim); font-size:19px; margin:0 0 20px; }
+  .tag { display:inline-block; font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:2px 8px; margin:0 6px 6px 0; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 24px; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; vertical-align:top; padding:9px 12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:700; }
+  code, pre { font-family:ui-monospace, Menlo, monospace; font-size:14px; }
+  pre { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; overflow-x:auto; margin:0; }
+  a { color:var(--accent); }
+  ul, ol { padding-left:20px; margin:8px 0; }
+  footer { margin-top:56px; color:var(--dim); font-size:14px; }
+  /* Primary call to action for the demo */
+  .btn { display:inline-block; background:var(--accent); color:#fff; font-weight:700; padding:10px 18px; border-radius:6px; text-decoration:none; margin-top:10px; }
+  /* Card grid: persona and hypothesis cards side by side, stacked on small screens */
+  .formula { font-family:ui-monospace, Menlo, monospace; font-size:15px; color:var(--dim); margin:0 0 14px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:700px) { .cards { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px 20px; font-size:15px; }
+  .card h3 { margin:0 0 12px; font-size:15px; letter-spacing:.08em; color:var(--accent); }
+  .card dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin-top:12px; }
+  .card dd { margin:2px 0 0; }
+  .rate { font-weight:900; color:#fff; }
+  /* Details: collapsible sections so the top of the page stays short */
+  details { border-top:1px solid var(--line); padding:14px 0; }
+  summary { cursor:pointer; font-weight:700; font-size:18px; }
+  details[open] summary { margin-bottom:12px; }
+</style>
+</head>
+<body>
+<main>
+
+<!-- TOP: problem, player, stories, demo. Readable in under 30 seconds -->
+<h1>BDC Mark Tape</h1>
+<p class="sub">Public BDC filings turned into one loan tape: spread comparables for pricing, a lowest-mark review list for monitoring. Every number links to its SEC filing.</p>
+<span class="tag">Private credit</span><span class="tag">Direct lending</span><span class="tag">Public SEC data</span><span class="tag">Prototype</span>
+<p class="sub" style="font-size:15px">Project codename: Parallax.</p>
+
+<h2>Problem</h2>
+<p><strong>A direct lender prices and monitors private loans without seeing how other lenders price and mark the same credits, so spreads go to committee on anecdote and a borrower other lenders have marked down waits for review.</strong></p>
+
+<h2>For</h2>
+<table>
+  <tr><th>Player</th><td>Mid-market direct lender or private credit fund (the PRD's worked example is an underwriter at a mid-market direct lender)</td></tr>
+  <tr><th>User</th><td>Deal underwriter: which spread to defend at investment committee for a borrower in a given industry</td></tr>
+  <tr><th>User</th><td>Monitoring analyst: which 15 borrowers get review time this quarter</td></tr>
+  <tr><th>Buyer</th><td>Head of credit (assumed, not in the source docs): whether to fund the tape and the analyst time to run it</td></tr>
+</table>
+
+<h2>User stories</h2>
+<ol>
+  <li>As a <strong>deal underwriter</strong> pricing a private credit loan, I want comparable BDC spreads and marks for a filed industry label, with the contributing lenders and the source rows, so that I can defend a spread at committee and see when the "market" is one lender's book.</li>
+  <li>As a <strong>monitoring analyst</strong>, I want a quarterly review list sized to what one analyst can review, lowest lender mark first, with what changed and a link to each filing, so that my limited review time goes to the names lenders already mark down.</li>
+</ol>
+
+<h2>Try it</h2>
+<div class="box">
+<ol>
+  <li>Run it locally: <code>pip install -r requirements.txt</code>, then <code>streamlit run app/two_stories.py</code> from the showcase folder.</li>
+  <li><strong>Price a loan:</strong> pick <code>Software</code>, <code>first_lien</code>. Read positions and lenders before the median. Switch to <code>Software and Services</code> to see the one-lender-book warning.</li>
+  <li><strong>Review list:</strong> pick <code>2025-12-31</code> and 15 names. Open one name to see each lender's mark and filing, then read the hindsight check below the list.</li>
+</ol>
+<p><strong>Data:</strong> real public SEC filings, static snapshot of 2026-09-06. No LLM, no model score, no login, no network call except SEC links you choose to open. Costs $0 to run.</p>
+<a class="btn" href="https://bdc-mark-tape.streamlit.app">Open the demo</a>
+</div>
+
+<!-- DETAILS: everything a reviewer needs, collapsed by default -->
+<h2>Details</h2>
+
+<details><summary>Value equation</summary>
+<p class="formula">value = (outcome x likelihood) / (time delay x effort &amp; sacrifice)</p>
+<div class="cards">
+  <div class="card"><h3>DEAL UNDERWRITER</h3><dl>
+    <dt>Outcome</dt><dd>"My spread sits at the median of 90 first-lien insurance positions across 4 BDCs, here are the rows."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Rows and filings are checkable. Many labels are thin: Software first lien has 5 positions from 2 lenders. Untested with underwriters.</dd>
+    <dt>Delay</dt><dd><span class="rate">LOW.</span> Answer on selection from a static file. Latest quarter in the snapshot is 2026-06-30, snapshot dated 2026-09-06.</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Must guess which filed label matches the borrower. Labels are never merged.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">LOW.</span> Public data only. Gives up an all-in yield: fees and OID aren't in the filings.</dd>
+  </dl></div>
+  <div class="card"><h3>MONITORING ANALYST</h3><dl>
+    <dt>Outcome</dt><dd>"My 15 names this quarter are the ones lenders mark lowest, with what moved and the filing one click away."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">LOW-MEDIUM.</span> In hindsight 3 of 15 (2025-12-31) and 1 of 15 (2026-03-31) went non-accrual next quarter. Wide intervals.</dd>
+    <dt>Delay</dt><dd><span class="rate">HIGH.</span> The list needs the next filing to show its outcome: one quarter.</dd>
+    <dt>Effort</dt><dd><span class="rate">LOW.</span> One list, sorted, sized to capacity.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Covers only names held by 8 BDCs, not the analyst's own book. Gives up a learned score.</dd>
+  </dl></div>
+  <div class="card"><h3>HEAD OF CREDIT (BUYER)</h3><dl>
+    <dt>Outcome</dt><dd>"Committee spreads cite observed comparables, and scarce review time follows lender marks."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">LOW.</span> No user tests. Release checks failed (D-018).</dd>
+    <dt>Delay</dt><dd><span class="rate">HIGH.</span> Effect on pricing and recoveries shows over quarters.</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Maps the tape to the internal book and keeps the parser working each quarter.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">LOW.</span> Public data, no vendor lock-in, $0 runtime.</dd>
+  </dl></div>
+</div>
+<p><strong>Verdict:</strong> the weakest factor is <strong>likelihood</strong> for all three. Cheapest fix for the underwriter: put screen 1 in front of two underwriters and count who'd bring it to committee, which the PRD already names as the test. Cheapest fix for the analyst: show the hindsight check for every quarter beside the list, which the demo now does, so belief rests on outcomes for any of 7 quarters rather than a claim. For the buyer: fix the failed release checks before any adoption talk.</p>
+</details>
+
+<details><summary>Sub-problems</summary>
+<ol>
+  <li><strong>No tape.</strong> Marks and spreads sit in 64 HTML filings with 8 different table layouts.</li>
+  <li><strong>Names don't match.</strong> The same borrower is spelled differently by each lender, so marks can't be compared.</li>
+  <li><strong>Comparable set is opaque.</strong> A spread number without lenders and rows can't be defended at committee. (Story 1)</li>
+  <li><strong>One lender looks like a market.</strong> Each BDC names industries its own way, so most label buckets are one lender's book. (Story 1)</li>
+  <li><strong>Review list isn't sized or ordered.</strong> An analyst with capacity for 15 names has no ranked list. (Story 2)</li>
+  <li><strong>What changed is hidden.</strong> Mark moves, lender disagreement and new entries need a quarter-on-quarter diff and the filing. (Story 2)</li>
+  <li><strong>Warning before the mark falls.</strong> Predicting non-accrual earlier than the lowest mark does.</li>
+  <li><strong>All-in pricing.</strong> Fees, OID and call terms aren't in the schedules.</li>
+  <li><strong>Coverage.</strong> Only 8 BDCs and 8 quarters; no banks, private funds or sponsor identity.</li>
+  <li><strong>Allocator mark check.</strong> Whether a manager's mark agrees with other holders of the same borrower.</li>
+  <li><strong>Label mapping.</strong> One shared industry taxonomy across lenders.</li>
+</ol>
+<p>This build tackles <strong>1 to 6</strong>.</p>
+<table>
+  <tr><th>#</th><th>Status</th><th>Code</th></tr>
+  <tr><td>1</td><td>Tackled</td><td><code>src/parallax/ingest.py</code>, <code>src/parallax/parse.py</code>, <code>src/parallax/soi/</code> -> <code>showcase/data/tape_resolved.parquet</code></td></tr>
+  <tr><td>2</td><td>Tackled</td><td><code>src/parallax/resolve/</code>, measured in <code>eval/er_results.json</code></td></tr>
+  <tr><td>3</td><td>Tackled</td><td><code>showcase/src/parallax/tools.py</code> <code>get_comparables</code>; <code>showcase/app/two_stories.py</code> <code>matched_positions</code>, <code>lender_table</code></td></tr>
+  <tr><td>4</td><td>Tackled</td><td><code>get_comparables</code> <code>related_labels_not_used</code>, <code>filer_mix</code>; one-lender and thin-sample warnings in <code>two_stories.py</code> <code>story_price</code></td></tr>
+  <tr><td>5</td><td>Tackled</td><td><code>tools.py</code> <code>review_list</code> (sort by <code>fvc_min</code>, capacity <code>k</code>); <code>two_stories.py</code> <code>story_review</code></td></tr>
+  <tr><td>6</td><td>Tackled</td><td><code>review_list</code> fields <code>d_fvc_1q</code>, <code>new_since_prev_period</code>, <code>holders</code>, <code>accessions</code>; <code>two_stories.py</code> <code>hindsight</code></td></tr>
+  <tr><td>7</td><td>Attempted, not achieved</td><td><code>src/parallax/model.py</code>, <code>eval/model_results.json</code>: XGBoost did not beat the baseline</td></tr>
+  <tr><td>10</td><td>Partial, not a story</td><td><code>tools.py</code> <code>get_borrower</code>; holder marks shown inside story 2</td></tr>
+  <tr><td>8, 9, 11</td><td>Not tackled</td><td>none</td></tr>
+</table>
+</details>
+
+<details><summary>How it works</summary>
+<ol>
+  <li>SEC EDGAR 10-K and 10-Q for ARCC, OBDC, FSK, GBDC, MAIN, TSLX, HTGC, PSEC -> cached HTML -> filing index of 64 filings.</li>
+  <li>Cached HTML -> Schedule of Investments finder and table parser -> 42,830 position rows with spread, principal, cost, fair value, non-accrual flag, accession.</li>
+  <li>Borrower names -> normalise, block, fuzzy score, connected components at threshold 93 -> 2,348 resolved borrowers.</li>
+  <li>Positions -> borrower-quarter panel: lowest lender mark (<code>fvc_min</code>), quarter change, lender dispersion, next-quarter non-accrual label.</li>
+  <li>Story 1: label, instrument, size -> exact-label match on each lender's latest quarter -> quartiles, lender table, source rows with SEC links.</li>
+  <li>Story 2: quarter, capacity -> sort by <code>fvc_min</code> -> list with change, NEW marker, lender marks, filing links, hindsight check.</li>
+</ol>
+<p>Mark = sum(fair value) / sum(cost) per lender on debt rows: not netting, not equity, cost above zero.</p>
+</details>
+
+<details><summary>Hypotheses, one per tackled sub-problem</summary>
+<div class="cards">
+  <div class="card"><h3>1 · NO TAPE</h3><dl>
+    <dt>Before -> after</dt><dd>64 filings read one by one -> <strong>one table of 42,830 positions with an accession per row</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> every schedule is parsed into one schema, <strong>then</strong> comparables and review lists can be computed across 8 lenders, <strong>because</strong> the filings already hold position-level marks and spreads.</dd>
+    <dt>Metric</dt><dd>Money-field accuracy on a frozen audit sample. <span class="rate">Up.</span> Baseline: 48 of 48 on principal, cost and fair value. Guardrail: below 0.90 on any money field means abandon the tape (README kill rule).</dd>
+    <dt>Test</dt><dd>Redraw the audit each new quarter, rows checked against the filing text.</dd>
+  </dl></div>
+  <div class="card"><h3>2 · NAMES DON'T MATCH</h3><dl>
+    <dt>Before -> after</dt><dd>each lender's spelling -> <strong>one borrower id across lenders</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> names are resolved with measured precision, <strong>then</strong> one borrower's marks from several lenders sit side by side, <strong>because</strong> a wrong merge would show a fake disagreement.</dd>
+    <dt>Metric</dt><dd>Pair precision at the chosen threshold. <span class="rate">Up.</span> Baseline 0.9855, n=69. Guardrail: transitive component precision, baseline 0.85, n=20.</dd>
+    <dt>Test</dt><dd>Fresh labelled draw, threshold fixed before labelling. Below 0.95 means stop (README kill rule).</dd>
+  </dl></div>
+  <div class="card"><h3>3 · OPAQUE COMPARABLES</h3><dl>
+    <dt>Before -> after</dt><dd>a quoted spread -> <strong>quartiles, lender table and source rows with SEC links</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the spread comes with its lenders and rows, <strong>then</strong> the underwriter answers committee's "says who?" from the screen, <strong>because</strong> each row links to the filing.</dd>
+    <dt>Metric</dt><dd>Time to answer a sourcing question on a proposed spread. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Two underwriters, 5 mock committee questions, broker notes vs the screen.</dd>
+  </dl></div>
+  <div class="card"><h3>4 · ONE LENDER AS A MARKET</h3><dl>
+    <dt>Before -> after</dt><dd>a bucket median read as market -> <strong>lender count first, one-lender warning, nearby labels listed but not merged</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the screen names whose book drives the number, <strong>then</strong> fewer single-lender medians reach committee as "market", <strong>because</strong> the warning appears before the quartiles.</dd>
+    <dt>Metric</dt><dd>Share of cited comparables resting on one lender. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Same mock session: count medians cited without their lender count.</dd>
+  </dl></div>
+  <div class="card"><h3>5 · UNSIZED REVIEW LIST</h3><dl>
+    <dt>Before -> after</dt><dd>no ranked list -> <strong>capacity-sized list, lowest lender mark first</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the analyst reviews the 15 lowest-marked names, <strong>then</strong> more reviewed names turn non-accrual next quarter than a random 15, <strong>because</strong> a lender's mark below cost is its own filed admission of stress.</dd>
+    <dt>Metric</dt><dd>Share of the 15 flagged non-accrual next quarter (precision@15). <span class="rate">Up.</span> Baseline: 3 of 15 (2025-12-31), 1 of 15 (2026-03-31), against base rates of 22 of 1,423 and 19 of 1,415. The analyst's own list: unobserved.</dd>
+    <dt>Test</dt><dd>Analyst's list vs this list on the same quarter, outcome from the next filing.</dd>
+  </dl></div>
+  <div class="card"><h3>6 · HIDDEN CHANGE</h3><dl>
+    <dt>Before -> after</dt><dd>reopen last quarter's filing -> <strong>mark change, NEW marker, each lender's mark and filing link per row</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> each row shows what moved and links its filing, <strong>then</strong> the analyst spends less time per name before deciding to escalate, <strong>because</strong> the diff and source are on one line.</dd>
+    <dt>Metric</dt><dd>Minutes per reviewed name. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Time one analyst on 15 names with filings only vs with the list.</dd>
+  </dl></div>
+</div>
+<p><strong>Terms.</strong> Non-accrual: the lender stops recognising interest. NEW: absent from the prior quarter's list at the same capacity, not newly distressed.</p>
+</details>
+
+<details><summary>Scope and non-goals</summary>
+<table>
+  <tr><th>In scope</th><th>Non-goal (incl. untackled sub-problems)</th></tr>
+  <tr><td>Parse 64 filings from 8 BDCs (1)</td><td><strong>7, warning before the mark falls:</strong> XGBoost was built and lost; scores are withheld. Missing: more positives (the README floor is 60 pooled) and a verified serving cache.</td></tr>
+  <tr><td>Resolve borrowers across lenders (2)</td><td><strong>8, all-in pricing:</strong> fees, OID and call protection aren't in the schedules. Missing: a data source that reports them.</td></tr>
+  <tr><td>Comparables with lenders and rows (3)</td><td><strong>9, coverage:</strong> 8 BDCs, 8 quarters, no sponsor identity, by brief. Missing: more filers and non-BDC lenders.</td></tr>
+  <tr><td>Thin-sample, one-lender and nearby-label disclosure (4)</td><td><strong>10, allocator mark check:</strong> partial. <code>get_borrower</code> returns holder marks; no allocator screen or story.</td></tr>
+  <tr><td>Capacity-sized lowest-mark list (5)</td><td><strong>11, label mapping:</strong> no shared taxonomy, by choice. Merging labels would invent a statistic no filing reports.</td></tr>
+  <tr><td>Change, lender marks, filing links, hindsight (6)</td><td><strong>Also out:</strong> graph queries, cited agent, MLflow views in this demo; auth, scheduler, cloud deploy, investment advice.</td></tr>
+</table>
+</details>
+
+<details><summary>Success tracking</summary>
+<table>
+  <tr><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
+  <tr><td>Money-field audit accuracy per new quarter</td><td>Leading</td><td>1</td><td>Frozen random draw checked against filing text</td></tr>
+  <tr><td>ER pair and transitive precision on a fresh draw</td><td>Leading</td><td>2</td><td>Labelled pairs at the fixed threshold, Wilson CI</td></tr>
+  <tr><td>Time to answer a committee sourcing question</td><td>Leading</td><td>3</td><td>Timed mock committee, 2 underwriters</td></tr>
+  <tr><td>Share of cited medians resting on one lender</td><td>Leading</td><td>4</td><td>Count in mock committee notes</td></tr>
+  <tr><td>Minutes per reviewed name</td><td>Leading</td><td>6</td><td>Timed review session</td></tr>
+  <tr><td>Precision@15 vs base rate, per quarter</td><td>Lagging</td><td>5</td><td>Next filing's non-accrual flags, Wilson CI, already in the demo</td></tr>
+  <tr><td>Committee spreads later repriced</td><td>Lagging</td><td>3, 4</td><td>Unobserved: needs the lender's own deal log</td></tr>
+</table>
+</details>
+
+<details><summary>Observed in the build</summary>
+<ul>
+  <li><strong>Coverage:</strong> 8 BDCs, 8 quarter ends from 2024-09-30 to 2026-06-30, 64 filings (16 10-K, 48 10-Q), 42,830 position rows, 2,348 resolved borrowers. Source: <code>tools.coverage()</code> on <code>showcase/data</code>. Supports 1.</li>
+  <li><strong>Parse audit:</strong> 48 of 48 correct on principal, cost and fair value, Wilson 95% CI [0.9259, 1.0000] each. In-population sample drawn by the parser author. Source: <code>eval/parse_audit_results.json</code>. Supports 1.</li>
+  <li><strong>Entity resolution:</strong> pair precision 0.9855 (68 of 69), CI [0.9224, 0.9974]; recall 0.9315 on 73 labelled true pairs; transitive precision 0.85 (17 of 20), CI [0.6396, 0.9476]. Threshold 93 chosen in-sample. 187 borrowers held by 2+ BDCs at 2026-06-30. Source: <code>eval/er_results.json</code>. Supports 2.</li>
+  <li><strong>Story 1, Software first lien:</strong> 5 positions, 2 lenders (GBDC 4, PSEC 1), median S+675. Thin. Source: <code>get_comparables</code>, asserted in <code>tests/test_showcase.py</code>. Supports 3, 4.</li>
+  <li><strong>Story 1, Insurance first lien:</strong> 90 positions, 4 lenders, median S+475; ARCC supplies 52 of 90. Source: <code>two_stories.lender_table</code>. Supports 3, 4.</li>
+  <li><strong>Story 1, Software and Services first lien:</strong> 193 positions, all ARCC: one lender's book. Source: <code>get_comparables</code>. Supports 4.</li>
+  <li><strong>Story 2, 2026-03-31:</strong> 15 names, 5 new since 2025-12-31; 1 of 15 flagged non-accrual next quarter, Wilson CI [0.01, 0.30]; base rate 19 of 1,415. Source: <code>two_stories.hindsight</code>. Supports 5, 6.</li>
+  <li><strong>Story 2, 2025-12-31:</strong> 3 of 15, CI [0.07, 0.45]; base rate 22 of 1,423. Both quarters match the archived baseline precision@15 (0.200, 0.067) in <code>eval/model_results.json</code>, checked by a test. Supports 5.</li>
+  <li><strong>Story 2, all 7 quarters:</strong> hits of labelled listed names range from 0 to 4. Three quarters show 0. Supports 5 weakly.</li>
+  <li><strong>Tests:</strong> 12 passed (7 new for the two-story app, 5 existing), including AppTest renders with no exception. Local server health returned 200.</li>
+</ul>
+</details>
+
+<details><summary>Limits and trade-offs</summary>
+<ul>
+  <li><strong>ML result:</strong> XGBoost did not beat the observed-mark baseline. 2,838 held-out borrower-periods, 41 positives. AUC 0.8160 baseline vs 0.7288 model; difference -0.0860, CI [-0.1948, 0.0273]. No difference interval excludes zero. Source: <code>eval/model_results.json</code>.</li>
+  <li><strong>Failed release checks:</strong> cached model scores disagree with the model they cite on all 2,838 rows; historical lineage hashes and an ancestor manifest fail (M6.4). Cycle 11 ended LOOP, escalated STOP (D-018). The demo withholds scores; that hides the defect, it doesn't fix it.</li>
+  <li><strong>Criteria state:</strong> 35 criteria in <code>team/criteria.json</code> v9: 27 PASS, 3 FAIL, 5 PENDING. The three product criteria (P1 to P3) are PENDING.</li>
+  <li><strong>Users:</strong> no underwriter or analyst has used it. Every "before" is assumed.</li>
+  <li><strong>Small samples:</strong> 15 names per quarter; one name moves precision by 0.067.</li>
+  <li><strong>Data age:</strong> latest tape quarter 2026-06-30; the review panel stops at 2026-03-31 because labels need the next filing.</li>
+  <li><strong>Parser limits:</strong> no currency column, some date-like industry labels hidden from the picker, one OBDC filing reconciles at -1.17%. Source: <code>LIMITATIONS.md</code>.</li>
+  <li><strong>Vehicles:</strong> fund and joint-venture vehicles can appear on the review list; they aren't removed.</li>
+  <li><strong>Visual review:</strong> no human has checked the pixels; tests assert page text.</li>
+</ul>
+<table>
+  <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
+  <tr><td>Rank by lowest observed mark</td><td>XGBoost score</td><td>No unverified score; model not better on held-out data</td><td>No learning from other features</td></tr>
+  <tr><td>Exact filed labels, neighbours listed</td><td>Merged taxonomy</td><td>No invented market statistic</td><td>Thin buckets; user picks the label</td></tr>
+  <tr><td>Static public snapshot</td><td>Live pipeline</td><td>$0, offline, reproducible</td><td>Data ages each quarter</td></tr>
+  <tr><td>Hindsight check beside the list</td><td>Precision claim in prose</td><td>Belief rests on visible outcomes</td><td>Shows quarters with 0 hits</td></tr>
+  <tr><td>Two stories in the demo</td><td>Nine-tab walkthrough</td><td>A visitor finishes in minutes</td><td>Graph, ML and agent work sit in the full app only</td></tr>
+</table>
+</details>
+
+<details><summary>Other side and links</summary>
+<p><strong>BDC Footnotes extraction</strong> is the data foundation this build reuses: its Schedule of Investments section finder and non-accrual footnote ideas (credited in <code>src/parallax/soi/section.py</code> and <code>src/parallax/soi/non_accrual.py</code>). See <a href="../bdc-footnotes/">BDC Footnote Tape</a>.</p>
+<ul>
+  <li><a href="https://github.com/alexandrecela10/parallax-showcase">Code: parallax-showcase</a> (public)</li>
+  <li><a href="https://bdc-mark-tape.streamlit.app">Demo</a></li>
+  <li><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=0001287750&amp;type=10-Q">Example source: ARCC filings on SEC EDGAR</a></li>
+</ul>
+</details>
+
+<details><summary>PM OS lifecycle</summary>
+<p>Built by a two-role agent team (PM and AI Eng) plus an independent evaluator, run by Alex as owner. Loop per cycle: PM ask -> Eng build -> evaluator re-runs every check -> PM verdict (ADVANCE, LOOP, PIVOT). Source: <code>team/PROTOCOL.md</code>, <code>team/board.md</code>.</p>
+<table>
+  <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
+  <tr><td>Opportunity</td><td>PROJECT_BRIEF.md: 3 personas and their jobs. No user interviews</td><td><code>/opportunity-analysis</code></td></tr>
+  <tr><td>PRD</td><td>outputs/prds/parallax-team-kickoff.md v2, after a 7-persona review panel</td><td><code>/prd-draft, /prd-review-panel</code></td></tr>
+  <tr><td>Criteria</td><td>team/criteria.json v9: 35 criteria, 32 gated</td><td><code>/goal-gate</code></td></tr>
+  <tr><td>Build loop</td><td>Cycles 0 to 11: PM ask, Eng report and evaluator score each cycle</td><td><code>/prd-graph (same maker, reviewer, evaluator, router loop)</code></td></tr>
+  <tr><td>Decisions</td><td>D-001 to D-018 verdict rulings, incl. the D-018 pivot to a showcase</td><td><code>/decision-doc</code></td></tr>
+  <tr><td>Showcase</td><td>This page, name audit, two-story demo</td><td><code>/portfolio-case-study, /name-audit</code></td></tr>
+</table>
+<p class="dim" style="color:var(--dim)">Skills are mapped from the artifact each stage produced. They show how each stage repeats with PM OS; the original working sessions were not logged.</p>
+</details>
+
+<h2>PM OS skills used</h2>
+<p><code>/decision-doc</code> <code>/goal-gate</code> <code>/name-audit</code> <code>/opportunity-analysis</code> <code>/portfolio-case-study</code> <code>/prd-draft</code> <code>/prd-graph</code> <code>/prd-review-panel</code> <code>evaluator</code> <code>reviewer</code> <code>router</code></p>
+
+<footer>Alexandre Cela · Data and AI products for private capital · alexandrecelap@gmail.com</footer>
+</main>
+</body>
+</html>

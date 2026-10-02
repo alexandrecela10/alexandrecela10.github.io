@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BDC Footnote Tape | Alexandre Cela</title>
+<!-- Lato matches the LinkedIn banner typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Colours taken from the LinkedIn banner: navy background, blue accent */
+  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 Lato, system-ui, sans-serif; }
+  main { max-width:880px; margin:0 auto; padding:56px 24px 80px; }
+  h1 { font-size:44px; font-weight:900; margin:0 0 6px; }
+  /* display:table keeps the blue rule as wide as the text but forces its own line */
+  h2 { font-size:20px; margin:44px 0 12px; padding-top:12px; border-top:2px solid var(--accent); display:table; }
+  .sub { color:var(--dim); font-size:19px; margin:0 0 20px; }
+  .tag { display:inline-block; font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:2px 8px; margin:0 6px 6px 0; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 24px; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; vertical-align:top; padding:9px 12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:700; }
+  code { font-family:ui-monospace, Menlo, monospace; font-size:14px; }
+  a { color:var(--accent); }
+  ul, ol { padding-left:20px; margin:8px 0; }
+  footer { margin-top:56px; color:var(--dim); font-size:14px; }
+  /* Primary call to action for the demo */
+  .btn { display:inline-block; background:var(--accent); color:#fff; font-weight:700; padding:10px 18px; border-radius:6px; text-decoration:none; margin-top:10px; }
+  /* Card grid: persona and hypothesis cards side by side, stacked on small screens */
+  .formula { font-family:ui-monospace, Menlo, monospace; font-size:15px; color:var(--dim); margin:0 0 14px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:700px) { .cards { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px 20px; font-size:15px; }
+  .card h3 { margin:0 0 12px; font-size:15px; letter-spacing:.08em; color:var(--accent); }
+  .card dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin-top:12px; }
+  .card dd { margin:2px 0 0; }
+  .rate { font-weight:900; color:#fff; }
+  /* Details: collapsible sections so the top of the page stays short */
+  details { border-top:1px solid var(--line); padding:14px 0; }
+  summary { cursor:pointer; font-weight:700; font-size:18px; }
+  details[open] summary { margin-bottom:12px; }
+</style>
+</head>
+<body>
+<main>
+
+<!-- TOP: problem, player, demo. Readable in under 30 seconds -->
+<h1>BDC Footnote Tape</h1>
+<p class="sub">Any BDC 10-K or 10-Q in. One row per loan, with its footnotes resolved, out.</p>
+<span class="tag">Private credit</span><span class="tag">Public SEC data</span><span class="tag">Working demo</span>
+
+<h2>Problem</h2>
+<p><strong>A BDC prints each loan's status (non-accrual, PIK, restricted) as a footnote marker defined pages away from the row, so a usable loan tape costs an analyst a manual rebuild of every schedule, for every lender, every quarter (hours per filing: unobserved).</strong></p>
+
+<h2>For</h2>
+<table>
+  <tr><th>Player</th><td>Private credit fund or allocator that reads BDC filings as public evidence on private loans. A BDC (business development company) is a listed lender that files its loan book with the SEC each quarter.</td></tr>
+  <tr><th>User</th><td>Credit analyst: decides which borrowers to review this quarter, e.g. names another lender has put on non-accrual.</td></tr>
+  <tr><th>Buyer</th><td>Head of credit data: decides whether to load this tape, buy a vendor dataset, or keep re-keying.</td></tr>
+</table>
+
+<!-- User stories: the page and the demo are organised around these -->
+<h2>User stories</h2>
+<ol>
+  <li>As a <strong>credit analyst</strong>, I want any BDC 10-K or 10-Q turned into one row per loan with its footnote flags, so that I see which borrowers a lender marks non-accrual or PIK without re-keying the schedule.</li>
+  <li>As a <strong>credit analyst</strong>, I want each flag shown next to the footnote text and the filing link, so that I can check a status before it goes into a credit memo.</li>
+  <li>As a <strong>head of credit data</strong>, I want every filing reconciled to its own total, with unresolved markers listed, so that I load passing files without re-checking each row.</li>
+</ol>
+
+<h2>Try it</h2>
+<div class="box">
+<ol>
+  <li>Pick an example filing, or paste a SEC EDGAR URL, an accession number or a ticker.</li>
+  <li>Click <strong>Run</strong>. Seven steps report as they finish: fetch, locate, parse, standardise, footnotes, resolve, QA.</li>
+  <li>Read the QA table, tick "Only non-accrual candidates", trace one loan to its footnote text, then download the CSV, JSON and data dictionary.</li>
+</ol>
+<p>Real filings are fetched live from SEC EDGAR and labelled public SEC data. An offline synthetic sample is included. Rules only: no language model is called. Limits: 25 MiB per filing, 10 filings per visit.</p>
+<a class="btn" href="https://bdc-footnote-tape.streamlit.app">Open the demo</a>
+<p style="font-size:14px;color:var(--dim)">Local link until the demo is deployed to Streamlit Community Cloud.</p>
+</div>
+
+<!-- DETAILS: everything a reviewer needs, collapsed by default -->
+<h2>Details</h2>
+
+<details><summary>Value equation</summary>
+<p class="formula">value = (outcome x likelihood) / (time delay x effort &amp; sacrifice)</p>
+<div class="cards">
+  <div class="card"><h3>CREDIT ANALYST</h3><dl>
+    <dt>Outcome</dt><dd>"I open a filing and see every loan, its spread and whether it's on non-accrual, in one table, with the footnote text beside it."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> 4 of 4 tested filings reconcile to their own total. One other layout parsed 0 rows. Non-accrual flags are keyword matches; precision unmeasured.</dd>
+    <dt>Delay</dt><dd><span class="rate">LOW.</span> 7.0 to 12.0 s per filing, observed on 4 filings.</dd>
+    <dt>Effort</dt><dd><span class="rate">LOW.</span> Paste a URL or ticker, click once.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">LOW.</span> Gives up reading the schedule line by line. Keeps the footnote text and the filing link to check.</dd>
+  </dl></div>
+  <div class="card"><h3>HEAD OF CREDIT DATA</h3><dl>
+    <dt>Outcome</dt><dd>"A quarterly tape of every BDC's loans with status flags we can load, without a vendor contract or a team re-keying."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">LOW-MEDIUM.</span> Tested on 4 filers. Pass rate across all BDCs unobserved.</dd>
+    <dt>Delay</dt><dd><span class="rate">MEDIUM.</span> Seconds per filing, but full coverage needs a batch run and failure review (unobserved).</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Host it, watch QA failures, add rules for new layouts.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Owns parser upkeep instead of a vendor's service level.</dd>
+  </dl></div>
+</div>
+<p><strong>Verdict:</strong> likelihood is the weakest factor for both.</p>
+<ul>
+  <li><strong>Analyst fix:</strong> hand-label non-accrual rows on 10 filings against each filer's own non-accrual disclosure. This turns "keyword match" into a measured precision.</li>
+  <li><strong>Buyer fix:</strong> run the demo pipeline over the 1,805 filings already on disk (<code>download_bdc_filings.py</code> output) and publish the pass rate per filer. No new code: a loop over <code>pipeline.run</code>.</li>
+</ul>
+</details>
+
+<details><summary>Sub-problems</summary>
+<ol>
+  <li><strong>Find.</strong> The schedule sits somewhere in a 6 to 60 MB filing, often in two dated copies. Proof: <code>demo/vendor_parallax/section.py</code> <code>find_sections</code>, <code>demo/soi_parse.py</code> <code>choose_section</code>.</li>
+  <li><strong>Parse.</strong> Each filer prints its table differently: split rows, continuation pages, units in thousands or millions. Proof: <code>demo/vendor_parallax/tables.py</code> <code>find_header</code>, <code>classify_rows</code>; <code>demo/soi_parse.py</code>. Partial: a layout with no company column parses 0 rows.</li>
+  <li><strong>Resolve.</strong> Status lives in footnote markers defined pages away from the row. Proof: <code>demo/footnotes.py</code> calling the repo's <code>parsers/footnote_extractor.py</code>; marker lookup in <code>demo/pipeline.py</code> step 6.</li>
+  <li><strong>Trust.</strong> A missed table looks like a clean file unless something checks it. Proof: <code>demo/pipeline.py</code> step 7, totals vs the filing's own total row, unresolved markers.</li>
+  <li><strong>Confirm.</strong> A footnote that mentions non-accrual is not always a loan on non-accrual. The repo has a Gemini confirmer (<code>qa_reviewer/non_accrual_confirmer.py</code>); the demo leaves it off.</li>
+  <li><strong>Match names.</strong> The same borrower has different names at different lenders.</li>
+  <li><strong>Track change.</strong> A status matters most when it changes between quarters. The demo reads one filing at a time.</li>
+</ol>
+<p>This build tackles <strong>1 to 4</strong>.</p>
+</details>
+
+<details><summary>How it works</summary>
+<ol>
+  <li><strong>Fetch:</strong> URL, accession, ticker or upload -> filing bytes. SEC User-Agent, 5 requests per second, disk cache, 25 MiB cap.</li>
+  <li><strong>Locate:</strong> filing -> dated schedule sections. The EDGAR period is picked, else the latest date.</li>
+  <li><strong>Parse:</strong> every table in the section -> rows, with headers mapped by token. Headerless continuation pages inherit the mapping.</li>
+  <li><strong>Standardise:</strong> rows -> one row per position: issuer, industry, instrument and lien bucket, reference rate, spread, maturity, par, cost, fair value, markers. Money scaled to dollars.</li>
+  <li><strong>Footnotes:</strong> section -> {marker: text}, with the repo's own extractor. Three demo guards: clip at the next dated section, strip the filer's page header, cut text that runs into the notes.</li>
+  <li><strong>Resolve:</strong> each row's markers -> footnote text and tags (non-accrual, PIK, restricted, non-qualifying, affiliate, Level 3, unfunded, non-income producing, pledged).</li>
+  <li><strong>QA:</strong> fair value and cost vs the filing's own total (pass within 1%), unresolved markers, rows missing values, rate cells that didn't parse.</li>
+  <li><strong>Export:</strong> positions CSV, footnotes CSV, JSON, data dictionary (37 columns).</li>
+</ol>
+</details>
+
+<details><summary>Hypotheses, one per tackled sub-problem</summary>
+<div class="cards">
+  <div class="card"><h3>1 · FIND</h3><dl>
+    <dt>Before -> after</dt><dd>analyst scrolls to the schedule and checks its date -> <strong>section located and dated, EDGAR period picked</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the schedule is located and dated from the filing itself, <strong>then</strong> the analyst reaches the first loan row sooner, <strong>because</strong> no one searches a 6 to 60 MB document by hand.</dd>
+    <dt>Metric</dt><dd>Share of filings where the parsed date equals the EDGAR period. <span class="rate">Up.</span> Observed 4 of 4. Analyst baseline unobserved. Guardrail: rows or footnotes taken from the prior-period section stay at 0.</dd>
+    <dt>Test</dt><dd>50 filings drawn at random from the 1,805 on disk. Count date matches and prior-period leaks.</dd>
+  </dl></div>
+  <div class="card"><h3>2 · PARSE</h3><dl>
+    <dt>Before -> after</dt><dd>rows re-keyed into a spreadsheet -> <strong>one row per position, scaled to dollars</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> headers are mapped by token and units read from the page, <strong>then</strong> most filings yield a full tape with no hand edits, <strong>because</strong> layout differences become rules instead of re-keying.</dd>
+    <dt>Metric</dt><dd>Share of filings whose parsed fair value is within 1% of the filed total. <span class="rate">Up.</span> Observed 4 of 4 tested; 1 extra filing parsed 0 rows. Corpus baseline unobserved.</dd>
+    <dt>Test</dt><dd>Same 50-filing sample, grouped by filer.</dd>
+  </dl></div>
+  <div class="card"><h3>3 · RESOLVE</h3><dl>
+    <dt>Before -> after</dt><dd>flip to the footnote pages, match markers by eye -> <strong>each row carries its footnote text and tags</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> each marker is replaced by its definition on the row, <strong>then</strong> the analyst finds non-accrual and PIK loans without opening the filing, <strong>because</strong> the status is a column, not a cross-reference.</dd>
+    <dt>Metric</dt><dd>Distinct markers resolved. <span class="rate">Up.</span> Observed 76 of 76 across 4 filings. Non-accrual flag precision unmeasured.</dd>
+    <dt>Test</dt><dd>Hand-label non-accrual rows on 10 filings; compare with the flag.</dd>
+  </dl></div>
+  <div class="card"><h3>4 · TRUST</h3><dl>
+    <dt>Before -> after</dt><dd>no check on the extraction -> <strong>QA per filing: totals, unresolved markers, empty parse</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> every filing shows whether it reconciles and which markers failed, <strong>then</strong> the head of data loads passing files without re-checking rows, <strong>because</strong> failures are visible before load.</dd>
+    <dt>Metric</dt><dd>Share of loaded filings later corrected by hand. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Planted defects: the synthetic sample has 2, and QA catches both (tests). Next: plant 10 defects in real filings and count catches.</dd>
+  </dl></div>
+</div>
+</details>
+
+<details><summary>Scope and non-goals</summary>
+<table>
+  <tr><th>In scope</th><th>Non-goal (incl. untackled sub-problems)</th></tr>
+  <tr><td>Any BDC 10-K or 10-Q primary document up to 25 MiB</td><td>Sub-problem 2, partly: layouts with no company column (0 rows observed on one filer). Symbol markers (*, ^, #) are not attached to rows</td></tr>
+  <tr><td>One dated schedule per run (EDGAR period, else latest)</td><td>Sub-problem 5, confirm: tags are keyword matches. The repo's Gemini confirmer is not wired in, so no confirmed non-accrual list</td></tr>
+  <tr><td>Footnote text, keyword tags, QA, CSV/JSON/data dictionary</td><td>Sub-problem 6, match names: no borrower matching across lenders (the sibling BDC Mark Tape does this)</td></tr>
+  <tr><td>Rules only, zero model cost</td><td>Sub-problem 7, track change: no quarter-over-quarter history</td></tr>
+  <tr><td></td><td>Investment advice, FX conversion of non-USD par, filings above 25 MiB</td></tr>
+</table>
+</details>
+
+<details><summary>Success tracking</summary>
+<table>
+  <tr><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
+  <tr><td>Parsed date equals EDGAR period</td><td>Leading</td><td>1</td><td>QA field per run, 50-filing sample</td></tr>
+  <tr><td>Fair value within 1% of the filed total</td><td>Leading</td><td>2</td><td><code>fair_value_reconciles</code> per run</td></tr>
+  <tr><td>Distinct markers resolved</td><td>Leading</td><td>3</td><td><code>markers_resolved / markers_distinct</code></td></tr>
+  <tr><td>Non-accrual flag precision</td><td>Lagging</td><td>3</td><td>Hand labels on 10 filings</td></tr>
+  <tr><td>Filings corrected by hand after load</td><td>Lagging</td><td>4</td><td>Correction log kept by the data team</td></tr>
+  <tr><td>Analyst time from filing to first loan row</td><td>Lagging</td><td>1, 2</td><td>Timed session, manual vs demo, same 5 filings</td></tr>
+</table>
+</details>
+
+<details><summary>Observed in the build</summary>
+<p>Demo runs, 2026-10-01, cold cache, local Mac, Python 3.11. Source: <code>demo/observed_runs.txt</code> (output of <code>demo/run_live.py</code>). Public SEC data.</p>
+<table>
+  <tr><th>Filing</th><th>Positions</th><th>Fair value vs filed total</th><th>Markers resolved</th><th>Non-accrual candidate rows</th><th>Time</th></tr>
+  <tr><td>Ares Capital 10-K, 2025-12-31, 24.5 MB</td><td>1,409</td><td>-0.48% (pass)</td><td>12 of 12</td><td>19</td><td>11.5 s</td></tr>
+  <tr><td>Main Street Capital 10-Q, 2026-06-30, 13.4 MB</td><td>619</td><td>0.00% (pass)</td><td>21 of 21</td><td>33</td><td>7.7 s</td></tr>
+  <tr><td>Golub Capital BDC 10-Q, 2026-06-30, 24.6 MB</td><td>1,812</td><td>0.00% (pass)</td><td>31 of 31</td><td>45</td><td>12.0 s</td></tr>
+  <tr><td>BlackRock TCP Capital 10-Q, 2026-06-30, 18.9 MB</td><td>319</td><td>0.00% (pass)</td><td>12 of 12</td><td>0</td><td>7.0 s</td></tr>
+</table>
+<ul>
+  <li><strong>Hypotheses 1 and 2:</strong> 4 of 4 filings parsed the EDGAR period and reconciled. A fifth, a Blackstone Private Credit Fund 10-K on disk (32.5 MB), parsed 0 positions: its table has no company column. QA shows it as a failed check.</li>
+  <li><strong>Hypothesis 3:</strong> 76 of 76 distinct markers resolved. Of Golub's 45 candidate rows, 8 come from an affiliate-table note that only mentions non-accrual, so the flag over-counts there.</li>
+  <li><strong>Guardrail, prior-period leak:</strong> before the section clip, Golub's non-accrual footnote read "as of September 30, 2025" inside the June 30, 2026 schedule. After the clip it reads June 30, 2026.</li>
+  <li><strong>Negative amounts read as markers:</strong> before the fix, Main Street had 11 and Golub 24 unresolved markers, all negative cost or fair value cells such as "(71)". After: 0.</li>
+  <li><strong>Speed:</strong> footnote extraction took 69% to 72% of each run.</li>
+  <li><strong>Memory:</strong> peak 667 MB on a 24.5 MB filing, 804 MB on a 32.5 MB filing. This set the 25 MiB cap (Community Cloud guarantees about 690 MB).</li>
+  <li><strong>Filing sizes:</strong> 1,805 primary documents on disk: median 6.1 MB, 95th percentile 21.1 MB, max 60.3 MB. 97.5% are at or under 25 MiB.</li>
+  <li><strong>Tests:</strong> <code>demo/test_demo.py</code>: 11 passed, 1 skipped offline; 12 passed with the live SEC test on. The Streamlit AppTest run shows no exception.</li>
+  <li><strong>Repo pipeline, earlier run:</strong> 4,224 schedule sections from 1,811 filings of 60 BDCs; 102 sections not found; 325 with no footnotes; median 17 footnotes. Source: <code>output/bdc_footnotes_full_pipeline.csv</code> (local, not in git).</li>
+  <li><strong>README claims corrected:</strong> "~95% of cases correctly" and "100x faster" have no measurement behind them. The Gemini completeness check in <code>output/logs/qa_run_v15.log</code> passed 25 times and failed 50 times.</li>
+</ul>
+</details>
+
+<details><summary>Limits and trade-offs</summary>
+<ul>
+  <li><strong>Users:</strong> no analyst or data lead has used it. Every "before" is assumed.</li>
+  <li><strong>Accuracy:</strong> row-level accuracy against hand labels is unmeasured. Reconciliation proves the totals, not each row.</li>
+  <li><strong>Coverage:</strong> 4 filers tested plus 1 failure. The pass rate across all BDCs is unobserved.</li>
+  <li><strong>Tags:</strong> keyword matches on footnote text. Hypothesis 3's value depends on their precision.</li>
+  <li><strong>Hosting:</strong> not yet deployed. Memory figures are from a Mac, not the Cloud container.</li>
+</ul>
+<table>
+  <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
+  <tr><td>rules only</td><td>the repo's Gemini reviewer, metered</td><td>zero model cost, same output every run</td><td>non-accrual tags stay unconfirmed</td></tr>
+  <tr><td>copy the Parallax table parser into <code>demo/</code></td><td>import from Parallax</td><td>one deployable folder</td><td>two copies that can drift</td></tr>
+  <tr><td>repo footnote extractor as is</td><td>rewrite it on lxml</td><td>reuses existing, run-tested code</td><td>about 70% of run time, second parse tree in memory</td></tr>
+  <tr><td>25 MiB cap</td><td>35 MiB</td><td>observed peak fits the Cloud memory floor</td><td>2.5% of filings on disk refused</td></tr>
+  <tr><td>"(A)" markers only when footnotes are lettered upper case</td><td>always</td><td>no false markers from names like "Co-Investment (E)"</td><td>a filer mixing cases loses upper-case markers</td></tr>
+  <tr><td>1% reconciliation tolerance</td><td>exact match</td><td>rounding in thousands doesn't fail a file</td><td>a -0.48% gap passes unexplained</td></tr>
+</table>
+</details>
+
+<details><summary>Other side and links</summary>
+<p><strong>Sibling: <a href="../parallax/">BDC Mark Tape</a></strong>. It compares how different BDCs mark the same borrower. Shared funnel: this tape says which loans a lender flags; the mark tape says how lenders disagree on price. Together they point an analyst at the names worth opening first.</p>
+<ul>
+  <li><a href="https://github.com/alexandrecela10/BDC-Non-Accrual-Footnotes-extraction">Code</a> </li>
+  <li><a href="https://bdc-footnote-tape.streamlit.app">Demo</a></li>
+</ul>
+</details>
+
+<details><summary>PM OS lifecycle</summary>
+
+<table>
+  <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
+  <tr><td>PRD</td><td>WORKFLOW_DIAGRAM.md: pipeline spec with success criteria per stage</td><td><code>/prd-draft</code></td></tr>
+  <tr><td>Build</td><td>Deterministic-first pipeline with an AI reviewer as backup; demo/</td><td><code>/code-first-draft</code></td></tr>
+  <tr><td>Evaluation</td><td>QA logs (Gemini completeness check: 25 pass, 50 fail); demo/observed_runs.txt on 4 BDCs</td><td><code>/feature-results</code></td></tr>
+  <tr><td>Showcase</td><td>This page, name audit, goals and state files</td><td><code>/portfolio-case-study, /name-audit, /goal-gate</code></td></tr>
+</table>
+<p class="dim" style="color:var(--dim)">Skills are mapped from the artifact each stage produced. They show how each stage repeats with PM OS; the original working sessions were not logged.</p>
+</details>
+
+<h2>PM OS skills used</h2>
+<p><code>/code-first-draft</code> <code>/feature-results</code> <code>/goal-gate</code> <code>/name-audit</code> <code>/portfolio-case-study</code> <code>/prd-draft</code></p>
+
+<footer>Alexandre Cela · Data and AI products for private capital · alexandrecelap@gmail.com</footer>
+</main>
+</body>
+</html>

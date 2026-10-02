@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck Rank | Alexandre Cela</title>
+<!-- Lato matches the LinkedIn banner typeface -->
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Colours taken from the LinkedIn banner: navy background, blue accent */
+  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 Lato, system-ui, sans-serif; }
+  main { max-width:880px; margin:0 auto; padding:56px 24px 80px; }
+  h1 { font-size:44px; font-weight:900; margin:0 0 6px; }
+  /* Section headings get the thin blue rule used on the banner */
+  /* display:table keeps the rule as wide as the text but forces its own line */
+  h2 { font-size:20px; margin:44px 0 12px; padding-top:12px; border-top:2px solid var(--accent); display:table; }
+  .sub { color:var(--dim); font-size:19px; margin:0 0 20px; }
+  .tag { display:inline-block; font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:2px 8px; margin:0 6px 6px 0; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 24px; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; vertical-align:top; padding:9px 12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:700; }
+  td:first-child { color:var(--dim); width:24%; }
+  code, pre { font-family:ui-monospace, Menlo, monospace; font-size:14px; }
+  pre { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; overflow-x:auto; margin:0; }
+  a { color:var(--accent); }
+  ul { padding-left:20px; margin:8px 0; }
+  footer { margin-top:56px; color:var(--dim); font-size:14px; }
+  /* Value equation: two persona cards side by side, stacked on small screens */
+  .formula { font-family:ui-monospace, Menlo, monospace; font-size:15px; color:var(--dim); margin:0 0 14px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:700px) { .cards { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px 20px; font-size:15px; }
+  .card h3 { margin:0 0 12px; font-size:15px; letter-spacing:.08em; color:var(--accent); }
+  /* Each factor: small dim label on top, content below */
+  .card dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin-top:12px; }
+  .card dd { margin:2px 0 0; }
+  /* Rating words (LOW / MEDIUM / HIGH) stand out */
+  .rate { font-weight:900; color:#fff; }
+  .verdict { margin-top:16px; }
+</style>
+</head>
+<body>
+<main>
+
+<!-- 1. Name + one-line description -->
+<h1>Deck Rank</h1>
+<p class="sub">Inbound pitch decks in, ranked queue out. Every score cites its slide.</p>
+<p><a class="btn" href="https://deck-rank.streamlit.app" style="display:inline-block;background:var(--accent);color:#fff;font-weight:700;padding:10px 18px;border-radius:6px;text-decoration:none">Open the demo</a></p>
+<span class="tag">Venture capital</span><span class="tag">Inbound deal sourcing</span><span class="tag">Prototype</span>
+
+<!-- 2. Target persona -->
+<h2>Who</h2>
+<pre>ANALYST   early-stage VC fund. decides which inbound decks get a first call this week
+VC CEO    decides where analyst time goes. answers to LPs</pre>
+
+<!-- User stories: the page and the demo are organised around these -->
+<h2>User stories</h2>
+<ol>
+  <li>As an <strong>investment analyst</strong>, I want inbound decks ranked on upload with each value tied to its slide, so that I call the best fit first.</li>
+  <li>As an <strong>investment analyst</strong>, I want missing must-have data flagged with a drafted founder request, so that the first call doesn't start with basic questions.</li>
+  <li>As a <strong>VC CEO</strong>, I want every rank to show its formula and sources, so that pass and pursue decisions hold up with IC and LPs.</li>
+</ol>
+
+<!-- 3. Value equation (Hormozi), one block per persona -->
+<h2>Value equation</h2>
+<p class="formula">value = (outcome x likelihood) / (delay x effort &amp; sacrifice)</p>
+<div class="cards">
+  <!-- Analyst card -->
+  <div class="card">
+    <h3>ANALYST</h3>
+    <dl>
+      <dt>Outcome</dt>
+      <dd>open laptop -> <strong>this week's best deck is #1</strong> -> <strong>first call booked same day</strong> -> <strong>rank defended at IC in 1 click</strong></dd>
+      <dt>Likelihood</dt>
+      <dd><span class="rate">MEDIUM.</span> every number has a quote to check. untested with analysts</dd>
+      <dt>Delay</dt>
+      <dd><span class="rate">LOW.</span> deck in -> values extracted in 11 to 13 s (observed). time to first-call decision unmeasured</dd>
+      <dt>Effort</dt>
+      <dd><span class="rate">MEDIUM.</span> no copy-paste. but decks uploaded one by one</dd>
+      <dt>Sacrifice</dt>
+      <dd><span class="rate">LOW.</span> keeps own judgment: overrides lock values, personal weights on top. gives up: one more tool outside the inbox</dd>
+    </dl>
+  </div>
+  <!-- VC CEO card -->
+  <div class="card">
+    <h3>VC CEO</h3>
+    <dl>
+      <dt>Outcome</dt>
+      <dd><strong>first fund with conviction on the best inbound deals</strong> -> in competitive rounds early -> <strong>more decks per analyst, no new hire</strong> -> every pass/pursue <strong>defensible to LPs</strong></dd>
+      <dt>Likelihood</dt>
+      <dd><span class="rate">LOW-MEDIUM.</span> depends on analyst adoption. no win-rate data</dd>
+      <dt>Delay</dt>
+      <dd><span class="rate">HIGH.</span> effect on wins shows over quarters, not days</dd>
+      <dt>Effort</dt>
+      <dd><span class="rate">MEDIUM.</span> setup + team agrees on house weights once</dd>
+      <dt>Sacrifice</dt>
+      <dd><span class="rate">MEDIUM.</span> founder decks can go to a cloud database + third-party LLM. analysts give up some ranking freedom to house weights</dd>
+    </dl>
+  </div>
+</div>
+<div class="box verdict"><strong>Verdict:</strong> outcome strong for both. <strong>likelihood weakest for both.</strong><br>
+analyst -> <strong>20-deck test</strong> (hypotheses 1 and 2). CEO -> <strong>lost-deal audit</strong>: how long did decks later funded by other funds wait for a first call?</div>
+
+<!-- 4. Problem: one statement, sub-problems, which ones this build tackles -->
+<h2>Problem</h2>
+<div class="box">
+<p><strong>The best inbound deals wait too long for a first call, and faster funds reach the founder first.</strong></p>
+<p>Why:</p>
+<ol>
+  <li><strong>Speed.</strong> Around 50 decks a week (assumed) are read in arrival order, each in full. The best one can sit behind 49 others.</li>
+  <li><strong>Consistency.</strong> Each analyst ranks in their head, so two analysts can pick a different "best".</li>
+  <li><strong>Conviction.</strong> When IC asks "why this one?", the analyst reopens the deck.</li>
+  <li><strong>Gaps.</strong> Decks miss must-have data, and it only comes up on the first call.</li>
+  <li><strong>Memory.</strong> Why a company was passed on is buried in email.</li>
+</ol>
+<p>This build tackles <strong>1 to 4</strong>. Memory is a non-goal for now.</p>
+</div>
+
+<h2>Fix</h2>
+<div class="box"><ol>
+  <li>The deck PDF is <strong>split into one chunk per slide</strong>.</li>
+  <li><strong>Rules extract the metrics first</strong>, using text patterns, tables and slide layouts.</li>
+  <li><strong>A language model fills only the metrics still missing.</strong> Its quote must match the slide text exactly, or the value is rejected.</li>
+  <li>Each value is stored with its <strong>source slide, extractor version and date</strong>.</li>
+  <li>The score is a <strong>weighted average multiplied by the lowest must-have score divided by 5</strong>, so one weak must-have pulls the whole score down.</li>
+  <li>The analyst gets a <strong>ranked queue</strong>, a scorecard per company and follow-up actions for missing data.</li>
+</ol></div>
+
+<!-- 5. Scope and non-goals (non-goals include untackled sub-problems) -->
+<h2>Scope</h2>
+<div class="box"><ul>
+  <li>Inbound PDF decks</li>
+  <li>Metric extraction with source quote</li>
+  <li>Weighted score, must-have cap, house + personal weights</li>
+  <li>Ranked queue, scorecard, analyst override with reason</li>
+  <li>Gap flag + drafted founder email for analyst review</li>
+  <li>Stale-data flag at 180 days, quote re-checked on refresh</li>
+</ul></div>
+
+<h2>Non-goals</h2>
+<div class="box"><ul>
+  <li>Finding companies that haven't pitched. That's <a href="../alpha-scout/">Alpha Scout</a> (outbound)</li>
+  <li>Memory (sub-problem 5): why a company was passed. The stage log keeps date, who and score, not the reason</li>
+  <li>Sending email automatically</li>
+  <li>Invest / pass decisions. Analyst decides</li>
+  <li>Valuation, CRM sync</li>
+</ul></div>
+
+<!-- 6. One hypothesis per tackled sub-problem, each with its own before -> after -->
+<h2>Hypotheses, one per sub-problem</h2>
+<div class="cards">
+  <div class="card">
+    <h3>1 · SPEED</h3>
+    <dl>
+      <dt>Before -> after</dt>
+      <dd>arrival order, read in full -> <strong>ranked on upload, best first</strong></dd>
+      <dt>Hypothesis</dt>
+      <dd><strong>If</strong> decks are extracted and ranked on upload, <strong>then</strong> the highest-fit deck gets a first-call decision sooner, <strong>because</strong> the analyst starts at the top of the queue instead of reading in arrival order.</dd>
+      <dt>Metric</dt>
+      <dd>Time from deck received to first-call decision, top 5 decks. <span class="rate">Down.</span> Baseline unobserved. Guardrail: top-10 companies later passed on stays flat or goes down.</dd>
+      <dt>Test</dt>
+      <dd>Two analysts, same 20 decks, arrival order vs ranked queue. "Top 5" = the 5 decks they'd call first after reading all 20.</dd>
+    </dl>
+  </div>
+  <div class="card">
+    <h3>2 · CONSISTENCY</h3>
+    <dl>
+      <dt>Before -> after</dt>
+      <dd>ranking in each analyst's head -> <strong>one house formula and weights</strong>, personal view kept separate</dd>
+      <dt>Hypothesis</dt>
+      <dd><strong>If</strong> every analyst starts from the same house weights, <strong>then</strong> two analysts' top 10 overlap more, <strong>because</strong> the ranking rule is written down instead of remembered.</dd>
+      <dt>Metric</dt>
+      <dd>Top-10 overlap between two analysts on the same batch. <span class="rate">Up.</span> Baseline unobserved.</dd>
+      <dt>Test</dt>
+      <dd>Same 20 decks. Compare top-10 overlap by hand vs with the house view.</dd>
+    </dl>
+  </div>
+  <div class="card">
+    <h3>3 · CONVICTION</h3>
+    <dl>
+      <dt>Before -> after</dt>
+      <dd>reopen the deck -> <strong>formula, inputs and source quote per score</strong></dd>
+      <dt>Hypothesis</dt>
+      <dd><strong>If</strong> every score shows its formula and source quote, <strong>then</strong> the analyst answers IC's "why this one?" faster, <strong>because</strong> the evidence is one click away.</dd>
+      <dt>Metric</dt>
+      <dd>Time to answer a "why" question on a ranked company. <span class="rate">Down.</span> Baseline unobserved.</dd>
+      <dt>Test</dt>
+      <dd>Mock IC with 5 "why" questions, deck only vs scorecard.</dd>
+    </dl>
+  </div>
+  <div class="card">
+    <h3>4 · GAPS</h3>
+    <dl>
+      <dt>Before -> after</dt>
+      <dd>missing must-have found on the first call -> <strong>flagged at upload, sorted to the bottom, founder email drafted for review</strong>. Stale data flagged at 180 days</dd>
+      <dt>Hypothesis</dt>
+      <dd><strong>If</strong> missing must-haves are flagged at upload with a drafted request, <strong>then</strong> fewer first calls start with data still missing, <strong>because</strong> the ask goes out the day the deck arrives.</dd>
+      <dt>Metric</dt>
+      <dd>Share of first calls with a must-have still missing. <span class="rate">Down.</span> Baseline unobserved.</dd>
+      <dt>Test</dt>
+      <dd>Count it across the same 20-deck batch.</dd>
+    </dl>
+  </div>
+</div>
+
+<!-- 7. Observed (from pipeline.log and the test suite) -->
+<h2>Observed in the build</h2>
+<div class="box"><ul>
+  <li><strong>Sample deck:</strong> 12 slides produced 49 values, all from the rules, covering 9 of 12 target metrics. The language model was asked for the other 3 and returned none rather than guess.</li>
+  <li><strong>Speed:</strong> upload to extracted values took 11 to 13 seconds, over 3 runs on the same deck. This supports "ranked on upload". It says nothing yet about time to a first-call decision.</li>
+  <li><strong>Worked example:</strong> a Financials score of 3.16 out of 5, built from four inputs: 71% gross margin, 24 months of runway, revenue over burn, and funding stage.</li>
+  <li><strong>Tests:</strong> 66 unit tests. One fails if any stored quote doesn't appear in its source slide.</li>
+</ul></div>
+
+<!-- 8. Limits + trade-offs -->
+<h2>Limits</h2>
+<div class="box"><ul>
+  <li><strong>Data:</strong> three fictional companies. No real deal flow yet.</li>
+  <li><strong>Users:</strong> no analyst has tested it. Every "before" is assumed, not observed.</li>
+  <li><strong>Accuracy:</strong> extraction hasn't been measured against hand-labelled decks.</li>
+  <li><strong>Coverage:</strong> only Financials has its own formula. Founders, Market and Tech Moat still use a generic weighted average.</li>
+  <li><strong>Ranking quality:</strong> hypothesis 1 only helps if the ranking is right. If ranks are wrong, faster isn't better, so the accuracy test comes before the speed test.</li>
+</ul></div>
+
+<h2>Trade-offs</h2>
+<table>
+  <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
+  <tr><td>rules first, LLM second</td><td>LLM for everything</td><td>reproducible, cheap, auditable</td><td>misses metrics the rules don't cover</td></tr>
+  <tr><td>reject value if quote doesn't match</td><td>accept LLM output</td><td>no unsourced numbers</td><td>fewer values filled</td></tr>
+  <tr><td>must-have cap on score</td><td>plain weighted avg</td><td>weak must-have can't hide</td><td>punishes thin seed decks. may need tuning</td></tr>
+  <tr><td>append-only storage</td><td>overwrite on re-run</td><td>full history, safe re-runs</td><td>more rows, resolver needed</td></tr>
+  <tr><td>email drafted, not sent</td><td>auto-send</td><td>analyst stays in control</td><td>one manual step</td></tr>
+</table>
+
+<!-- 9. Other side -->
+<h2>Other side</h2>
+<pre>FUNNEL DREAM: see the best deal in your thesis first. be first with conviction.
+
+Alpha Scout = SEE FIRST.  outbound. company hasn't pitched -> find it, score it
+Deck Rank   = ACT FIRST.  inbound.  deck arrives -> conviction -> first call</pre>
+<p><a href="../alpha-scout/">Alpha Scout case study</a></p>
+
+<!-- 10. Links -->
+<h2>Links</h2>
+<ul>
+  <li><a href="https://github.com/alexandrecela10/vc-company-scoring">Code</a></li>
+</ul>
+
+<details><summary>PM OS lifecycle</summary>
+
+<table>
+  <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
+  <tr><td>Opportunity</td><td>Business proposal: problem, product, personas (README section 1)</td><td><code>/opportunity-analysis</code></td></tr>
+  <tr><td>PRD</td><td>User stories one-pager: advantage and business outcome per persona</td><td><code>/prd-draft</code></td></tr>
+  <tr><td>Metrics</td><td>North star: invest in more great deals, faster, backed by defensible data</td><td><code>/define-north-star</code></td></tr>
+  <tr><td>Build</td><td>7-phase roadmap, extraction pipeline, 66 product tests + 7 demo tests</td><td><code>/code-first-draft</code></td></tr>
+  <tr><td>Launch</td><td>5-minute demo script and walkthrough deck</td><td><code>/prototype</code></td></tr>
+  <tr><td>Showcase</td><td>This page, name audit, goals and state files, public demo</td><td><code>/portfolio-case-study, /name-audit, /goal-gate</code></td></tr>
+</table>
+<p class="dim" style="color:var(--dim)">Skills are mapped from the artifact each stage produced. They show how each stage repeats with PM OS; the original working sessions were not logged.</p>
+</details>
+
+<h2>PM OS skills used</h2>
+<p><code>/code-first-draft</code> <code>/define-north-star</code> <code>/goal-gate</code> <code>/name-audit</code> <code>/opportunity-analysis</code> <code>/portfolio-case-study</code> <code>/prd-draft</code> <code>/prototype</code></p>
+
+<footer>Alexandre Cela · Data and AI products for private capital · alexandrecelap@gmail.com</footer>
+</main>
+</body>
+</html>

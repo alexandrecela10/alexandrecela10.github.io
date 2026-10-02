@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alexandre Cela | Data and AI products for private capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* Same navy and blue as the LinkedIn banner and the case study pages */
+  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 Lato, system-ui, sans-serif; }
+  main { max-width:1040px; margin:0 auto; padding:64px 24px 80px; }
+  h1 { font-size:46px; font-weight:900; margin:0; }
+  .tagline { font-size:22px; margin:6px 0 18px; }
+  .links a { color:var(--accent); margin-right:18px; }
+  .pillars { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:32px 0 8px; }
+  .pillars div { border-top:2px solid var(--accent); padding-top:10px; color:var(--dim); font-size:15px; }
+  .pillars b { display:block; color:var(--text); font-size:17px; }
+  h2 { font-size:22px; margin:52px 0 4px; }
+  .group-sub { color:var(--dim); margin:0 0 16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px; display:flex; flex-direction:column; }
+  .card h3 { margin:0 0 6px; font-size:20px; }
+  .card p { margin:0 0 10px; font-size:15px; }
+  .for { color:var(--dim); }
+  .actions { margin-top:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .btn { background:var(--accent); color:#fff; font-weight:700; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:14px; }
+  .btn.ghost { background:transparent; border:1px solid var(--accent); color:var(--accent); }
+  .kind { color:var(--dim); font-size:13px; }
+  .how { color:var(--dim); font-size:15px; max-width:760px; }
+  footer { margin-top:64px; color:var(--dim); font-size:14px; }
+  @media (max-width:760px) { .pillars { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Alexandre Cela</h1>
+  <p class="tagline">I build data and AI products for private capital, end to end.</p>
+  <p class="links"><a href="https://www.linkedin.com/in/alexandrecela/">LinkedIn</a><a href="https://github.com/alexandrecela10">GitHub</a><a href="mailto:alexandrecelap@gmail.com">alexandrecelap@gmail.com</a></p>
+
+  <div class="pillars">
+    <div><b>Data foundations</b>Unstructured private markets data, made reliable and secure</div>
+    <div><b>Data and AI products</b>Faster, informed decisions for investment teams and MDs</div>
+    <div><b>Track record</b>Preqin's first client-facing and asset-level benchmarking products</div>
+  </div>
+
+  <p class="how">Each project starts from a private capital problem and one player. Each case study shows the user stories, a hypothesis per sub-problem, what was measured, what wasn't, and the product management steps behind it. Demos use public or fictional data.</p>
+
+  <h2>Data foundations</h2>
+  <p class="group-sub">Unstructured private markets data, made reliable</p>
+  <div class="grid">
+    <article class="card">
+      <h3>BDC Footnote Tape</h3>
+      <p>Any BDC 10-K or 10-Q in. One row per loan, with its footnotes resolved, out.</p>
+      <p class="for">For: Private credit analyst</p>
+      <div class="actions">
+        <a class="btn" href="projects/bdc-footnotes/">Case study</a>
+        <a class="btn ghost" href="https://bdc-footnote-tape.streamlit.app">Demo</a><span class="kind">Interactive app</span>
+      </div>
+    </article>
+    <article class="card">
+      <h3>BDC Mark Tape</h3>
+      <p>Public BDC filings turned into one loan tape: spread comparables for pricing, a lowest-mark review list for monitoring. Every number links to its SEC filing.</p>
+      <p class="for">For: Credit underwriter, monitoring analyst</p>
+      <div class="actions">
+        <a class="btn" href="projects/parallax/">Case study</a>
+        <a class="btn ghost" href="https://bdc-mark-tape.streamlit.app">Demo</a><span class="kind">Interactive app</span>
+      </div>
+    </article>
+  </div>
+
+  <h2>Data and AI products</h2>
+  <p class="group-sub">Faster, informed decisions for investment teams</p>
+  <div class="grid">
+    <article class="card">
+      <h3>Deck Rank</h3>
+      <p>Inbound pitch decks in, ranked queue out. Every score cites its slide.</p>
+      <p class="for">For: VC investment analyst</p>
+      <div class="actions">
+        <a class="btn" href="projects/deck-rank/">Case study</a>
+        <a class="btn ghost" href="https://deck-rank.streamlit.app">Demo</a><span class="kind">Interactive app</span>
+      </div>
+    </article>
+    <article class="card">
+      <h3>Alpha Scout</h3>
+      <p>Describe the startup you want. Get a scored shortlist from the web, every score tied to a quote and a link.</p>
+      <p class="for">For: VC investment analyst</p>
+      <div class="actions">
+        <a class="btn" href="projects/alpha-scout/">Case study</a>
+        <a class="btn ghost" href="https://alpha-scout.streamlit.app">Demo</a><span class="kind">Interactive app</span>
+      </div>
+    </article>
+    <article class="card">
+      <h3>Night’s Watch</h3>
+      <p>Flags private credit borrowers that may miss their next cash interest payment, then ranks the credit team&#x27;s work by money at stake.</p>
+      <p class="for">For: Private credit lender</p>
+      <div class="actions">
+        <a class="btn" href="projects/nights-watch/">Case study</a>
+        <a class="btn ghost" href="projects/nights-watch/demo/">Demo</a><span class="kind">Runs in your browser</span>
+      </div>
+    </article>
+    <article class="card">
+      <h3>Shield</h3>
+      <p>Reads a capital project&#x27;s documents, finds claims exposure and contract notice deadlines, and drafts the notice for a named person to approve.</p>
+      <p class="for">For: Infrastructure fund asset manager</p>
+      <div class="actions">
+        <a class="btn" href="projects/shield/">Case study</a>
+        <a class="btn ghost" href="projects/shield/demo/">Demo</a><span class="kind">Runs in your browser</span>
+      </div>
+    </article>
+  </div>
+
+  <footer>Demos run on free tiers with daily limits. Sample companies are fictional unless taken from public SEC filings or public web sources.</footer>
+</main>
+</body>
+</html>

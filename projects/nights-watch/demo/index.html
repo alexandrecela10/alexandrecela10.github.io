@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Night’s Watch demo | Alexandre Cela</title>
+<style>
+  /* Same navy palette as the case study page. System fonts only, so the page works offline. */
+  :root { --bg:#070b24; --panel:#0e1538; --panel2:#131c47; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff;
+          --high:#ff6b5a; --med:#f2b544; --low:#7fc8a9; --none:#7c87b8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.5 Lato, system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding:18px 24px 10px; border-bottom:1px solid var(--line); }
+  header h1 { margin:0; font-size:22px; font-weight:900; }
+  header p { margin:4px 0 0; color:var(--dim); }
+  .notice { margin:12px 24px 0; padding:10px 14px; border:1px dashed var(--accent); border-radius:8px; color:var(--dim); font-size:13px; }
+  .notice b { color:var(--text); }
+  .wrap { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(380px,1fr); gap:18px; padding:16px 24px 40px; align-items:start; }
+  @media (max-width:1000px) { .wrap { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  .card h2 { margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--dim); padding:12px 14px; border-bottom:1px solid var(--line); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }
+  th { color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:.05em; font-weight:700; }
+  th.l, td.l { text-align:left; }
+  .num { font-family:ui-monospace, Menlo, monospace; }
+  #rank tbody tr { cursor:pointer; }
+  #rank tbody tr:hover { background:var(--panel2); }
+  #rank tbody tr.sel { background:var(--panel2); box-shadow:inset 3px 0 0 var(--accent); }
+  #rank tbody tr.flash { animation:flash 1.6s ease-out; }
+  @keyframes flash { from { background:#2b3f8f; } to { background:transparent; } }
+  .pill { display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; border:1px solid currentColor; }
+  .High { color:var(--high); } .Medium { color:var(--med); } .Low { color:var(--low); } .None { color:var(--none); }
+  .mv { font-size:11px; font-weight:700; margin-left:4px; }
+  .mv.up { color:var(--high); } .mv.down { color:var(--low); }
+  .sub { color:var(--dim); font-size:11px; }
+  .tabs { display:flex; border-bottom:1px solid var(--line); }
+  .tabs button { flex:1; background:none; border:0; color:var(--dim); padding:11px 8px; font:700 13px/1 inherit; font-family:inherit; cursor:pointer; border-bottom:2px solid transparent; }
+  .tabs button.on { color:var(--text); border-bottom-color:var(--accent); }
+  .pane { padding:14px; display:none; }
+  .pane.on { display:block; }
+  .pane h3 { font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--accent); margin:16px 0 8px; }
+  .pane h3:first-child { margin-top:0; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; }
+  label { display:block; font-size:11px; color:var(--dim); }
+  input, select, textarea { width:100%; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font:13px/1.3 ui-monospace, Menlo, monospace; }
+  textarea { font-family:inherit; min-height:54px; }
+  .feed td { padding:4px 4px; }
+  .feed input, .feed select { padding:4px 5px; font-size:12px; }
+  .btn { background:var(--accent); color:#fff; border:0; border-radius:6px; padding:7px 12px; font:700 12px/1 inherit; font-family:inherit; cursor:pointer; }
+  .btn.ghost { background:none; border:1px solid var(--line); color:var(--text); }
+  .events { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .events .ev { display:flex; gap:6px; align-items:center; }
+  .events .ev input, .events .ev select { width:90px; }
+  .status { margin-top:12px; padding:10px 12px; border-radius:6px; background:var(--panel2); font-size:13px; min-height:40px; }
+  .log { list-style:none; margin:0; padding:0; font-size:12px; max-height:180px; overflow:auto; }
+  .log li { padding:6px 0; border-bottom:1px solid var(--line); }
+  .log .t { color:var(--dim); font-family:ui-monospace, Menlo, monospace; margin-right:6px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px; }
+  .kpi { background:var(--panel2); border-radius:6px; padding:8px 10px; }
+  .kpi .n { font:700 17px/1.2 ui-monospace, Menlo, monospace; }
+  .kpi .l { font-size:11px; color:var(--dim); }
+  /* Band chart: obligation line against the P10, P40, P50 forecast of transferable cash at T1 */
+  .band { position:relative; height:64px; margin:6px 0 4px; }
+  .band .axis { position:absolute; left:0; right:0; top:30px; height:6px; background:var(--panel2); border-radius:3px; }
+  .band .rng { position:absolute; top:26px; height:14px; background:rgba(79,124,255,.35); border:1px solid var(--accent); border-radius:3px; }
+  .band .mk { position:absolute; top:18px; height:30px; width:2px; background:var(--text); }
+  .band .mk span { position:absolute; top:-16px; left:-14px; font-size:10px; color:var(--dim); width:40px; }
+  .band .due { position:absolute; top:10px; height:46px; width:3px; background:var(--high); }
+  .band .due span { position:absolute; bottom:-16px; left:-24px; font-size:10px; color:var(--high); width:70px; }
+  .trace td { white-space:normal; vertical-align:top; }
+  .trace td.src { font-family:ui-monospace, Menlo, monospace; font-size:11px; color:var(--dim); text-align:left; }
+  .quad { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px; }
+  .quad div { border:1px solid var(--line); border-radius:6px; padding:8px; font-size:12px; color:var(--dim); }
+  .quad div.on { border-color:var(--accent); color:var(--text); background:var(--panel2); }
+  .quad b { color:var(--text); }
+  footer { padding:0 24px 30px; color:var(--dim); font-size:12px; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Night’s Watch <span class="sub">demo</span></h1>
+  <p>Ranks borrowers by the risk of missing their next cash interest payment. Edit the simulated CRM and bank feed and watch the ranking recompute.</p>
+</header>
+<div class="notice"><b>Simulated connector, synthetic data.</b> Every borrower, account, currency code and FX rate here is fictional. Nothing leaves your browser: no backend, no model call. The next step is a Salesforce (or other CRM) adapter for the loan record and a bank-feed adapter for balances. As-at date: <b id="today"></b>.</div>
+
+<div class="wrap">
+  <!-- LEFT: ranked portfolio, worst first -->
+  <section class="card">
+    <h2>Portfolio, worst first</h2>
+    <div style="overflow-x:auto">
+    <table id="rank">
+      <thead><tr>
+        <th class="l">#</th><th class="l">Borrower</th><th class="l">Level</th>
+        <th title="P50 transferable cash at T1 / cash due at T1">Coverage</th>
+        <th title="Coverage at P10 to P40 of forecast transferable cash at T1">Band P10-P40</th>
+        <th>Cash due T1</th><th>Days to T1</th><th>Principal at risk</th><th class="l">Priority</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div style="padding:10px 14px" class="sub">Click a row to open its connector, trace and actions. Ranking: level, then principal at risk, then lowest coverage. Principal at risk counts the full principal of any loan at Low or above.</div>
+  </section>
+
+  <!-- RIGHT: selected borrower -->
+  <section class="card">
+    <h2 id="selName">Borrower</h2>
+    <div class="tabs">
+      <button data-tab="conn" class="on">1 · Connector</button>
+      <button data-tab="trace">2 · Trace</button>
+      <button data-tab="act">3 · Act</button>
+    </div>
+
+    <div class="pane on" id="pane-conn">
+      <div class="kpis" id="kpis"></div>
+      <div class="band" id="band"></div>
+      <div class="sub" id="bandNote"></div>
+
+      <h3>Feed events (replay)</h3>
+      <div class="events">
+        <div class="ev"><button class="btn" id="evFx">FX freeze</button><select id="evFxCcy"></select></div>
+        <div class="ev"><button class="btn" id="evOut">Large outflow</button><input id="evOutAmt" type="number" value="150000" step="5000"></div>
+        <div class="ev"><button class="btn" id="evPay">Payment received</button><input id="evPayAmt" type="number" value="60000" step="5000"></div>
+        <div class="ev"><button class="btn ghost" id="evStale">Feed goes stale</button><button class="btn ghost" id="evRefresh">Refresh</button></div>
+      </div>
+      <div class="status" id="status">Pick an event or edit a field below. Every change recomputes the whole portfolio.</div>
+
+      <h3>Simulated CRM record (loan)</h3>
+      <div class="grid2" id="crm"></div>
+
+      <h3>Simulated bank feed (balances)</h3>
+      <table class="feed" id="feed"><thead><tr><th class="l">Account</th><th class="l">Ccy</th><th>Balance (LCY)</th><th>FX to USD</th><th class="l">Convertibility</th></tr></thead><tbody></tbody></table>
+      <div class="grid2" id="feedParams" style="margin-top:8px"></div>
+      <p style="margin-top:12px"><button class="btn ghost" id="reset">Reset this borrower</button> <button class="btn ghost" id="resetAll">Reset all</button></p>
+    </div>
+
+    <div class="pane" id="pane-trace">
+      <p class="sub">Every number on the left, rebuilt from the simulated raw records. The source column names the field in the simulated CRM or bank feed.</p>
+      <table class="trace" id="trace"><thead><tr><th class="l">Number</th><th class="l">Formula</th><th>Value</th><th class="l">Source</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div class="pane" id="pane-act">
+      <h3>Priority: money at stake x recoverability</h3>
+      <div class="quad" id="quad"></div>
+      <div class="sub" id="prioNote"></div>
+      <h3>Log an action</h3>
+      <label>Action</label><select id="actSel"></select>
+      <label style="margin-top:8px">Note (outcome, owner, next date)</label><textarea id="actNote" placeholder="e.g. Called treasurer, FX bridge requested, follow-up Friday"></textarea>
+      <p><button class="btn" id="actLog">Log action</button></p>
+      <h3>Action log (this borrower)</h3>
+      <ul class="log" id="actLogList"></ul>
+      <h3>Event log (all borrowers)</h3>
+      <ul class="log" id="evLog"></ul>
+    </div>
+  </section>
+</div>
+<footer>Method: transferable cash today (hard currency in full, partially convertible at 50%, restricted at 0) runs down at the observed burn rate to the next payment date (T1); daily net-flow noise sets the P10 and P40 quantiles. Level comes from where the cash due lands against P10, P40 and P50. Assignment prototype on synthetic data, not a validated model. <a href="../index.html">Back to the case study</a>.</footer>
+
+<script id="engine">
+var CC = (function () {
+  // How much of each account counts as cash the borrower can send to the lender.
+  // transferable = hard currency, counts in full. partial = counts at half (assumed haircut).
+  // restricted = trapped behind capital controls or an FX freeze, counts as zero.
+  var CLASS_FACTOR = { transferable: 1, partial: 0.5, restricted: 0 };
+  // Standard normal z-scores for the 10th and 40th percentiles.
+  var Z10 = 1.2816, Z40 = 0.2533;
+  var SEVERITY = { High: 0, Medium: 1, Low: 2, None: 3 };
+  var RECOV_SCORE = { Strong: 0.8, Partial: 0.55, Weak: 0.3 };
+  var LARGE_PRINCIPAL = 2000000;   // money-at-stake split for the P1-P4 quadrants
+  var STALE_DAYS = 3;              // a feed older than this is itself a flag
+
+  function dayNum(iso) { var p = iso.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]) / 86400000; }
+  function addDays(iso, n) { return new Date((dayNum(iso) + n) * 86400000).toISOString().slice(0, 10); }
+  function round(n) { return Math.round(n * 100) / 100; }
+
+  // Cash coupon due at the next payment date (T1). PIK share is added to principal, so no cash is due for it.
+  function cashDue(loan) {
+    return loan.principal * loan.coupon / loan.periodsPerYear * (loan.cashShare / 100);
+  }
+
+  // Full recompute for one company. Returns every number plus the trace behind it.
+  function compute(co, today) {
+    var loan = co.crm, feed = co.feed, trace = [];
+    var total = 0, transferable = 0;
+    feed.accounts.forEach(function (a) {
+      var usd = a.lcy * a.fx, counted = usd * CLASS_FACTOR[a.cls];
+      total += usd; transferable += counted;
+      trace.push({ key: 'acct', id: a.id, label: a.id + ' ' + a.ccy + ' (' + a.cls + ')',
+        formula: a.lcy.toLocaleString('en-US') + ' ' + a.ccy + ' x ' + a.fx + ' x ' + CLASS_FACTOR[a.cls],
+        value: counted, source: 'bank.feed[' + a.id + '].balance_lcy, .fx_rate, .convertibility' });
+    });
+    var t1 = loan.nextPaymentDate || addDays(today, 1);          // fallback: tomorrow (worst case)
+    var days = Math.max(1, dayNum(t1) - dayNum(today));
+    var p50 = Math.max(0, transferable - feed.burnPerDay * days); // straight-line run-down to T1
+    var sigma = feed.volPerDay * Math.sqrt(days);                 // daily net-flow noise, scaled to T1
+    var p40 = Math.max(0, p50 - Z40 * sigma);
+    var p10 = Math.max(0, p50 - Z10 * sigma);
+    var due = cashDue(loan);
+    var stale = feed.feedAgeDays > STALE_DAYS;
+
+    // Where the obligation lands against the forecast quantiles sets the level (deck appendix D).
+    var level, rule;
+    if (due <= 0) { level = 'None'; rule = 'No cash due at T1 (full PIK)'; }
+    else if (due <= p10) { level = 'None'; rule = 'Cash due <= P10: even the pessimistic tail covers it'; }
+    else if (due <= p40) { level = 'Low'; rule = 'P10 < cash due <= P40: borderline, watch'; }
+    else if (due <= p50) { level = 'Medium'; rule = 'P40 < cash due <= P50: flag, shortfall risk beyond tolerance'; }
+    else { level = 'High'; rule = 'Cash due > P50: more likely than not to fall short'; }
+    if (stale && SEVERITY[level] > SEVERITY.Low) { level = 'Low'; rule += '; raised to Low because the feed is stale'; }
+
+    var coverage = due > 0 ? p50 / due : null;
+    var principalAtRisk = level === 'None' ? 0 : loan.principal;
+    var recov = RECOV_SCORE[loan.recoverability];
+    var priority = 'Monitor';
+    if (level === 'High' || level === 'Medium') {
+      var large = loan.principal >= LARGE_PRINCIPAL, canRecover = recov >= 0.5;
+      priority = large ? (canRecover ? 'P1' : 'P2') : (canRecover ? 'P3' : 'P4');
+    }
+    return {
+      total: total, transferable: transferable, trapped: total - transferable,
+      t1: t1, t1Fallback: !loan.nextPaymentDate, days: days, p50: p50, p40: p40, p10: p10, sigma: sigma,
+      due: due, coverage: coverage,
+      bandLow: due > 0 ? p10 / due : null, bandHigh: due > 0 ? p40 / due : null,
+      level: level, rule: rule, stale: stale, principalAtRisk: principalAtRisk,
+      recovScore: recov, priority: priority, trace: trace
+    };
+  }
+
+  // Worst first: level, then principal at risk, then lowest coverage.
+  function rank(portfolio, today) {
+    return portfolio.map(function (co) { return { co: co, r: compute(co, today) }; })
+      .sort(function (a, b) {
+        if (SEVERITY[a.r.level] !== SEVERITY[b.r.level]) return SEVERITY[a.r.level] - SEVERITY[b.r.level];
+        if (a.r.principalAtRisk !== b.r.principalAtRisk) return b.r.principalAtRisk - a.r.principalAtRisk;
+        var ca = a.r.coverage == null ? Infinity : a.r.coverage, cb = b.r.coverage == null ? Infinity : b.r.coverage;
+        return ca - cb;
+      });
+  }
+
+  // Simulated feed events. Each mutates the company record the way a new bank or CRM file would.
+  var events = {
+    fxFreeze: function (co, ccy) {
+      co.feed.accounts.forEach(function (a) { if (a.ccy === ccy) a.cls = 'restricted'; });
+      return 'FX freeze on ' + ccy + ': ' + ccy + ' accounts now restricted';
+    },
+    outflow: function (co, usd) {
+      var acc = co.feed.accounts.filter(function (a) { return CLASS_FACTOR[a.cls] === 1; })
+        .sort(function (a, b) { return b.lcy * b.fx - a.lcy * a.fx; })[0];
+      if (!acc) return 'Outflow skipped: no transferable account';
+      var take = Math.min(usd, acc.lcy * acc.fx);
+      acc.lcy = round(acc.lcy - take / acc.fx);
+      return 'Outflow of $' + Math.round(take).toLocaleString('en-US') + ' from ' + acc.id + ' (' + acc.ccy + ')';
+    },
+    paymentReceived: function (co, usd) {
+      var acc = co.feed.accounts.filter(function (a) { return a.ccy === 'USD'; })[0];
+      if (!acc) { acc = { id: co.id + '-USD-NEW', ccy: 'USD', lcy: 0, fx: 1, cls: 'transferable', fi: 'FI-SIM' }; co.feed.accounts.push(acc); }
+      acc.lcy = round(acc.lcy + usd);
+      return 'Payment received: $' + Math.round(usd).toLocaleString('en-US') + ' into ' + acc.id;
+    },
+    stale: function (co) { co.feed.feedAgeDays = 5; return 'Feed stopped: last update 5 days ago'; },
+    refresh: function (co) { co.feed.feedAgeDays = 0; return 'Feed refreshed: last update today'; }
+  };
+
+  return { compute: compute, rank: rank, cashDue: cashDue, events: events, addDays: addDays,
+    CLASS_FACTOR: CLASS_FACTOR, RECOV_SCORE: RECOV_SCORE, Z10: Z10, Z40: Z40, STALE_DAYS: STALE_DAYS };
+})();
+</script>
+<script id="seed">
+// Simulated as-at date and synthetic portfolio. Every name, account, FX rate and class is fictional.
+var TODAY = '2026-07-08';
+var SEED = [
+  { id: 'A', name: 'Agri A', sector: 'Agribusiness', country: 'Country 1',
+    crm: { loanId: 'LN-A-01', principal: 6000000, coupon: 0.14, periodsPerYear: 2, cashShare: 100, nextPaymentDate: '2026-07-15', seniority: 'Senior secured', recoverability: 'Partial' },
+    feed: { feedAgeDays: 0, burnPerDay: 6000, volPerDay: 8000, accounts: [
+      { id: 'ACC-A-01', ccy: 'USD', lcy: 200000, fx: 1, cls: 'transferable', fi: 'FI-01' },
+      { id: 'ACC-A-02', ccy: 'EUR', lcy: 260000, fx: 1.08, cls: 'transferable', fi: 'FI-02' },
+      { id: 'ACC-A-03', ccy: 'LCA', lcy: 4500000000, fx: 0.00165, cls: 'restricted', fi: 'FI-03' } ] } },
+  { id: 'B', name: 'FinServ B', sector: 'Financial services', country: 'Country 2',
+    crm: { loanId: 'LN-B-01', principal: 3200000, coupon: 0.14, periodsPerYear: 4, cashShare: 100, nextPaymentDate: '2026-07-20', seniority: 'Senior secured', recoverability: 'Weak' },
+    feed: { feedAgeDays: 0, burnPerDay: 3000, volPerDay: 5000, accounts: [
+      { id: 'ACC-B-01', ccy: 'USD', lcy: 90000, fx: 1, cls: 'transferable', fi: 'FI-04' },
+      { id: 'ACC-B-02', ccy: 'LCB', lcy: 600000000, fx: 0.00065, cls: 'restricted', fi: 'FI-05' } ] } },
+  { id: 'C', name: 'Telecom C', sector: 'Telecoms', country: 'Country 3',
+    crm: { loanId: 'LN-C-01', principal: 4500000, coupon: 0.11, periodsPerYear: 4, cashShare: 100, nextPaymentDate: '2026-08-01', seniority: 'Senior secured', recoverability: 'Partial' },
+    feed: { feedAgeDays: 0, burnPerDay: 400, volPerDay: 2000, accounts: [
+      { id: 'ACC-C-01', ccy: 'USD', lcy: 110000, fx: 1, cls: 'transferable', fi: 'FI-06' },
+      { id: 'ACC-C-02', ccy: 'GBP', lcy: 20000, fx: 1.27, cls: 'transferable', fi: 'FI-07' },
+      { id: 'ACC-C-03', ccy: 'LCC', lcy: 2000000000, fx: 0.00038, cls: 'restricted', fi: 'FI-08' } ] } },
+  { id: 'D', name: 'Logistics D', sector: 'Logistics', country: 'Country 4',
+    crm: { loanId: 'LN-D-01', principal: 1800000, coupon: 0.13, periodsPerYear: 4, cashShare: 100, nextPaymentDate: '2026-07-28', seniority: 'Senior secured', recoverability: 'Strong' },
+    feed: { feedAgeDays: 0, burnPerDay: 1000, volPerDay: 2000, accounts: [
+      { id: 'ACC-D-01', ccy: 'USD', lcy: 70000, fx: 1, cls: 'transferable', fi: 'FI-09' },
+      { id: 'ACC-D-02', ccy: 'LCD', lcy: 5000000, fx: 0.0077, cls: 'partial', fi: 'FI-10' } ] } },
+  { id: 'E', name: 'Power E', sector: 'Power', country: 'Country 5',
+    crm: { loanId: 'LN-E-01', principal: 900000, coupon: 0.12, periodsPerYear: 4, cashShare: 100, nextPaymentDate: '2026-08-10', seniority: 'Senior secured', recoverability: 'Strong' },
+    feed: { feedAgeDays: 0, burnPerDay: 200, volPerDay: 800, accounts: [
+      { id: 'ACC-E-01', ccy: 'USD', lcy: 45000, fx: 1, cls: 'transferable', fi: 'FI-11' },
+      { id: 'ACC-E-02', ccy: 'LCE', lcy: 2000000000, fx: 0.00027, cls: 'restricted', fi: 'FI-12' } ] } },
+  { id: 'F', name: 'Retail F', sector: 'Retail', country: 'Country 6',
+    crm: { loanId: 'LN-F-01', principal: 600000, coupon: 0.12, periodsPerYear: 4, cashShare: 100, nextPaymentDate: '2026-08-15', seniority: 'Senior unsecured', recoverability: 'Strong' },
+    feed: { feedAgeDays: 4, burnPerDay: 400, volPerDay: 1000, accounts: [
+      { id: 'ACC-F-01', ccy: 'USD', lcy: 30000, fx: 1, cls: 'transferable', fi: 'FI-13' },
+      { id: 'ACC-F-02', ccy: 'LCF', lcy: 300000, fx: 0.065, cls: 'partial', fi: 'FI-14' } ] } },
+  { id: 'G', name: 'Agro G', sector: 'Agribusiness', country: 'Country 7',
+    crm: { loanId: 'LN-G-01', principal: 1200000, coupon: 0.10, periodsPerYear: 4, cashShare: 0, nextPaymentDate: '2026-09-01', seniority: 'Senior secured', recoverability: 'Strong' },
+    feed: { feedAgeDays: 0, burnPerDay: 500, volPerDay: 1500, accounts: [
+      { id: 'ACC-G-01', ccy: 'USD', lcy: 60000, fx: 1, cls: 'transferable', fi: 'FI-15' },
+      { id: 'ACC-G-02', ccy: 'LCG', lcy: 500000000, fx: 0.00075, cls: 'restricted', fi: 'FI-16' } ] } },
+  { id: 'H', name: 'Foods H', sector: 'Food', country: 'Country 8',
+    crm: { loanId: 'LN-H-01', principal: 2000000, coupon: 0.09, periodsPerYear: 4, cashShare: 100, nextPaymentDate: '2026-09-05', seniority: 'Senior secured', recoverability: 'Strong' },
+    feed: { feedAgeDays: 0, burnPerDay: 800, volPerDay: 2000, accounts: [
+      { id: 'ACC-H-01', ccy: 'USD', lcy: 150000, fx: 1, cls: 'transferable', fi: 'FI-17' },
+      { id: 'ACC-H-02', ccy: 'EUR', lcy: 50000, fx: 1.08, cls: 'transferable', fi: 'FI-18' },
+      { id: 'ACC-H-03', ccy: 'LCH', lcy: 1000000, fx: 0.10, cls: 'partial', fi: 'FI-19' } ] } }
+];
+</script>
+<script>
+// ---------- UI: everything below only reads CC (the engine) and the portfolio state ----------
+(function () {
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  var state = clone(SEED);                 // live, editable copy of the simulated records
+  var selected = 'A';
+  var prevRank = {};                       // company id -> rank before the last change
+  var evLog = [], actLog = {};
+  var ACTIONS = {
+    P1: ['Call treasurer', 'Arrange FX bridge', 'Rewrite terms', 'Bring in advisors'],
+    P2: ['Demand repayment', 'Claim collateral', 'Sell or exit', 'Assemble enforcement file'],
+    P3: ['Watch closely', 'Call management', 'Request equity cure', 'Closer monitoring'],
+    P4: ['Standard notice', 'Stop new lending', 'Email to CEO (template)', 'Freeze advances'],
+    Monitor: ['Keep monitoring', 'Request updated bank file']
+  };
+  var QUADS = [
+    ['P3', 'Help them recover', 'Small money, can recover'], ['P1', 'Roll up sleeves', 'Large money, can recover'],
+    ['P4', 'Handle leanly', 'Small money, unlikely to recover'], ['P2', 'Stop the bleeding', 'Large money, unlikely to recover']
+  ];
+  var $ = function (id) { return document.getElementById(id); };
+  var usd = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
+  var usdM = function (n) { return n >= 1e6 ? '$' + (n / 1e6).toFixed(1) + 'M' : usd(n); };
+  var ratio = function (n) { return n == null ? 'n/a' : n.toFixed(2); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var co = function () { return state.filter(function (c) { return c.id === selected; })[0]; };
+  var now = function () { return new Date().toTimeString().slice(0, 8); };
+
+  $('today').textContent = TODAY;
+
+  // Recompute everything, redraw, and report what moved.
+  function refresh(reason) {
+    var ranked = CC.rank(state, TODAY), moved = [];
+    var before = {}; state.forEach(function (c) { before[c.id] = c._lastLevel; });
+    renderRank(ranked);
+    ranked.forEach(function (x, i) {
+      var was = prevRank[x.co.id];
+      if (reason && was != null && was !== i + 1) moved.push(x.co.name + ' #' + was + ' to #' + (i + 1));
+      if (reason && before[x.co.id] && before[x.co.id] !== x.r.level) moved.push(x.co.name + ' ' + before[x.co.id] + ' to ' + x.r.level);
+      x.co._lastLevel = x.r.level;
+    });
+    if (reason) {
+      evLog.unshift({ t: now(), text: reason + (moved.length ? '. ' + moved.join('; ') : '. No level or rank change') });
+      $('status').innerHTML = '<b>' + esc(reason) + '.</b> ' + (moved.length ? esc(moved.join('; ')) : 'No level or rank change.');
+    }
+    ranked.forEach(function (x, i) { prevRank[x.co.id] = i + 1; });
+    renderSelected();
+  }
+
+  function renderRank(ranked) {
+    var html = ranked.map(function (x, i) {
+      var r = x.r, was = prevRank[x.co.id], mv = '';
+      if (was != null && was !== i + 1) mv = was > i + 1 ? '<span class="mv up">&#9650;' + (was - i - 1) + '</span>' : '<span class="mv down">&#9660;' + (i + 1 - was) + '</span>';
+      var changed = was != null && (was !== i + 1 || x.co._lastLevel !== r.level);
+      return '<tr data-id="' + x.co.id + '" class="' + (x.co.id === selected ? 'sel ' : '') + (changed ? 'flash' : '') + '">' +
+        '<td class="l num">' + (i + 1) + mv + '</td>' +
+        '<td class="l"><b>' + esc(x.co.name) + '</b><div class="sub">' + esc(x.co.sector) + (r.stale ? ' · <span class="High">stale feed</span>' : '') + '</div></td>' +
+        '<td class="l"><span class="pill ' + r.level + '">' + r.level + '</span></td>' +
+        '<td class="num">' + ratio(r.coverage) + '</td>' +
+        '<td class="num">' + (r.bandLow == null ? 'n/a' : ratio(r.bandLow) + ' - ' + ratio(r.bandHigh)) + '</td>' +
+        '<td class="num">' + usd(r.due) + '</td>' +
+        '<td class="num">' + r.days + (r.t1Fallback ? '*' : '') + '</td>' +
+        '<td class="num">' + (r.principalAtRisk ? usdM(r.principalAtRisk) : '-') + '</td>' +
+        '<td class="l">' + r.priority + '</td></tr>';
+    }).join('');
+    $('rank').querySelector('tbody').innerHTML = html;
+  }
+
+  function renderSelected() {
+    var c = co(), r = CC.compute(c, TODAY);
+    $('selName').textContent = c.name + ' · ' + c.crm.loanId;
+    $('kpis').innerHTML = [
+      [ratio(r.coverage), 'Coverage (P50 / due)'], [usd(r.transferable), 'Transferable now'],
+      [usd(r.trapped), 'Trapped now'], ['<span class="' + r.level + '">' + r.level + '</span>', 'Distress level']
+    ].map(function (k) { return '<div class="kpi"><div class="n">' + k[0] + '</div><div class="l">' + k[1] + '</div></div>'; }).join('');
+    renderBand(r);
+    renderCrm(c); renderFeed(c); renderTrace(c, r); renderAct(c, r);
+    $('evLog').innerHTML = evLog.map(function (e) { return '<li><span class="t">' + e.t + '</span>' + esc(e.text) + '</li>'; }).join('') || '<li class="sub">No events yet.</li>';
+  }
+
+  // Draw P10, P40, P50 and the cash due on one axis scaled to the largest of them.
+  function renderBand(r) {
+    var max = Math.max(r.p50, r.due, 1) * 1.15, pos = function (v) { return (v / max * 100).toFixed(1) + '%'; };
+    $('band').innerHTML = '<div class="axis"></div>' +
+      '<div class="rng" style="left:' + pos(r.p10) + ';width:calc(' + pos(r.p40) + ' - ' + pos(r.p10) + ')"></div>' +
+      '<div class="mk" style="left:' + pos(r.p10) + '"><span>P10</span></div>' +
+      '<div class="mk" style="left:' + pos(r.p40) + '"><span>P40</span></div>' +
+      '<div class="mk" style="left:' + pos(r.p50) + '"><span>P50</span></div>' +
+      (r.due > 0 ? '<div class="due" style="left:' + pos(r.due) + '"><span>due ' + usd(r.due) + '</span></div>' : '');
+    $('bandNote').textContent = 'Forecast transferable cash at T1 (' + r.t1 + (r.t1Fallback ? ', fallback: tomorrow' : '') + '): P10 ' + usd(r.p10) + ', P40 ' + usd(r.p40) + ', P50 ' + usd(r.p50) + '. Rule: ' + r.rule + '.';
+  }
+
+  function field(path, label, value, type, opts) {
+    var input = opts
+      ? '<select data-path="' + path + '">' + opts.map(function (o) { return '<option' + (o == value ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select>'
+      : '<input data-path="' + path + '" type="' + type + '" value="' + esc(value == null ? '' : value) + '"' + (type === 'number' ? ' step="any"' : '') + '>';
+    return '<div><label>' + label + '</label>' + input + '</div>';
+  }
+
+  function renderCrm(c) {
+    var l = c.crm;
+    $('crm').innerHTML =
+      field('crm.principal', 'Principal (USD)', l.principal, 'number') +
+      field('crm.coupon', 'Coupon (annual, decimal)', l.coupon, 'number') +
+      field('crm.periodsPerYear', 'Payments per year', l.periodsPerYear, 'number') +
+      field('crm.cashShare', 'Cash share of coupon % (0 = full PIK)', l.cashShare, 'number') +
+      field('crm.nextPaymentDate', 'Next payment date (empty = tomorrow)', l.nextPaymentDate, 'date') +
+      field('crm.recoverability', 'Recoverability (first-pass)', l.recoverability, null, ['Strong', 'Partial', 'Weak']) +
+      field('crm.seniority', 'Seniority', l.seniority, null, ['Senior secured', 'Senior unsecured', 'Subordinated']);
+  }
+
+  function renderFeed(c) {
+    $('feed').querySelector('tbody').innerHTML = c.feed.accounts.map(function (a, i) {
+      return '<tr><td class="l num">' + esc(a.id) + '</td><td class="l">' + esc(a.ccy) + '</td>' +
+        '<td><input data-path="acc.' + i + '.lcy" type="number" step="any" value="' + a.lcy + '"></td>' +
+        '<td><input data-path="acc.' + i + '.fx" type="number" step="any" value="' + a.fx + '"></td>' +
+        '<td class="l"><select data-path="acc.' + i + '.cls">' + ['transferable', 'partial', 'restricted'].map(function (k) {
+          return '<option' + (k === a.cls ? ' selected' : '') + '>' + k + '</option>'; }).join('') + '</select></td></tr>';
+    }).join('');
+    $('feedParams').innerHTML =
+      field('feed.burnPerDay', 'Burn per day, USD (from feed history)', c.feed.burnPerDay, 'number') +
+      field('feed.volPerDay', 'Daily net-flow std dev, USD', c.feed.volPerDay, 'number') +
+      field('feed.feedAgeDays', 'Feed age (days since last update)', c.feed.feedAgeDays, 'number');
+    var ccys = []; c.feed.accounts.forEach(function (a) { if (ccys.indexOf(a.ccy) < 0 && a.cls !== 'restricted') ccys.push(a.ccy); });
+    $('evFxCcy').innerHTML = ccys.map(function (k) { return '<option>' + k + '</option>'; }).join('') || '<option value="">none</option>';
+  }
+
+  function renderTrace(c, r) {
+    var l = c.crm, f = c.feed, rows = r.trace.map(function (t) { return [t.label, t.formula, usd(t.value), t.source]; });
+    rows.push(['Transferable cash now', 'sum of the account rows above', usd(r.transferable), 'bank.feed[*]']);
+    rows.push(['Trapped cash now', 'total USD ' + usd(r.total) + ' - transferable', usd(r.trapped), 'bank.feed[*]']);
+    rows.push(['Days to T1', 'T1 ' + r.t1 + ' - as-at ' + TODAY, String(r.days), r.t1Fallback ? 'fallback: tomorrow (no date in CRM)' : 'crm.loan[' + l.loanId + '].next_payment_date']);
+    rows.push(['P50 cash at T1', usd(r.transferable) + ' - ' + usd(f.burnPerDay) + '/day x ' + r.days, usd(r.p50), 'bank.feed history: burn_per_day']);
+    rows.push(['Spread to T1', usd(f.volPerDay) + ' x sqrt(' + r.days + ')', usd(r.sigma), 'bank.feed history: daily net-flow std dev']);
+    rows.push(['P40 cash at T1', 'P50 - ' + CC.Z40 + ' x spread', usd(r.p40), 'derived']);
+    rows.push(['P10 cash at T1', 'P50 - ' + CC.Z10 + ' x spread', usd(r.p10), 'derived']);
+    rows.push(['Cash due at T1', usd(l.principal) + ' x ' + l.coupon + ' / ' + l.periodsPerYear + ' x ' + l.cashShare + '% cash', usd(r.due), 'crm.loan[' + l.loanId + '].principal, .coupon, .cash_vs_pik']);
+    rows.push(['Coverage', 'P50 / cash due', ratio(r.coverage), 'derived']);
+    rows.push(['Band', 'P10 / due to P40 / due', r.bandLow == null ? 'n/a' : ratio(r.bandLow) + ' - ' + ratio(r.bandHigh), 'derived']);
+    rows.push(['Distress level', r.rule, r.level, 'rule (deck appendix D)']);
+    rows.push(['Feed freshness', f.feedAgeDays + ' days (stale above ' + CC.STALE_DAYS + ')', r.stale ? 'stale' : 'fresh', 'bank.feed.last_updated']);
+    rows.push(['Principal at risk', r.level === 'None' ? 'level None: 0' : 'full principal', usd(r.principalAtRisk), 'crm.loan[' + l.loanId + '].principal']);
+    rows.push(['Priority', 'principal ' + (l.principal >= 2e6 ? '>=' : '<') + ' $2M, recoverability ' + l.recoverability + ' (' + r.recovScore + ')', r.priority, 'crm.loan[' + l.loanId + '].recoverability']);
+    $('trace').querySelector('tbody').innerHTML = rows.map(function (x) {
+      return '<tr><td class="l">' + esc(x[0]) + '</td><td class="l num">' + esc(x[1]) + '</td><td class="num">' + esc(x[2]) + '</td><td class="src">' + esc(x[3]) + '</td></tr>';
+    }).join('');
+  }
+
+  function renderAct(c, r) {
+    $('quad').innerHTML = QUADS.map(function (q) {
+      return '<div class="' + (r.priority === q[0] ? 'on' : '') + '"><b>' + q[0] + ' · ' + q[1] + '</b><br>' + q[2] + '</div>';
+    }).join('');
+    $('prioNote').textContent = r.priority === 'Monitor'
+      ? 'Level ' + r.level + ': not in the P1-P4 queue. Monitor only.'
+      : 'Level ' + r.level + ', principal ' + usdM(c.crm.principal) + ', recoverability ' + c.crm.recoverability + ' (first-pass, analyst-entered). Priority sets the order of work, not whether a loan is worth saving.';
+    $('actSel').innerHTML = ACTIONS[r.priority].map(function (a) { return '<option>' + a + '</option>'; }).join('');
+    var list = actLog[c.id] || [];
+    $('actLogList').innerHTML = list.map(function (a) {
+      return '<li><span class="t">' + a.t + '</span><b>' + esc(a.action) + '</b> at ' + a.level + ', coverage ' + a.cov + (a.note ? ': ' + esc(a.note) : '') + '</li>';
+    }).join('') || '<li class="sub">No action logged yet.</li>';
+  }
+
+  // ---------- wiring ----------
+  $('rank').addEventListener('click', function (e) {
+    var tr = e.target.closest('tr[data-id]'); if (!tr) return;
+    selected = tr.getAttribute('data-id'); renderRank(CC.rank(state, TODAY)); renderSelected();
+  });
+  document.querySelector('.tabs').addEventListener('click', function (e) {
+    var t = e.target.getAttribute('data-tab'); if (!t) return;
+    document.querySelectorAll('.tabs button').forEach(function (b) { b.classList.toggle('on', b === e.target); });
+    document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'pane-' + t); });
+  });
+  // Any edit in the connector writes into the simulated record, then recomputes.
+  $('pane-conn').addEventListener('change', function (e) {
+    var path = e.target.getAttribute('data-path'); if (!path) return;
+    var c = co(), p = path.split('.'), v = e.target.value;
+    var num = e.target.type === 'number';
+    if (num) { v = parseFloat(v); if (isNaN(v) || v < 0) { e.target.value = ''; return; } }
+    if (p[0] === 'acc') c.feed.accounts[+p[1]][p[2]] = v;
+    else c[p[0]][p[1]] = (p[1] === 'nextPaymentDate' && !v) ? null : v;
+    refresh(c.name + ': ' + (p[0] === 'acc' ? c.feed.accounts[+p[1]].id + ' ' + p[2] : p[1]) + ' set to ' + (v === null || v === '' ? 'empty' : v));
+  });
+  function fire(fn, arg) { var c = co(); var msg = CC.events[fn](c, arg); refresh(c.name + ': ' + msg); }
+  $('evFx').onclick = function () { var k = $('evFxCcy').value; if (k) fire('fxFreeze', k); };
+  $('evOut').onclick = function () { fire('outflow', Math.max(0, +$('evOutAmt').value || 0)); };
+  $('evPay').onclick = function () { fire('paymentReceived', Math.max(0, +$('evPayAmt').value || 0)); };
+  $('evStale').onclick = function () { fire('stale'); };
+  $('evRefresh').onclick = function () { fire('refresh'); };
+  $('reset').onclick = function () {
+    var fresh = clone(SEED.filter(function (c) { return c.id === selected; })[0]);
+    state = state.map(function (c) { if (c.id !== selected) return c; fresh._lastLevel = c._lastLevel; return fresh; });
+    refresh(fresh.name + ': reset to seed');
+  };
+  $('resetAll').onclick = function () {
+    var levels = {}; state.forEach(function (c) { levels[c.id] = c._lastLevel; });
+    state = clone(SEED); state.forEach(function (c) { c._lastLevel = levels[c.id]; });
+    refresh('All borrowers reset to seed');
+  };
+  $('actLog').onclick = function () {
+    var c = co(), r = CC.compute(c, TODAY);
+    (actLog[c.id] = actLog[c.id] || []).unshift({ t: now(), action: $('actSel').value, note: $('actNote').value.trim(), level: r.level, cov: ratio(r.coverage) });
+    evLog.unshift({ t: now(), text: c.name + ': action logged (' + $('actSel').value + ')' });
+    $('actNote').value = ''; renderSelected();
+  };
+
+  refresh();
+})();
+</script>
+</body>
+</html>

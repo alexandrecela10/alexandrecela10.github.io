@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shield demo | Alexandre Cela</title>
+<style>
+  /* Same navy palette as the case study page. System fonts only, so the page works offline. */
+  :root { --bg:#070b24; --panel:#0e1538; --panel2:#131c47; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff;
+          --red:#ff6b5a; --amber:#f2b544; --green:#7fc8a9; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 Lato, system-ui, -apple-system, Segoe UI, sans-serif; }
+  header { padding:18px 24px 12px; border-bottom:1px solid var(--line); }
+  header h1 { margin:0; font-size:22px; font-weight:900; }
+  header p { margin:4px 0 0; color:var(--dim); }
+  .banner { margin:12px 24px 0; padding:10px 14px; border:1px dashed var(--accent); border-radius:8px; color:var(--dim); font-size:13px; }
+  .banner b { color:var(--text); }
+  .strip { display:flex; flex-wrap:wrap; gap:10px 24px; padding:12px 24px; color:var(--dim); font-size:13px; align-items:center; }
+  .strip b { color:var(--text); }
+  select, textarea, button { font:inherit; }
+  select, textarea { background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 8px; }
+  .wrap { display:grid; grid-template-columns:minmax(300px,0.9fr) minmax(0,1.6fr); gap:18px; padding:4px 24px 40px; align-items:start; }
+  @media (max-width:950px) { .wrap { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; margin-bottom:18px; }
+  .card h2 { margin:0; font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--dim); padding:12px 14px; border-bottom:1px solid var(--line); }
+  .card .body { padding:12px 14px; }
+  .step { display:inline-block; background:var(--accent); color:#fff; border-radius:50%; width:20px; height:20px; text-align:center; font-size:12px; line-height:20px; margin-right:6px; }
+  .ev { padding:12px 14px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .ev:last-child { border-bottom:0; }
+  .ev:hover { background:var(--panel2); }
+  .ev.sel { background:var(--panel2); box-shadow:inset 3px 0 0 var(--accent); }
+  .ev .t { font-weight:700; }
+  .ev .m { color:var(--dim); font-size:13px; margin-top:4px; }
+  .pill { display:inline-block; font-size:11px; font-weight:900; letter-spacing:.05em; border-radius:4px; padding:1px 6px; margin-right:6px; }
+  .OPEN { background:var(--green); color:#062; } .DUE-SOON { background:var(--amber); color:#420; } .PASSED { background:var(--red); color:#300; }
+  .PROV { background:transparent; border:1px solid var(--amber); color:var(--amber); }
+  .kind { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+  .big { font-size:26px; font-weight:900; }
+  .dim { color:var(--dim); }
+  .chain { list-style:none; margin:0; padding:0; counter-reset:c; }
+  .chain li { position:relative; padding:0 0 14px 34px; }
+  .chain li:before { counter-increment:c; content:counter(c); position:absolute; left:0; top:0; width:22px; height:22px; border-radius:50%;
+                     border:1px solid var(--accent); color:var(--accent); font-size:12px; text-align:center; line-height:20px; }
+  .chain li:after { content:""; position:absolute; left:11px; top:24px; bottom:2px; border-left:1px solid var(--line); }
+  .chain li:last-child:after { display:none; }
+  .chain .h { font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; }
+  .chain blockquote { margin:4px 0; padding:6px 10px; background:var(--panel2); border-left:2px solid var(--accent); border-radius:4px; }
+  .chain mark { background:#2b3d8f; color:#fff; padding:0 2px; border-radius:2px; }
+  .ok { color:var(--green); font-size:12px; font-weight:700; } .bad { color:var(--red); font-size:12px; font-weight:700; }
+  .clocks { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:600px) { .clocks { grid-template-columns:1fr; } }
+  .clock { background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .clock.primary { border-color:var(--accent); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; vertical-align:top; padding:6px 8px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:700; }
+  td.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .notice { white-space:pre-wrap; font-family:ui-monospace, Menlo, monospace; font-size:13px; background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:12px; }
+  .cite { color:var(--accent); }
+  .btns { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
+  button { border:0; border-radius:6px; padding:8px 14px; font-weight:700; cursor:pointer; }
+  .approve { background:var(--green); color:#062; } .reject { background:var(--red); color:#300; } .ghost { background:var(--panel2); color:var(--text); border:1px solid var(--line); }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .msg { margin-top:8px; font-size:13px; }
+  textarea { width:100%; min-height:54px; margin-top:8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Shield</h1>
+  <p>Project documents in, contract deadlines and equity at risk out. A named person approves every notice.</p>
+</header>
+<div class="banner"><b>Synthetic data.</b> Fictional fund, project company, project and contractor. Today is fixed at <b id="today"></b>. Nothing is sent. Drafts are illustrative, not legal advice. Your decisions stay in this browser (local storage).</div>
+<div class="strip" id="strip"></div>
+
+<div class="wrap">
+  <div>
+    <div class="card">
+      <h2><span class="step">1</span>Pick a detected event</h2>
+      <div id="events"></div>
+    </div>
+    <div class="card">
+      <h2>Fund view: equity at risk, all open events</h2>
+      <div class="body" id="fundview"></div>
+    </div>
+    <div class="card">
+      <h2>Read but not surfaced</h2>
+      <div class="body" id="notsurfaced"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2><span class="step">2</span>Follow the evidence chain</h2>
+      <div class="body">
+        <div class="kind" id="evkind"></div>
+        <div class="big" id="evtitle"></div>
+        <p class="dim" id="evsummary"></p>
+        <ol class="chain" id="chain"></ol>
+        <div class="clocks" id="clocks"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Value at risk, in equity terms</h2>
+      <div class="body" id="value"></div>
+    </div>
+    <div class="card">
+      <h2><span class="step">3</span>Review the draft notice, then approve or reject</h2>
+      <div class="body">
+        <div class="notice" id="notice"></div>
+        <textarea id="reason" placeholder="Reason (required to reject, optional to approve)"></textarea>
+        <div class="btns">
+          <button class="approve" id="btnApprove">Approve for issue by ProjectCo</button>
+          <button class="reject" id="btnReject">Reject</button>
+        </div>
+        <div class="msg" id="gatemsg"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Decision log</h2>
+      <div class="body">
+        <table><thead><tr><th>Time</th><th>Actor</th><th>Event</th><th>Decision</th><th>Reason</th></tr></thead><tbody id="log"></tbody></table>
+        <div class="btns"><button class="ghost" id="btnExport">Export log (JSON)</button><button class="ghost" id="btnReset">Reset demo</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Agent run behind this demo (precomputed, offline)</h2>
+      <div class="body" id="agentrun"></div>
+    </div>
+  </div>
+</div>
+
+<script src="calc.js"></script>
+<script src="data.js"></script>
+<script src="agent-run.js"></script>
+<script>
+// ---------- UI. Reads DEMO (data), AGENT_RUN (frozen agent output) and NC (calculations). ----------
+(function () {
+  "use strict";
+  var D = window.DEMO, A = D.assumptions, $ = function (id) { return document.getElementById(id); };
+  var LOG_KEY = "shield-demo-log";
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var usdM = function (n) { return "$" + (n / 1e6).toFixed(2) + "M"; };
+  var pct = function (x) { return (x * 100).toFixed(1) + "%"; };
+  var fmtDate = function (iso) { return new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }); };
+
+  // 1. Compute everything once: deadlines per clock, verified quotes per link, equity per event.
+  D.events.forEach(function (ev) {
+    ev.clocks.forEach(function (c) { c.result = NC.deadline(Object.assign({ today: D.today }, c)); });
+    ev.primary = ev.clocks.filter(function (c) { return c.primary; })[0].result;
+    ev.chain.forEach(function (l) { l.verified = NC.verifyQuote((D.docs[l.ref] || {}).text, l.quote); });
+    ev.allVerified = ev.chain.every(function (l) { return l.verified; });
+  });
+  var equity = NC.equityAtRisk(D.events.map(function (e) { return Object.assign({ id: e.id }, e.value); }), A);
+  var eqById = {}; equity.rows.forEach(function (r) { eqById[r.id] = r; });
+
+  // 2. Decision log lives in local storage so a reload keeps it.
+  var log = JSON.parse(localStorage.getItem(LOG_KEY) || "[]");
+  var save = function () { localStorage.setItem(LOG_KEY, JSON.stringify(log)); };
+  var decisionFor = function (id) { return log.filter(function (x) { return x.event === id && (x.decision === "APPROVED" || x.decision === "REJECTED"); }).pop(); };
+  var selected = D.events[0].id;
+
+  var statusPill = function (r) {
+    return '<span class="pill ' + r.status.replace(" ", "-") + '">' + r.status + "</span>" + (r.provisional ? '<span class="pill PROV">PROVISIONAL</span>' : "");
+  };
+  var days = function (n) { return n + (n === 1 ? " day" : " days"); };
+  var daysText = function (r) { return r.daysLeft >= 0 ? days(r.daysLeft) + " left" : "closed " + days(-r.daysLeft) + " ago"; };
+
+  function renderStrip() {
+    $("today").textContent = fmtDate(D.today);
+    var opts = D.actors.map(function (a, i) { return '<option value="' + i + '">' + esc(a.label) + "</option>"; }).join("");
+    $("strip").innerHTML = "<span>Fund <b>" + esc(D.fund.name) + "</b></span><span>Asset <b>" + esc(D.fund.asset) + "</b> (" + pct(A.fundShare) + " equity)</span>" +
+      "<span>Project <b>" + esc(D.fund.project) + "</b></span><span>Stake value <b>" + usdM(A.stakeValueUsd) + "</b></span>" +
+      '<span>Acting as <select id="actor">' + opts + "</select></span>";
+    $("actor").onchange = renderGate;
+  }
+
+  function renderEvents() {
+    $("events").innerHTML = D.events.map(function (ev) {
+      var d = decisionFor(ev.id);
+      return '<div class="ev' + (ev.id === selected ? " sel" : "") + '" data-id="' + ev.id + '"><div class="kind">' + esc(ev.kind) + "</div>" +
+        '<div class="t">' + esc(ev.id + " · " + ev.title) + "</div>" +
+        '<div class="m">' + statusPill(ev.primary) + fmtDate(ev.primary.deadline) + ", " + daysText(ev.primary) + "</div>" +
+        '<div class="m">Fund equity at risk <b>' + usdM(eqById[ev.id].fundEquityUsd) + "</b> · " + ev.chain.filter(function (l) { return l.verified; }).length + "/" + ev.chain.length + " quotes verified" +
+        (d ? " · <b>" + d.decision + "</b>" : " · pending approval") + "</div></div>";
+    }).join("");
+    Array.prototype.forEach.call(document.querySelectorAll(".ev"), function (el) {
+      el.onclick = function () { selected = el.getAttribute("data-id"); renderAll(); };
+    });
+  }
+
+  function renderFund() {
+    $("fundview").innerHTML = "<table><tr><th>Event</th><th>Project exposure</th><th>Fund equity at risk</th><th>% of stake</th></tr>" +
+      equity.rows.map(function (r) { return "<tr><td>" + r.id + '</td><td class="n">' + usdM(r.exposureUsd) + '</td><td class="n">' + usdM(r.fundEquityUsd) + '</td><td class="n">' + pct(r.pctOfStake) + "</td></tr>"; }).join("") +
+      '<tr><td><b>Total</b></td><td class="n"><b>' + usdM(equity.totalExposureUsd) + '</b></td><td class="n"><b>' + usdM(equity.fundEquityUsd) + '</b></td><td class="n"><b>' + pct(equity.pctOfStake) + "</b></td></tr></table>" +
+      '<p class="dim">Total exposure ' + usdM(equity.totalExposureUsd) + " minus remaining contingency " + usdM(A.contingencyUsd) + " = " + usdM(equity.aboveContingencyUsd) +
+      " funded by equity. Fund share " + pct(A.fundShare) + " = " + usdM(equity.fundEquityUsd) + ". Each event gets its pro rata slice. Assumes every open position is lost.</p>";
+    $("notsurfaced").innerHTML = "<table>" + D.notSurfaced.map(function (n) { return "<tr><td>" + esc(n.ref) + "</td><td>" + esc(n.why) + "</td></tr>"; }).join("") + "</table>";
+  }
+
+  // Highlight the quoted words inside the full document text, so the visitor sees the quote in context.
+  function inContext(text, quote) {
+    var i = text.indexOf(quote);
+    return i < 0 ? esc(text) : esc(text.slice(0, i)) + "<mark>" + esc(quote) + "</mark>" + esc(text.slice(i + quote.length));
+  }
+
+  function renderEvent() {
+    var ev = D.events.filter(function (e) { return e.id === selected; })[0];
+    $("evkind").textContent = ev.kind;
+    $("evtitle").textContent = ev.id + " · " + ev.title;
+    $("evsummary").textContent = ev.summary;
+    $("chain").innerHTML = ev.chain.map(function (l) {
+      var doc = D.docs[l.ref];
+      return '<li><div class="h">' + esc(l.step) + " · " + esc(doc.type) + " " + esc(l.ref) + " · " + fmtDate(doc.date) + " · " + esc(doc.system) + (doc.demoAddition ? " · demo addition" : "") + "</div>" +
+        "<blockquote>" + inContext(doc.text, l.quote) + "</blockquote>" +
+        (l.verified ? '<span class="ok">Quote found in source</span>' : '<span class="bad">Quote not found: not verified</span>') + ' <span class="dim">' + esc(l.note) + "</span></li>";
+    }).join("");
+    $("clocks").innerHTML = ev.clocks.map(function (c) {
+      var r = c.result;
+      return '<div class="clock' + (c.primary ? " primary" : "") + '"><div class="kind">' + esc(c.label) + (c.primary ? " · ProjectCo action" : " · " + esc(c.owner)) + "</div>" +
+        '<div class="big">' + daysText(r) + "</div>" + statusPill(r) + "<div class='dim'>Due " + fmtDate(r.deadline) + ". Trigger " + fmtDate(c.triggerDate) + " + " + r.periodDays + " days (" + esc(r.basis) + ").</div></div>";
+    }).join("");
+
+    var x = NC.exposure(ev.value, A.dailyDelayCostUsd), r = eqById[ev.id];
+    $("value").innerHTML = "<table>" +
+      "<tr><td>Critical path delay at risk</td><td class='n'>" + ev.value.delayDays + " days - " + ev.value.floatDays + " float = " + x.netDelayDays + " days</td></tr>" +
+      "<tr><td>Cost of delay to ProjectCo</td><td class='n'>" + x.netDelayDays + " x $" + A.dailyDelayCostUsd.toLocaleString("en-US") + " a day = " + usdM(x.netDelayDays * A.dailyDelayCostUsd) + "</td></tr>" +
+      "<tr><td>Direct cost</td><td class='n'>" + usdM(ev.value.directCostUsd) + "</td></tr>" +
+      "<tr><td><b>Project exposure if the position is lost</b></td><td class='n'><b>" + usdM(x.usd) + "</b></td></tr>" +
+      "<tr><td><b>Fund equity at risk</b> (pro rata slice after contingency)</td><td class='n'><b>" + usdM(r.fundEquityUsd) + "</b> = " + pct(r.pctOfStake) + " of stake value</td></tr></table>" +
+      '<p class="dim">' + esc(ev.value.directNote) + " All inputs synthetic. The agent does not compute value; this is demo logic in calc.js.</p>";
+    $("notice").innerHTML = ev.notice.map(function (line) {
+      return esc(line).replace(/\[([^\]]+)\]/g, '<span class="cite">[$1]</span>');
+    }).join("\n") + "\n\nStatus: " + (decisionFor(ev.id) ? decisionFor(ev.id).decision : "PENDING_APPROVAL") + ". Shield has no send function.";
+  }
+
+  // 3. The human gate. Same rules as the agent's governance kernel (approve_notice):
+  //    registered approver only, one decision per notice, every quote verified.
+  function renderGate() {
+    var ev = D.events.filter(function (e) { return e.id === selected; })[0];
+    var d = decisionFor(ev.id);
+    $("btnApprove").disabled = $("btnReject").disabled = !!d;
+    $("gatemsg").innerHTML = d ? "Decided: <b>" + d.decision + "</b> by " + esc(d.actor) + "." : '<span class="dim">Pending approval. Approver list: ' + D.actors.filter(function (a) { return a.approver; }).map(function (a) { return esc(a.id); }).join(", ") + ".</span>";
+  }
+
+  function decide(decision) {
+    var ev = D.events.filter(function (e) { return e.id === selected; })[0];
+    var actor = D.actors[+$("actor").value], reason = $("reason").value.trim();
+    var entry = { time: new Date().toISOString(), actor: actor.id, event: ev.id, notice: "ntc-" + ev.id, reason: reason };
+    if (!actor.approver) { entry.decision = "REFUSED"; entry.reason = "not a registered approver"; }
+    else if (!ev.allVerified) { entry.decision = "REFUSED"; entry.reason = "notice has unverified quotes"; }
+    else if (decision === "REJECTED" && !reason) { $("gatemsg").innerHTML = '<span class="bad">Add a reason to reject.</span>'; return; }
+    else { entry.decision = decision; entry.deadline = ev.primary.deadline; entry.daysLeft = ev.primary.daysLeft; entry.fundEquityAtRiskUsd = Math.round(eqById[ev.id].fundEquityUsd); }
+    log.push(entry); save(); $("reason").value = "";
+    renderAll();
+    if (entry.decision === "REFUSED") $("gatemsg").innerHTML = '<span class="bad">Refused and logged: ' + esc(entry.reason) + ".</span>";
+  }
+
+  function renderLog() {
+    $("log").innerHTML = log.length ? log.slice().reverse().map(function (x) {
+      return "<tr><td>" + esc(x.time.slice(11, 19)) + "</td><td>" + esc(x.actor) + "</td><td>" + esc(x.event) + "</td><td><b>" + esc(x.decision) + "</b></td><td>" + esc(x.reason || "") + "</td></tr>";
+    }).join("") : '<tr><td colspan="5" class="dim">No decisions yet.</td></tr>';
+  }
+
+  // 4. Show what the real agent produced, and check the page's deadline engine against it.
+  function renderAgentRun() {
+    var R = window.AGENT_RUN, periods = { "GC 4.12": 28, "GC 8.4": 28, "GC 13.1": 14 };
+    var rows = R.deadlines.map(function (d) {
+      var mine = NC.deadline({ triggerDate: d.trigger_date, periodDays: periods[d.clause], today: D.today, amendment: d.clause === "GC 13.1" ? { id: "AMD-3", inArchive: false } : undefined });
+      var same = mine.deadline === d.deadline_date && mine.provisional === d.provisional;
+      return "<tr><td>" + esc(d.event_id) + "</td><td>" + esc(d.clause) + "</td><td>" + d.deadline_date + (d.provisional ? " (provisional)" : "") + "</td><td>" + (same ? '<span class="ok">same</span>' : '<span class="bad">differs</span>') + "</td></tr>";
+    }).join("");
+    $("agentrun").innerHTML = "<p>Source: " + esc(R.source) + ". Documents admitted " + R.admitted.length + ", refused " + R.refused.length +
+      ", events surfaced " + R.events.filter(function (e) { return e.surfaced; }).length + ", notices stopped at PENDING_APPROVAL " + R.notices.filter(function (n) { return n.status === "PENDING_APPROVAL"; }).length +
+      ". Missed: " + R.golden_missed.map(function (m) { return m.join(" "); }).join(", ") + ".</p>" +
+      "<table><tr><th>Agent event</th><th>Clause</th><th>Agent deadline</th><th>This page's engine</th></tr>" + rows + "</table>" +
+      '<p class="dim">EV-2 and EV-3 use the agent\'s eval letters. EV-1 uses the richer walkthrough record of the same ground event, which adds Amendment 2 (21 days). The agent\'s eval version of that event has a 28-day period and a 29 Aug deadline.</p>';
+  }
+
+  function renderAll() { renderEvents(); renderEvent(); renderGate(); renderLog(); }
+
+  $("btnApprove").onclick = function () { decide("APPROVED"); };
+  $("btnReject").onclick = function () { decide("REJECTED"); };
+  $("btnExport").onclick = function () {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(log, null, 2)], { type: "application/json" }));
+    a.download = "shield-decision-log.json"; a.click();
+  };
+  $("btnReset").onclick = function () { log = []; save(); renderAll(); };
+
+  renderStrip(); renderFund(); renderAgentRun(); renderAll();
+})();
+</script>
+</body>
+</html>
