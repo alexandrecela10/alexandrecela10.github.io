@@ -83,13 +83,16 @@
 
 <h2>Try it</h2>
 <div class="box">
+<p>Built as a product assignment for Liquidity, a private credit lender. The prototype and the deck below are the original work.</p>
 <ol>
-  <li>Read the ranked list. Agri A sits at #3, level Low: $7.9M of cash, but only $481K in currencies it can send abroad.</li>
-  <li>Open its connector (the simulated link to the lender's systems) and replay <strong>FX freeze</strong> on EUR: euros can no longer be converted. Coverage drops from 1.04 to 0.38, the level goes Low to High, and Agri A moves to #1.</li>
-  <li>Open <strong>Trace</strong> to see each number rebuilt from the simulated loan database (CRM) and bank records. Then open <strong>Act</strong> to log a P1 action (first in the order of work).</li>
+  <li>Open the prototype: the portfolio is ranked worst first, by cash coverage and money at risk.</li>
+  <li>Click a company to see its cash story: usable versus stuck cash, the trend, and why it is flagged. Each number traces to its source file.</li>
+  <li>Log the action in the same page. Then read the deck for the full reasoning: signal, workflow, data roadmap and success measures.</li>
 </ol>
-<p>The borrowers, accounts, currency codes and exchange rates are all made up. The link to the loan database and the bank data is simulated in the browser: no server, no AI model call. The next step is real connectors to Salesforce (or another CRM) and to the bank data.</p>
-<a class="btn" href="demo/index.html">Open the demo</a>
+<p>All data is synthetic. No AI model call.</p>
+<a class="btn" href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/product.html">Open the prototype</a>
+<a class="btn" href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/ACELA-LiquidityAssignment-NightsWatch-v6.pdf" style="background:transparent;border:1px solid var(--accent);color:var(--accent)">Read the deck (PDF, 32 pages)</a>
+<p style="margin-top:12px">Also: <a href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/agent.html">agent view</a> · <a href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/roadmap.html">data roadmap</a> · <a href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/diagram.html">data model</a> · <a href="demo/index.html">connector simulation</a> (edit balances and watch the ranking change)</p>
 </div>
 
 <!-- DETAILS: everything a reviewer needs, collapsed by default -->
@@ -240,8 +243,8 @@
 <details><summary>Other side and links</summary>
 <p>Related project: <a href="../bdc-footnotes/">BDC Footnote Tape</a>. It asks the same question (which borrowers are in trouble) from the public filings of BDCs (stock-listed funds that lend to private companies).</p>
 <ul>
-  <li><a href="demo/index.html">Demo</a></li>
-  <li>Earlier prototype and code: link withheld until real company names are removed from that repo (name audit)</li>
+  <li><a href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/product.html">Prototype</a> · <a href="https://alexandrecela10.github.io/liquidity-project-nights-watch/web/ACELA-LiquidityAssignment-NightsWatch-v6.pdf">Deck (PDF)</a> · <a href="https://github.com/alexandrecela10/liquidity-project-nights-watch">Code</a></li>
+  <li><a href="demo/index.html">Connector simulation</a></li>
 </ul>
 </details>
 
