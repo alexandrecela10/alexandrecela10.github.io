@@ -45,33 +45,48 @@
 
 <!-- TOP: problem, player, demo. Readable in under 30 seconds -->
 <h1>Alpha Scout</h1>
-<p class="sub">Describe the startup you want. Get a scored shortlist from the web, every score tied to a quote and a link.</p>
+<p class="sub">Describe the kind of startup a fund wants to back. Get a scored shortlist from the web, each score backed by a quote and a link.</p>
 
 <h2>Problem</h2>
-<p><strong>The best early-stage deals often never pitch a fund. A fund that waits for inbound sees them after faster funds do.</strong></p>
+<p><strong>The best young companies often never email a startup fund asking for money. A fund that waits for founders to come to it meets them after faster funds do.</strong></p>
+<p>Example: a company that fits the fund gets written up on a regional startup news site. Nobody at the fund reads that article, so a rival fund calls the founders first.</p>
 
 <h2>For</h2>
 <table>
-  <tr><th>Player</th><td>Early-stage VC fund investing in MENA</td></tr>
-  <tr><th>User</th><td>Investment analyst: decides which companies the fund contacts before they pitch</td></tr>
-  <tr><th>Buyer</th><td>VC CEO: decides where analyst time goes and answers to LPs on pipeline quality</td></tr>
+  <tr><th>Player</th><td>A startup investment fund (venture capital) backing young companies in the Middle East and North Africa (MENA)</td></tr>
+  <tr><th>User</th><td>A junior investor at the fund: decides which companies to contact before those companies ask for money</td></tr>
+  <tr><th>Buyer</th><td>The head of the fund: decides where the junior investors spend their time, and reports to the fund's own investors on the quality of companies in view</td></tr>
 </table>
+
+<h2>Terms on this page</h2>
+<div class="box">
+<ul>
+  <li><strong>Venture capital (VC):</strong> money invested in young companies for a share of them.</li>
+  <li><strong>Early-stage:</strong> a company at its first funding rounds (seed, Series A).</li>
+  <li><strong>Portfolio company:</strong> a company the fund already owns a share of.</li>
+  <li><strong>Thesis:</strong> the kinds of companies a fund chooses to back.</li>
+  <li><strong>Inbound / outbound:</strong> founders contact the fund / the fund contacts founders.</li>
+  <li><strong>Eligible:</strong> right size, region and funding stage for the fund.</li>
+  <li><strong>CRM:</strong> the fund's database of companies and contacts.</li>
+  <li><strong>Quote check:</strong> confirms a quote really appears in its source.</li>
+</ul>
+</div>
 
 <h2>User stories</h2>
 <ol>
-  <li>As an <strong>investment analyst</strong>, I want startups similar to a portfolio winner found on sources I trust, so that I see them before they pitch anyone.</li>
-  <li>As an <strong>investment analyst</strong>, I want each candidate's stage, size and region checked against its own website, LinkedIn and funding news, so that I only review companies the fund can invest in.</li>
-  <li>As a <strong>VC CEO</strong>, I want every score to show its quote and source link, so that the outbound pipeline holds up with IC and LPs.</li>
+  <li>As a <strong>junior investor</strong>, I want startups like one of our best portfolio companies found on news sites I trust, so that I see them before they ask anyone for money.</li>
+  <li>As a <strong>junior investor</strong>, I want each company's funding stage, size and region checked against its own website, LinkedIn page and funding news, so that I only review companies the fund is allowed to invest in.</li>
+  <li>As the <strong>head of the fund</strong>, I want every score to show its quote and source link, so that the list of companies we approach holds up in front of the investment committee and the fund's own investors.</li>
 </ol>
 
 <h2>Try it</h2>
 <div class="box">
 <ol>
   <li>Open <strong>Load Previous Search</strong> in the sidebar and load a saved example. It costs nothing.</li>
-  <li>Read the comparison table and the 2x2 matrix, then open a company to check each score against its quote and link.</li>
-  <li>Pick a fictional portfolio seed, adjust the filters and run a live search. 2 per visit, up to 5 companies each.</li>
+  <li>Read the comparison table and the 2x2 matrix. Then open a company and check each score against its quote and link.</li>
+  <li>Pick a fictional model company (the app calls it a portfolio seed), adjust the filters and run a live search. 2 per visit, up to 5 companies each.</li>
 </ol>
-<p>Portfolio seeds are fictional. Results name real companies found in public sources. Live searches use a shared free-tier budget that resets daily.</p>
+<p>The model companies are fictional. Results name real companies found in public sources. Live searches share a free allowance that resets daily.</p>
 <a class="btn" href="https://alpha-scout.streamlit.app">Open the demo</a>
 <p><a href="https://www.youtube.com/watch?v=PyaJmPB9MVI">Video walkthrough (YouTube)</a></p>
 </div>
@@ -79,81 +94,81 @@
 <!-- DETAILS: collapsed by default -->
 <h2>Details</h2>
 
-<details><summary>Value equation</summary>
-<p class="formula">value = (outcome x likelihood) / (time delay x effort &amp; sacrifice)</p>
+<details><summary>Would they use it? (value equation)</summary>
+<p class="formula">value = (what they get x chance it works) / (wait x effort &amp; what they give up)</p>
 <div class="cards">
-  <div class="card"><h3>ANALYST</h3><dl>
-    <dt>Outcome</dt><dd><strong>a shortlist of eligible startups that haven't pitched yet</strong>, each with the evidence behind its score</dd>
-    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Every score carries a quote and a link to check. Search quality depends on the sources chosen. No analyst has measured hit rate</dd>
-    <dt>Delay</dt><dd><span class="rate">LOW.</span> A 10-company search took a few minutes, end to end (observed on 2 searches, not timed)</dd>
-    <dt>Effort</dt><dd><span class="rate">LOW.</span> Pick a seed and run. Filters and sources are editable</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">LOW.</span> The analyst still decides who to contact. Gives up: a scored view they didn't build themselves</dd>
+  <div class="card"><h3>JUNIOR INVESTOR</h3><dl>
+    <dt>What they get</dt><dd><strong>a shortlist of eligible startups that haven't asked for money yet</strong>, each with the evidence behind its score</dd>
+    <dt>Chance it works</dt><dd><span class="rate">MEDIUM.</span> Every score carries a quote and a link to check. Search quality depends on the sources chosen. No investor has measured how many results turn out useful</dd>
+    <dt>Wait</dt><dd><span class="rate">LOW.</span> A 10-company search took a few minutes, start to finish (seen on 2 searches, not timed)</dd>
+    <dt>Effort</dt><dd><span class="rate">LOW.</span> Pick a model company and run. Filters and sources can be edited</dd>
+    <dt>What they give up</dt><dd><span class="rate">LOW.</span> The investor still decides who to contact. They give up: building the scored view themselves</dd>
   </dl></div>
-  <div class="card"><h3>VC CEO</h3><dl>
-    <dt>Outcome</dt><dd><strong>first fund in the room on the best companies in its thesis</strong>, with a pipeline it can show LPs</dd>
-    <dt>Likelihood</dt><dd><span class="rate">LOW-MEDIUM.</span> No data yet on whether outbound finds lead to deals</dd>
-    <dt>Delay</dt><dd><span class="rate">HIGH.</span> Deal outcomes show over quarters</dd>
-    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> API keys, and the team agrees on scoring criteria once</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Search queries describing the thesis go to third-party search and AI providers</dd>
+  <div class="card"><h3>HEAD OF THE FUND</h3><dl>
+    <dt>What they get</dt><dd><strong>the first fund to meet the best companies it wants to back</strong>, with a list it can show its own investors</dd>
+    <dt>Chance it works</dt><dd><span class="rate">LOW-MEDIUM.</span> No data yet on whether companies found this way lead to investments</dd>
+    <dt>Wait</dt><dd><span class="rate">HIGH.</span> Investment results take quarters to show</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Set up API keys (access codes for outside services), and the team agrees on scoring criteria once</dd>
+    <dt>What they give up</dt><dd><span class="rate">MEDIUM.</span> Searches that describe what the fund wants go to outside search and AI companies</dd>
   </dl></div>
 </div>
-<p><strong>Verdict:</strong> likelihood is the weakest factor for both. Cheapest fix: track 3 months of outbound shortlists and count how many become first calls. The CEO's sacrifice is addressed with a self-hosted model, listed under non-goals.</p>
+<p><strong>Verdict:</strong> chance it works is the weakest factor for both. Cheapest fix: track 3 months of shortlists and count how many lead to a first meeting with founders. The head of the fund's data concern is solved by running the AI model in-house, listed under non-goals.</p>
 </details>
 
 <details><summary>Sub-problems</summary>
 <ol>
-  <li><strong>Discovery.</strong> Analysts find startups through inbound and their network. Companies outside both are missed.</li>
-  <li><strong>Eligibility.</strong> Stage, size and region claims in articles are often wrong or out of date.</li>
+  <li><strong>Discovery.</strong> Junior investors find startups through founders who contact the fund, and through people they know. Companies outside both are missed.</li>
+  <li><strong>Eligibility.</strong> Funding stage, size and region in news articles are often wrong or out of date.</li>
   <li><strong>Evidence.</strong> AI-written company summaries can invent facts.</li>
-  <li><strong>Comparison.</strong> Candidates found in different places can't be compared side by side.</li>
+  <li><strong>Comparison.</strong> Companies found in different places can't be compared side by side.</li>
   <li><strong>Repeat work.</strong> The same ineligible companies come back in every search.</li>
-  <li><strong>Outreach.</strong> Getting from a shortlist to a first call is manual.</li>
+  <li><strong>Outreach.</strong> Getting from a shortlist to a first meeting is done by hand.</li>
 </ol>
 <p>This build tackles <strong>1 to 5</strong>. Outreach is a non-goal.</p>
 </details>
 
 <details><summary>How it works</summary>
 <ol>
-  <li>A seed profile (problem, clients, industry, technology, region, size) becomes one search query, run <strong>only on the sources the analyst selects</strong>. Defaults: MENAbytes, Wamda, MAGNiTT, ArabNet, Crunchbase MENA.</li>
-  <li>The language model extracts candidate companies from the results. <strong>A company name must appear in its source text</strong>, or it's dropped.</li>
-  <li>Three enrichment steps run per candidate: website check, LinkedIn page, and funding stage from news.</li>
-  <li>Filters remove companies over the employee cap, outside MENA, or past the latest stage allowed.</li>
-  <li>Each remaining company is scored 1 to 5 on <strong>offer power, sales ability, tech moat and founder strength</strong>. Each score has a quote and a source link, and the page shows whether the quote was found in the source.</li>
-  <li>A reviewer step checks the results. Companies that failed a filter go on a blacklist, so later searches skip them.</li>
+  <li>A model company profile (problem, clients, industry, technology, region, size) becomes one search, run <strong>only on the sources the investor selects</strong>. Defaults: MENAbytes, Wamda, MAGNiTT, ArabNet, Crunchbase MENA.</li>
+  <li>An AI model pulls company names from the results. <strong>A company name must appear in its source text</strong>, or it's dropped.</li>
+  <li>Three extra checks run per company: its website, its LinkedIn page, and its funding stage from news.</li>
+  <li>Filters remove companies with too many employees, outside MENA, or past the latest funding stage allowed.</li>
+  <li>Each remaining company is scored 1 to 5 on <strong>how strong its offer is, how well it sells, how hard its technology is to copy, and how strong its founders are</strong>. Each score has a quote and a source link. The page shows whether the quote was found in the source.</li>
+  <li>A review step checks the results. Companies that failed a filter go on a skip list, so later searches ignore them.</li>
 </ol>
 </details>
 
 <details><summary>Hypotheses, one per tackled sub-problem</summary>
 <div class="cards">
   <div class="card"><h3>1 · DISCOVERY</h3><dl>
-    <dt>Before -> after</dt><dd>inbound and network only -> <strong>similar startups found on chosen sources</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> analysts search from a portfolio winner's profile, <strong>then</strong> they find eligible companies they didn't know, <strong>because</strong> the search covers sources they don't read daily.</dd>
-    <dt>Metric</dt><dd>Share of shortlisted companies new to the fund's CRM. <span class="rate">Up.</span> Baseline unobserved. Guardrail: share later judged off-thesis stays flat.</dd>
+    <dt>Before -> after</dt><dd>founders who contact the fund and personal contacts only -> <strong>similar startups found on chosen sources</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> investors search from the profile of one of their best portfolio companies, <strong>then</strong> they find eligible companies they didn't know, <strong>because</strong> the search covers sources they don't read daily.</dd>
+    <dt>Metric</dt><dd>Share of shortlisted companies not yet in the fund's CRM. <span class="rate">Up.</span> Baseline unobserved. Guardrail: share later judged outside the fund's thesis stays flat.</dd>
     <dt>Test</dt><dd>Run 10 searches, check each result against the CRM.</dd>
   </dl></div>
   <div class="card"><h3>2 · ELIGIBILITY</h3><dl>
     <dt>Before -> after</dt><dd>stage and size taken from the article -> <strong>checked against website, LinkedIn and funding news</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> each candidate is checked against three sources, <strong>then</strong> fewer ineligible companies reach the analyst, <strong>because</strong> one article is often out of date.</dd>
-    <dt>Metric</dt><dd>Share of shortlisted companies an analyst marks ineligible. <span class="rate">Down.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Analyst labels eligibility on 2 searches, with and without enrichment.</dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> each company is checked against three sources, <strong>then</strong> fewer ineligible companies reach the investor, <strong>because</strong> one article is often out of date.</dd>
+    <dt>Metric</dt><dd>Share of shortlisted companies an investor marks ineligible. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>An investor labels eligibility on 2 searches, with and without the extra checks.</dd>
   </dl></div>
   <div class="card"><h3>3 · EVIDENCE</h3><dl>
     <dt>Before -> after</dt><dd>AI summary taken on trust -> <strong>quote and link per score, quote checked against source</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> every score shows a checked quote, <strong>then</strong> analysts verify faster and trust the shortlist more, <strong>because</strong> they check one quote instead of reading the article.</dd>
-    <dt>Metric</dt><dd>Share of scores whose quote is found in the source. <span class="rate">Up.</span> Measured per company on the page; not yet summarised.</dd>
-    <dt>Test</dt><dd>Count grounded vs ungrounded quotes across the 2 saved searches.</dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> every score shows a checked quote, <strong>then</strong> investors verify faster and trust the shortlist more, <strong>because</strong> they check one quote instead of reading the article.</dd>
+    <dt>Metric</dt><dd>Share of scores whose quote is found in the source. <span class="rate">Up.</span> Measured per company on the page; not yet added up.</dd>
+    <dt>Test</dt><dd>Count quotes found vs not found in their source across the 2 saved searches.</dd>
   </dl></div>
   <div class="card"><h3>4 · COMPARISON</h3><dl>
-    <dt>Before -> after</dt><dd>notes in different places -> <strong>one table and a 2x2 matrix on the same 4 dimensions</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> candidates are scored on the same 4 dimensions, <strong>then</strong> two analysts agree more on who to contact first, <strong>because</strong> they compare like with like.</dd>
-    <dt>Metric</dt><dd>Top-3 overlap between two analysts on the same search. <span class="rate">Up.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Two analysts rank one saved search, with and without scores.</dd>
+    <dt>Before -> after</dt><dd>notes in different places -> <strong>one table and a 2x2 matrix on the same 4 criteria</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> companies are scored on the same 4 criteria, <strong>then</strong> two investors agree more on who to contact first, <strong>because</strong> they compare like with like.</dd>
+    <dt>Metric</dt><dd>How many of two investors' top-3 picks match on the same search. <span class="rate">Up.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Two investors rank one saved search, with and without scores.</dd>
   </dl></div>
   <div class="card"><h3>5 · REPEAT WORK</h3><dl>
-    <dt>Before -> after</dt><dd>same ineligible companies every search -> <strong>blacklisted and skipped</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> ineligible companies are blacklisted, <strong>then</strong> later searches cost fewer API calls per eligible company, <strong>because</strong> known misses are skipped before enrichment.</dd>
+    <dt>Before -> after</dt><dd>same ineligible companies every search -> <strong>put on a skip list and ignored</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> ineligible companies go on a skip list, <strong>then</strong> later searches make fewer paid API calls (requests to outside services) per eligible company, <strong>because</strong> known misses are skipped before the extra checks.</dd>
     <dt>Metric</dt><dd>API calls per eligible company over repeated searches. <span class="rate">Down.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Run the same seed 3 times and compare call counts.</dd>
+    <dt>Test</dt><dd>Run the same model company 3 times and compare call counts.</dd>
   </dl></div>
 </div>
 </details>
@@ -161,50 +176,50 @@
 <details><summary>Scope and non-goals</summary>
 <table>
   <tr><th>In scope</th><th>Non-goal (incl. untackled sub-problems)</th></tr>
-  <tr><td>Similarity search from a seed profile on chosen sources</td><td><strong>6 Outreach:</strong> no automated contact. The analyst decides and writes</td></tr>
-  <tr><td>Website, LinkedIn and stage enrichment; size, region, stage filters</td><td>Ranking inbound decks: that's Deck Rank</td></tr>
-  <tr><td>4-dimension scoring with quote, link and grounding flag</td><td>Self-hosted model for data control</td></tr>
-  <tr><td>Comparison table, 2x2 matrix, report, Excel and PDF export</td><td>CRM sync</td></tr>
-  <tr><td>Target list, saved searches, blacklist, analyst chat on targets</td><td>Investment decisions</td></tr>
+  <tr><td>Search for similar companies from a model company profile, on chosen sources</td><td><strong>6 Outreach:</strong> no automatic contact. The investor decides and writes</td></tr>
+  <tr><td>Website, LinkedIn and funding stage checks; size, region and stage filters</td><td>Ranking pitch decks founders send in: that's Deck Rank</td></tr>
+  <tr><td>Scoring on 4 criteria with quote, link and quote-check flag</td><td>Running the AI model in-house to keep data private</td></tr>
+  <tr><td>Comparison table, 2x2 matrix, report, Excel and PDF export</td><td>Syncing with the CRM</td></tr>
+  <tr><td>Target list, saved searches, skip list, chat with the AI about targets</td><td>Investment decisions</td></tr>
 </table>
 </details>
 
 <details><summary>Success tracking</summary>
 <table>
   <tr><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
-  <tr><td>New-to-CRM share of shortlist</td><td>Leading</td><td>1</td><td>CRM match per result</td></tr>
-  <tr><td>Analyst-marked ineligible share</td><td>Leading</td><td>2</td><td>Label per result</td></tr>
-  <tr><td>Grounded quote share</td><td>Leading</td><td>3</td><td>Grounding flag per score</td></tr>
-  <tr><td>Top-3 overlap between analysts</td><td>Leading</td><td>4</td><td>Paired ranking exercise</td></tr>
-  <tr><td>Shortlisted companies that become first calls</td><td>Lagging</td><td>1 to 4</td><td>CRM stage after 3 months</td></tr>
+  <tr><td>Share of shortlist not yet in the CRM</td><td>Leading</td><td>1</td><td>CRM match per result</td></tr>
+  <tr><td>Share an investor marks ineligible</td><td>Leading</td><td>2</td><td>Label per result</td></tr>
+  <tr><td>Share of quotes found in their source</td><td>Leading</td><td>3</td><td>Quote-check flag per score</td></tr>
+  <tr><td>Top-3 picks shared by two investors</td><td>Leading</td><td>4</td><td>Both rank the same search</td></tr>
+  <tr><td>Shortlisted companies that get a first meeting</td><td>Lagging</td><td>1 to 4</td><td>CRM status after 3 months</td></tr>
 </table>
 </details>
 
 <details><summary>Observed in the build</summary>
 <ul>
-  <li><strong>Saved examples:</strong> 2 searches on fictional seeds, 10 candidates requested each. 4 companies passed the filters and were scored in each.</li>
+  <li><strong>Saved examples:</strong> 2 searches on fictional model companies, 10 companies requested each. 4 companies passed the filters and were scored in each.</li>
   <li><strong>Model change:</strong> gemini-2.5 models returned "no longer available to new users" on a new key. The app now uses gemini-3.8-flash.</li>
-  <li><strong>Tests:</strong> 4 demo tests on the cost meter, the per-visitor isolation and the fictional seeds.</li>
+  <li><strong>Tests:</strong> 4 demo tests on the cost meter, keeping each visitor's session separate, and the fictional model companies.</li>
 </ul>
 </details>
 
 <details><summary>Limits and trade-offs</summary>
 <ul>
-  <li><strong>Users:</strong> no analyst has measured hit rate. Every "before" is assumed.</li>
-  <li><strong>Coverage:</strong> results depend on what the chosen sources have published. Some sources block page fetches (403), so those companies get less evidence.</li>
-  <li><strong>Budget:</strong> the free search plan covers about 15 live searches a month. The saved examples carry the demo past that.</li>
+  <li><strong>Users:</strong> no investor has measured how many results turn out useful. Every "before" is assumed.</li>
+  <li><strong>Coverage:</strong> results depend on what the chosen sources have published. Some sources block page downloads (403), so those companies get less evidence.</li>
+  <li><strong>Budget:</strong> the free search plan covers about 15 live searches a month. The saved examples keep the demo working past that.</li>
 </ul>
 <table>
   <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
-  <tr><td>search only chosen sources</td><td>open web search</td><td>analyst controls quality</td><td>misses companies those sources haven't covered</td></tr>
-  <tr><td>drop names not found in source text</td><td>accept all extracted names</td><td>no invented companies</td><td>fewer candidates</td></tr>
-  <tr><td>3-source eligibility check</td><td>trust the article</td><td>fewer ineligible results</td><td>about 3 extra searches per candidate</td></tr>
-  <tr><td>blacklist ineligible companies</td><td>re-check every time</td><td>cheaper repeat searches</td><td>a company that grows into eligibility stays hidden until removed</td></tr>
+  <tr><td>search only chosen sources</td><td>search the whole web</td><td>the investor controls quality</td><td>misses companies those sources haven't covered</td></tr>
+  <tr><td>drop names not found in source text</td><td>accept every name the AI pulls out</td><td>no invented companies</td><td>fewer companies</td></tr>
+  <tr><td>check eligibility on 3 sources</td><td>trust the article</td><td>fewer ineligible results</td><td>about 3 extra searches per company</td></tr>
+  <tr><td>skip list for ineligible companies</td><td>re-check every time</td><td>cheaper repeat searches</td><td>a company that grows into eligibility stays hidden until removed</td></tr>
 </table>
 </details>
 
 <details><summary>Other side and links</summary>
-<p>Shared funnel: <strong>see the best deal in your thesis first, and be first with conviction.</strong> Alpha Scout is the outbound half (see first). <a href="../deck-rank/">Deck Rank</a> is the inbound half (act first).</p>
+<p>Shared goal: <strong>see the best companies the fund wants to back first, and be the first to commit.</strong> Alpha Scout is the half where the fund goes looking (see first). <a href="../deck-rank/">Deck Rank</a> is the half that ranks pitch decks founders send in (act first).</p>
 <ul>
   <li><a href="https://github.com/alexandrecela10/alpha-scout">Code</a></li>
   <li><a href="https://www.youtube.com/watch?v=PyaJmPB9MVI">Video walkthrough</a></li>
@@ -215,11 +230,11 @@
 <table>
   <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
   <tr><td>Discovery</td><td>User stories table per persona (README)</td><td><code>/prd-draft</code></td></tr>
-  <tr><td>Strategy</td><td>3 sourcing modes: portfolio benchmark, MENA success stories, inbound</td><td><code>/write-prod-strategy</code></td></tr>
-  <tr><td>Build</td><td>Search, enrichment and scoring agents, traced in Langfuse</td><td><code>/code-first-draft</code></td></tr>
-  <tr><td>Evaluation</td><td>LLM-judge and enrichment-quality evaluations, reviewer step</td><td><code>/feature-metrics</code></td></tr>
+  <tr><td>Strategy</td><td>3 ways to find companies: like a portfolio company, like regional success stories, from founders who apply</td><td><code>/write-prod-strategy</code></td></tr>
+  <tr><td>Build</td><td>AI steps for search, extra checks and scoring, each logged in Langfuse (an AI monitoring tool)</td><td><code>/code-first-draft</code></td></tr>
+  <tr><td>Evaluation</td><td>An AI grading the scores, quality checks on the extra checks, review step</td><td><code>/feature-metrics</code></td></tr>
   <tr><td>Launch</td><td>Video walkthrough</td><td><code>/prototype</code></td></tr>
-  <tr><td>Showcase</td><td>This page, name audit, guarded demo, saved examples</td><td><code>/portfolio-case-study, /name-audit</code></td></tr>
+  <tr><td>Showcase</td><td>This page, real-name check, demo with usage limits, saved examples</td><td><code>/portfolio-case-study, /name-audit</code></td></tr>
 </table>
 <p style="color:var(--dim)">Skills are mapped from the artifact each stage produced. They show how each stage repeats with PM OS; the original working sessions were not logged.</p>
 </details>

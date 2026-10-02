@@ -47,34 +47,48 @@
 
 <!-- TOP: problem, player, demo. Readable in under 30 seconds -->
 <h1>Night’s Watch</h1>
-<p class="sub">Flags private credit borrowers that may miss their next cash interest payment, then ranks the credit team's work by money at stake.</p>
-<span class="tag">Private credit</span><span class="tag">Portfolio monitoring</span><span class="tag">Product assignment, synthetic data</span>
+<p class="sub">Warns a lender when a company it lends to may not have enough usable cash for its next interest payment. Then it ranks which companies the lender's staff should handle first, by money at stake.</p>
+<span class="tag">Lending to private companies</span><span class="tag">Loan monitoring</span><span class="tag">Product assignment, synthetic data</span>
 
 <h2>Problem</h2>
-<p><strong>A lender can find a borrower's cash shortfall on the payment date, when the cheap fixes are gone, because headline cash includes money trapped in currencies the borrower can't send.</strong></p>
+<p><strong>A lender can learn a borrower is short of cash only on the payment date, when the easy fixes are gone. The cash figure it watches includes money stuck in currencies that can't be converted or sent abroad. In the sample bank file, a company held $9.31M in cash, but only $796K was in currencies it could use to pay.</strong></p>
 
 <h2>For</h2>
 <table>
-  <tr><th>Player</th><td>Private credit lender: direct loans with periodic cash interest, to borrowers holding cash in several currencies</td></tr>
-  <tr><th>User</th><td>Credit team analyst: which flagged borrower to work first today, and which action to take</td></tr>
-  <tr><th>Buyer</th><td>Head of credit: the recall floor (how many false alarms to accept so no default arrives unflagged), and whether the team adopts the tool</td></tr>
+  <tr><th>Player</th><td>A fund that lends directly to private companies and collects interest in cash on a fixed schedule. Its borrowers hold cash in several currencies.</td></tr>
+  <tr><th>User</th><td>A credit analyst (a lender's employee who watches loans). They decide which flagged borrower to handle first today, and what to do.</td></tr>
+  <tr><th>Buyer</th><td>The head of credit. They decide how many false alarms to accept so no missed payment arrives without a warning, and whether the team adopts the tool.</td></tr>
 </table>
+
+<h2>Terms on this page</h2>
+<div class="box">
+<ul>
+  <li><strong>Cash interest payment:</strong> interest the borrower must pay in money on a set date.</li>
+  <li><strong>PIK (payment in kind):</strong> interest added to the loan instead of paid.</li>
+  <li><strong>Usable vs trapped cash:</strong> cash the borrower can convert and send / cash stuck behind currency rules.</li>
+  <li><strong>Coverage:</strong> expected usable cash on the payment date divided by the payment due. Below 1 means short.</li>
+  <li><strong>P10, P40, P50:</strong> low, lower-middle and middle guesses of usable cash on the payment date.</li>
+  <li><strong>Principal:</strong> the amount lent, before interest.</li>
+  <li><strong>Recoverability:</strong> how likely the lender gets its money back.</li>
+  <li><strong>Recall / precision:</strong> share of missed payments the tool warned about / share of warnings that were right.</li>
+</ul>
+</div>
 
 <h2>User stories</h2>
 <ol>
-  <li><strong>Rank.</strong> As a credit analyst, when a new bank feed lands, I want borrowers ranked by risk of missing their next cash coupon, worst first, so I work the biggest savable money first.</li>
-  <li><strong>Check.</strong> As a credit analyst, when a borrower is flagged, I want every number traced to the raw bank and loan record, so I can verify it before I call the borrower.</li>
-  <li><strong>Close the loop.</strong> As head of credit, I want each warning to end in a logged action, so I can see no flagged loan was left unattended and build the history that calibrates the threshold.</li>
+  <li><strong>Rank.</strong> As a credit analyst, when new bank balances arrive, I want borrowers listed by their risk of missing the next interest payment, worst first. Then I handle the most money I can still save first.</li>
+  <li><strong>Check.</strong> As a credit analyst, when a borrower is flagged, I want every number traced back to the original bank and loan record. Then I can check it before I call the borrower.</li>
+  <li><strong>Close the loop.</strong> As head of credit, I want each warning to end in a logged action. Then I can see no flagged loan was ignored, and the records help set the warning threshold.</li>
 </ol>
 
 <h2>Try it</h2>
 <div class="box">
 <ol>
-  <li>Read the ranked list. Agri A sits at #3, level Low: $7.9M of cash, but only $481K in currencies it can send.</li>
-  <li>Open its connector and replay <strong>FX freeze</strong> on EUR. Coverage drops from 1.04 to 0.38, the level goes Low to High, and Agri A moves to #1.</li>
-  <li>Open <strong>Trace</strong> to see each number rebuilt from the simulated CRM and bank records, then <strong>Act</strong> to log a P1 action.</li>
+  <li>Read the ranked list. Agri A sits at #3, level Low: $7.9M of cash, but only $481K in currencies it can send abroad.</li>
+  <li>Open its connector (the simulated link to the lender's systems) and replay <strong>FX freeze</strong> on EUR: euros can no longer be converted. Coverage drops from 1.04 to 0.38, the level goes Low to High, and Agri A moves to #1.</li>
+  <li>Open <strong>Trace</strong> to see each number rebuilt from the simulated loan database (CRM) and bank records. Then open <strong>Act</strong> to log a P1 action (first in the order of work).</li>
 </ol>
-<p>Synthetic borrowers, accounts, currency codes and FX rates. The CRM and bank-feed connector is simulated in the browser: no backend, no model call. A Salesforce (or other CRM) adapter and a bank-feed adapter are the next step.</p>
+<p>The borrowers, accounts, currency codes and exchange rates are all made up. The link to the loan database and the bank data is simulated in the browser: no server, no AI model call. The next step is real connectors to Salesforce (or another CRM) and to the bank data.</p>
 <a class="btn" href="demo/index.html">Open the demo</a>
 </div>
 
@@ -85,50 +99,50 @@
 <p class="formula">value = (outcome x likelihood) / (time delay x effort &amp; sacrifice)</p>
 <div class="cards">
   <div class="card"><h3>CREDIT ANALYST</h3><dl>
-    <dt>Outcome</dt><dd>"I open the queue and the borrower most likely to miss its coupon, with the most money at stake, is on top. I can show why in one click."</dd>
-    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Every number is traced. The forecast is a straight-line run-down, not tested against real missed payments. No analyst has used it.</dd>
-    <dt>Delay</dt><dd><span class="rate">LOW.</span> The demo recomputes the whole portfolio on each feed event. Time from real feed to flag is unobserved: no live feed yet.</dd>
-    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> No spreadsheet rebuild. Needs CRM fields kept current: next payment date, cash vs PIK, recoverability.</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Gives up their own triage order for a house rule. One more screen next to the CRM.</dd>
+    <dt>Outcome</dt><dd>"I open the list and the borrower most likely to miss its interest payment, with the most money at stake, is on top. I can show why in one click."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Every number is traced. The forecast assumes cash falls by the same amount each day. It hasn't been tested against real missed payments. No analyst has used it.</dd>
+    <dt>Delay</dt><dd><span class="rate">LOW.</span> The demo recalculates every borrower whenever bank data changes. Time from real bank data to warning is unobserved: no live connection yet.</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> No spreadsheet to rebuild. The CRM must stay up to date: next payment date, cash or PIK interest, recoverability.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Analysts give up their own order of work for a shared rule. One more screen next to the CRM.</dd>
   </dl></div>
   <div class="card"><h3>HEAD OF CREDIT</h3><dl>
-    <dt>Outcome</dt><dd>"No default catches us unaware, and the team works the most money at risk per day."</dd>
-    <dt>Likelihood</dt><dd><span class="rate">LOW-MEDIUM.</span> Depends on bank-feed coverage, CRM completeness and a threshold calibrated on few labelled missed payments.</dd>
+    <dt>Outcome</dt><dd>"No borrower defaults without us seeing it coming, and the team works on the most money at risk each day."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">LOW-MEDIUM.</span> Depends on how many borrowers' bank data is connected, how complete the CRM is, and a threshold set on few known missed payments.</dd>
     <dt>Delay</dt><dd><span class="rate">HIGH.</span> Missed payments are rare, so recall takes quarters to measure.</dd>
-    <dt>Effort</dt><dd><span class="rate">HIGH.</span> Bank and CRM adapters, data quality checks, access control and data protection review.</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Borrower bank data sits in one more system. Recall-first means accepting more false alarms.</dd>
+    <dt>Effort</dt><dd><span class="rate">HIGH.</span> Bank and CRM connectors, data quality checks, access control and a data protection review.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Borrower bank data sits in one more system. Catching every miss first means accepting more false alarms.</dd>
   </dl></div>
 </div>
 <p><strong>Verdict:</strong> likelihood is weakest for both.</p>
 <ul>
-  <li><strong>Analyst fix: backtest the band.</strong> Each past snapshot labels itself once its payment date passes. If realised cash at T1 lands above P10 about 90% of the time, the band is calibrated. This costs data, not users.</li>
-  <li><strong>Head of credit fix: shadow two analysts.</strong> Compare their triage order with the ranked queue on the same day. If the orders differ, ask which loans they would have worked first and why. This tests the ranking rule before any build.</li>
+  <li><strong>Analyst fix: test the forecast on past data.</strong> Each past snapshot gets its answer once its payment date passes. If actual cash on the payment date (T1) lands above P10 about 90% of the time, the forecast is well set. This costs data, not users.</li>
+  <li><strong>Head of credit fix: sit with two analysts.</strong> Compare their order of work with the tool's list on the same day. If the orders differ, ask which loans they would have handled first and why. This tests the ranking rule before any build.</li>
 </ul>
 </details>
 
 <details><summary>Sub-problems</summary>
 <ol>
-  <li><strong>Trapped cash.</strong> Headline cash includes currencies the borrower can't send, so coverage looks fine when it isn't.</li>
-  <li><strong>Future cash.</strong> Cash on the payment date is unknown today, and a single estimate hides the downside.</li>
-  <li><strong>Order of work.</strong> Each analyst works names in their own order, not by money at stake x recoverability.</li>
-  <li><strong>Trust.</strong> A flag nobody can check gets rebuilt in a spreadsheet or ignored.</li>
-  <li><strong>Follow-through.</strong> Actions and outcomes aren't recorded, so there's no history to calibrate the threshold.</li>
-  <li><strong>Data plumbing.</strong> Bank balances and loan terms sit in separate systems, refreshed at different rates.</li>
-  <li><strong>Recoverability.</strong> Whether a borrower can cure, and what the lender recovers if not, needs financials, seniority and covenants.</li>
-  <li><strong>Calibration.</strong> Setting the threshold needs labelled missed payments, and few exist.</li>
+  <li><strong>Trapped cash.</strong> The cash total includes currencies the borrower can't convert or send, so coverage looks fine when it isn't.</li>
+  <li><strong>Future cash.</strong> Cash on the payment date is unknown today, and a single guess hides the bad case.</li>
+  <li><strong>Order of work.</strong> Each analyst handles borrowers in their own order, not by money at stake x recoverability.</li>
+  <li><strong>Trust.</strong> A warning nobody can check gets rebuilt in a spreadsheet or ignored.</li>
+  <li><strong>Follow-through.</strong> Actions and outcomes aren't recorded, so there's no history to set the threshold.</li>
+  <li><strong>Data plumbing.</strong> Bank balances and loan terms sit in separate systems, updated at different times.</li>
+  <li><strong>Recoverability.</strong> Whether a borrower can fix a shortfall, and what the lender gets back if not, needs financial statements, the lender's place in the repayment queue and the loan's conditions.</li>
+  <li><strong>Calibration.</strong> Setting the threshold needs past missed payments to learn from, and few exist.</li>
 </ol>
 <p>This build tackles <strong>1 to 5</strong>.</p>
 </details>
 
 <details><summary>How it works</summary>
 <ol>
-  <li><strong>Input.</strong> A simulated bank feed (account, currency, local balance, FX rate, convertibility class) and a simulated CRM loan record (principal, coupon, payments per year, cash share, next payment date, recoverability).</li>
-  <li><strong>Transferable cash.</strong> Local balance x FX x class factor: 1 for transferable, 0.5 for partial (assumed haircut), 0 for restricted.</li>
-  <li><strong>Band at T1.</strong> P50 = transferable cash minus burn per day x days to the next payment date (T1). Spread = daily net-flow standard deviation x square root of days. P40 and P10 sit 0.25 and 1.28 spreads below P50.</li>
-  <li><strong>Cash due.</strong> Principal x coupon / payments per year x cash share. A full PIK loan owes no cash at T1.</li>
-  <li><strong>Coverage and band.</strong> Coverage = P50 / cash due. Band = P10 / due to P40 / due. This is a liquidity-at-risk quantile, as in the assignment deck.</li>
-  <li><strong>Level.</strong> Cash due at or below P10: None. Up to P40: Low. Up to P50: Medium. Above P50: High. A feed older than 3 days is raised to at least Low.</li>
-  <li><strong>Rank and priority.</strong> Worst first by level, principal at risk, then coverage. High and Medium get P1 to P4: principal of $2M or more x recoverability score of 0.5 or more.</li>
+  <li><strong>Input.</strong> Simulated bank data (account, currency, balance in local currency, exchange rate, and how convertible the currency is) and a simulated CRM loan record (principal, interest rate, payments per year, share paid in cash, next payment date, recoverability).</li>
+  <li><strong>Usable cash.</strong> Local balance x exchange rate x a factor: 1 if freely convertible, 0.5 if partly convertible (assumed discount), 0 if blocked.</li>
+  <li><strong>Range on the payment date (T1).</strong> P50 = usable cash minus daily spending x days to T1. Spread = the usual daily swing in cash (standard deviation) x square root of days. P40 and P10 sit 0.25 and 1.28 spreads below P50.</li>
+  <li><strong>Cash due.</strong> Principal x interest rate / payments per year x cash share. A loan with all interest added to the loan (full PIK) owes no cash at T1.</li>
+  <li><strong>Coverage and band.</strong> Coverage = P50 / cash due. Band = P10 / due to P40 / due. This is the liquidity-at-risk method from the assignment deck: how low usable cash could fall in a bad case.</li>
+  <li><strong>Level.</strong> Cash due at or below P10: None. Up to P40: Low. Up to P50: Medium. Above P50: High. If bank data is more than 3 days old, the level is raised to at least Low.</li>
+  <li><strong>Rank and priority.</strong> Worst level first, then principal at risk, then coverage. High and Medium get P1 to P4, split by principal of $2M or more and recoverability score of 0.5 or more.</li>
   <li><strong>Output.</strong> A ranked list, a trace of every number to its source field, and an action log.</li>
 </ol>
 </details>
@@ -136,33 +150,33 @@
 <details><summary>Hypotheses, one per tackled sub-problem</summary>
 <div class="cards">
   <div class="card"><h3>1 · TRAPPED CASH</h3><dl>
-    <dt>Before -> after</dt><dd>coverage on total cash -> <strong>coverage on transferable cash only</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> coverage counts only cash the borrower can send, <strong>then</strong> fewer borrowers look covered before a missed payment, <strong>because</strong> trapped cash can't pay a hard-currency coupon.</dd>
-    <dt>Metric</dt><dd>Share of missed payments where coverage was 1.0 or more one period before. <span class="rate">Down.</span> Baseline unobserved. Guardrail: false alarm rate (flags that end paid in full) stays under the cap the head of credit sets.</dd>
-    <dt>Test</dt><dd>On labelled history, compute coverage on total and on transferable cash. Count the misses each one flagged.</dd>
+    <dt>Before -> after</dt><dd>coverage on all cash -> <strong>coverage on usable cash only</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> coverage counts only cash the borrower can send, <strong>then</strong> fewer borrowers look safe just before a missed payment, <strong>because</strong> trapped cash can't pay interest owed in dollars, euros or pounds.</dd>
+    <dt>Metric</dt><dd>Share of missed payments where coverage was 1.0 or more one period before. <span class="rate">Down.</span> Baseline unobserved. Guardrail: false alarm rate (warnings where the borrower then paid in full) stays under the limit the head of credit sets.</dd>
+    <dt>Test</dt><dd>On past data with known outcomes, compute coverage on all cash and on usable cash. Count the misses each one flagged.</dd>
   </dl></div>
   <div class="card"><h3>2 · FUTURE CASH</h3><dl>
-    <dt>Before -> after</dt><dd>today's cash vs the coupon -> <strong>P10, P40, P50 band at the payment date</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> the flag depends on where cash due lands in the band, <strong>then</strong> more misses are flagged in time at the same false alarm rate, <strong>because</strong> the threshold sits in the downside tail, not the middle.</dd>
+    <dt>Before -> after</dt><dd>today's cash vs the payment -> <strong>P10, P40, P50 range on the payment date</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the warning depends on where cash due falls in the range, <strong>then</strong> more misses are flagged in time at the same false alarm rate, <strong>because</strong> the threshold sits at the bad-case end, not the middle.</dd>
     <dt>Metric</dt><dd>Recall: share of missed payments flagged at least N days before T1 (N set by the credit team). <span class="rate">Up.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Backtest on held-out snapshots. Check calibration (realised cash above P10 about 90%, above P40 about 60%), then recall vs precision at each quantile.</dd>
+    <dt>Test</dt><dd>Test on past snapshots kept aside. Check the range (actual cash above P10 about 90%, above P40 about 60%), then recall vs precision at each cut-off.</dd>
   </dl></div>
   <div class="card"><h3>3 · ORDER OF WORK</h3><dl>
     <dt>Before -> after</dt><dd>each analyst's own order -> <strong>worst first, then P1 to P4 by money x recoverability</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> the queue is sorted by level and principal at risk, <strong>then</strong> more principal at risk gets an action on the day of the flag, <strong>because</strong> the largest savable positions are worked first.</dd>
-    <dt>Metric</dt><dd>Principal at risk with an action logged within one day of the flag. <span class="rate">Up.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Shadow two analysts' triage, then run the same day's queue in the tool. Compare order and principal covered in the first hour.</dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the list is sorted by level and principal at risk, <strong>then</strong> more principal at risk gets an action on the day of the warning, <strong>because</strong> the largest loans that can still be saved are handled first.</dd>
+    <dt>Metric</dt><dd>Principal at risk with an action logged within one day of the warning. <span class="rate">Up.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Watch two analysts sort their day's work, then run the same day's list in the tool. Compare order and principal covered in the first hour.</dd>
   </dl></div>
   <div class="card"><h3>4 · TRUST</h3><dl>
     <dt>Before -> after</dt><dd>numbers rebuilt in a spreadsheet -> <strong>each number traced to its CRM or bank field</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> every number shows its formula and source field, <strong>then</strong> analysts act on flags sooner, <strong>because</strong> checking takes a click, not a rebuild.</dd>
-    <dt>Metric</dt><dd>Time from flag to first action. <span class="rate">Down.</span> Baseline unobserved. Also: share of flags overridden as wrong.</dd>
-    <dt>Test</dt><dd>Five flagged cases. Time to verify with raw files only vs with the trace.</dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> every number shows its formula and source field, <strong>then</strong> analysts act on warnings sooner, <strong>because</strong> checking takes a click, not a rebuild.</dd>
+    <dt>Metric</dt><dd>Time from warning to first action. <span class="rate">Down.</span> Baseline unobserved. Also: share of warnings dismissed as wrong.</dd>
+    <dt>Test</dt><dd>Five flagged cases. Time to check with raw files only vs with the trace.</dd>
   </dl></div>
   <div class="card"><h3>5 · FOLLOW-THROUGH</h3><dl>
     <dt>Before -> after</dt><dd>actions in email and memory -> <strong>logged with level and coverage at the time</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> logging sits on the same screen as the flag, <strong>then</strong> more flags end in a recorded action, <strong>because</strong> the step costs one click, and each record becomes a calibration label.</dd>
-    <dt>Metric</dt><dd>Share of High and Medium flags with an action logged within the agreed time (deck: e.g. one day). <span class="rate">Up.</span> Baseline unobserved.</dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> logging sits on the same screen as the warning, <strong>then</strong> more warnings end in a recorded action, <strong>because</strong> the step costs one click. Each record also becomes data for setting the threshold.</dd>
+    <dt>Metric</dt><dd>Share of High and Medium warnings with an action logged within the agreed time (deck: e.g. one day). <span class="rate">Up.</span> Baseline unobserved.</dd>
     <dt>Test</dt><dd>Count over a four-week pilot.</dd>
   </dl></div>
 </div>
@@ -170,13 +184,13 @@
 
 <details><summary>Scope and non-goals</summary>
 <table>
-  <tr><th>In scope</th><th>Non-goal (incl. untackled sub-problems)</th></tr>
-  <tr><td>Transferable vs trapped cash by convertibility class</td><td><strong>Data plumbing (6):</strong> no CRM or bank adapter. The connector is simulated; a Salesforce adapter is next</td></tr>
-  <tr><td>Band of transferable cash at the next payment date</td><td><strong>Recoverability (7):</strong> analyst-entered Strong / Partial / Weak proxy. No balance sheet, cash flow or covenant data</td></tr>
-  <tr><td>Level rule, worst-first ranking, P1 to P4 priority</td><td><strong>Calibration (8):</strong> fixed quantiles and a normal-noise assumption. No labelled missed payments</td></tr>
-  <tr><td>Trace of every number to a simulated source field</td><td>Forecasting inflows (contracts, pipeline, rates, input costs)</td></tr>
-  <tr><td>Action log, event replay, field edits</td><td>Automated actions. The deck allows them later, for reversible low-stakes cases only</td></tr>
-  <tr><td>Unit test of the maths</td><td>Morning digest email, revolvers, borrowers with several loans, access control</td></tr>
+  <tr><th>In scope</th><th>Not in scope (includes sub-problems not tackled)</th></tr>
+  <tr><td>Usable vs trapped cash, by how convertible each currency is</td><td><strong>Data plumbing (6):</strong> no real CRM or bank connector. The connector is simulated; a Salesforce connector is next</td></tr>
+  <tr><td>Range of usable cash on the next payment date</td><td><strong>Recoverability (7):</strong> a rough Strong / Partial / Weak score the analyst enters. No balance sheet, cash flow or loan condition data</td></tr>
+  <tr><td>Level rule, worst-first ranking, P1 to P4 priority</td><td><strong>Calibration (8):</strong> fixed cut-offs and an assumption that daily cash swings follow a bell curve. No past missed payments to learn from</td></tr>
+  <tr><td>Trace of every number to a simulated source field</td><td>Forecasting money coming in (contracts, sales pipeline, interest rates, input costs)</td></tr>
+  <tr><td>Action log, event replay, field edits</td><td>Automated actions. The deck allows them later, only for low-stakes cases that can be undone</td></tr>
+  <tr><td>Automated test of the maths</td><td>Morning summary email, credit lines the borrower can draw and repay, borrowers with several loans, access control</td></tr>
 </table>
 </details>
 
@@ -184,50 +198,50 @@
 <p>The assignment deck sets five layers of success. Each layer builds on the one before.</p>
 <table>
   <tr><th>Layer</th><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
-  <tr><td>Signal + pipeline</td><td>Share of warnings shared within the agreed time</td><td>Leading</td><td>1, 2 (precondition)</td><td>Feed timestamp vs flag timestamp</td></tr>
-  <tr><td>Signal quality</td><td>Band calibration; recall and F1 on missed-payment labels</td><td>Leading</td><td>1, 2</td><td>Backtest on held-out snapshots</td></tr>
-  <tr><td>Operation</td><td>Share of warnings with an action within the agreed time (e.g. one day)</td><td>Leading</td><td>4, 5</td><td>Action log timestamps</td></tr>
-  <tr><td>Decision</td><td>Principal at risk worked in the first hour; principal rescued over time</td><td>Leading / lagging</td><td>3</td><td>Action log joined to outcomes</td></tr>
-  <tr><td>Business</td><td>Near-losses, same or fewer; defaults that caught the team unaware</td><td>Lagging</td><td>All</td><td>Credit records, quarterly</td></tr>
+  <tr><td>Signal + pipeline</td><td>Share of warnings sent within the agreed time</td><td>Early signal</td><td>1, 2 (precondition)</td><td>Bank data timestamp vs warning timestamp</td></tr>
+  <tr><td>Signal quality</td><td>Range accuracy; recall and F1 (recall and precision combined) on known missed payments</td><td>Early signal</td><td>1, 2</td><td>Test on past snapshots kept aside</td></tr>
+  <tr><td>Operation</td><td>Share of warnings with an action within the agreed time (e.g. one day)</td><td>Early signal</td><td>4, 5</td><td>Action log timestamps</td></tr>
+  <tr><td>Decision</td><td>Principal at risk handled in the first hour; principal saved over time</td><td>Early / late signal</td><td>3</td><td>Action log joined to outcomes</td></tr>
+  <tr><td>Business</td><td>Near-losses, same or fewer; defaults nobody saw coming</td><td>Late signal</td><td>All</td><td>Credit records, quarterly</td></tr>
 </table>
 </details>
 
 <details><summary>Observed in the build</summary>
 <ul>
-  <li><strong>Sample bank export:</strong> 62 accounts, 22 currencies, $9,311,675 total. Only $795,714 (8.5%) sits in USD, EUR or GBP. Supports the premise of hypothesis 1. The deck said 82% trapped; the file shows 91%.</li>
-  <li><strong>Missing IDs:</strong> 17 of 62 rows have no account ID and hold $2,573,737 (28%). Without a built key, that cash drops out.</li>
-  <li><strong>Tests:</strong> <code>demo/test.js</code> runs 19 checks on 3 fixed borrowers plus 2 feed events. 19 pass.</li>
-  <li><strong>Demo event:</strong> an EUR freeze at Agri A moves coverage from 1.04 to 0.38, Low to High, rank 3 to 1. This shows the mechanics of hypotheses 1 and 2, not accuracy.</li>
-  <li><strong>Recall-first:</strong> Telecom C has coverage 1.02 but level Medium, because cash due sits above P40. The flag fires before coverage drops below 1.</li>
+  <li><strong>Sample bank file:</strong> 62 accounts, 22 currencies, $9,311,675 total. Only $795,714 (8.5%) sits in US dollars, euros or pounds (USD, EUR or GBP). This supports hypothesis 1. The deck said 82% was trapped; the file shows 91%.</li>
+  <li><strong>Missing IDs:</strong> 17 of 62 rows have no account ID and hold $2,573,737 (28%). Without a way to build an ID, that cash drops out of the count.</li>
+  <li><strong>Tests:</strong> <code>demo/test.js</code> runs 19 checks on 3 fixed borrowers plus 2 bank data events. 19 pass.</li>
+  <li><strong>Demo event:</strong> a euro freeze at Agri A moves coverage from 1.04 to 0.38, Low to High, rank 3 to 1. This shows how the logic of hypotheses 1 and 2 works, not whether it's accurate.</li>
+  <li><strong>Recall-first (warn early, accept more false alarms):</strong> Telecom C has coverage 1.02 but level Medium, because cash due sits above P40. The warning fires before coverage drops below 1.</li>
   <li><strong>Users:</strong> nothing observed. No analyst has used either the prototype or the demo.</li>
 </ul>
 </details>
 
 <details><summary>Limits and trade-offs</summary>
 <ul>
-  <li><strong>Data:</strong> synthetic borrowers. The sample export is one point-in-time snapshot, so burn and runway can't be computed from it.</li>
+  <li><strong>Data:</strong> the borrowers are made up. The sample bank file is one snapshot in time, so spending rate and months of cash left can't be computed from it.</li>
   <li><strong>Users:</strong> untested. Every "before" is assumed.</li>
-  <li><strong>Accuracy:</strong> unmeasured. Straight-line burn with normal noise is an assumption hypothesis 2 depends on.</li>
-  <li><strong>Haircuts:</strong> partial convertibility at 50% is assumed. Classes need confirming with the team and FX desks.</li>
+  <li><strong>Accuracy:</strong> unmeasured. Hypothesis 2 depends on an assumption: cash falls by the same amount each day, with bell-curve swings.</li>
+  <li><strong>Discounts:</strong> counting partly convertible cash at 50% is assumed. The currency categories need checking with the team and the currency (FX) desks.</li>
   <li><strong>Money at stake:</strong> principal at risk is the full principal, not an expected loss.</li>
-  <li><strong>Demo:</strong> one loan per borrower, fixed FX rates, and state resets on reload.</li>
+  <li><strong>Demo:</strong> one loan per borrower, fixed exchange rates, and everything resets on reload.</li>
 </ul>
 <table>
   <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
-  <tr><td>flag at P40 (recall-first)</td><td>flag at P10</td><td>fewer surprise defaults</td><td>more false alarms, each costing an analyst hour</td></tr>
-  <tr><td>transferable cash only</td><td>total cash</td><td>coverage matches what can pay a hard-currency coupon</td><td>depends on correct convertibility classes</td></tr>
-  <tr><td>rules and a band now</td><td>a model now</td><td>explainable, runs without labels</td><td>cruder forecast until labels accrue</td></tr>
-  <tr><td>full principal as money at stake</td><td>expected shortfall</td><td>simple, matches the deck's quadrants</td><td>overstates small shortfalls on large loans</td></tr>
-  <tr><td>static page, simulated connector</td><td>live CRM link</td><td>$0, public, no client data</td><td>shows mechanics, not integration</td></tr>
-  <tr><td>human-logged actions</td><td>automated actions</td><td>analyst keeps every decision</td><td>one manual step per flag</td></tr>
+  <tr><td>warn at P40 (recall-first)</td><td>warn at P10</td><td>fewer surprise defaults</td><td>more false alarms, each costing an analyst hour</td></tr>
+  <tr><td>usable cash only</td><td>all cash</td><td>coverage matches what can pay interest owed in dollars, euros or pounds</td><td>depends on correct currency categories</td></tr>
+  <tr><td>rules and a range now</td><td>a statistical model now</td><td>easy to explain, runs without past outcomes</td><td>rougher forecast until outcomes build up</td></tr>
+  <tr><td>full principal as money at stake</td><td>expected shortfall</td><td>simple, matches the deck's four priority boxes</td><td>overstates small shortfalls on large loans</td></tr>
+  <tr><td>static page, simulated connector</td><td>live CRM link</td><td>$0, public, no client data</td><td>shows the logic, not the connection</td></tr>
+  <tr><td>human-logged actions</td><td>automated actions</td><td>analyst keeps every decision</td><td>one manual step per warning</td></tr>
 </table>
 </details>
 
 <details><summary>Other side and links</summary>
-<p>Sibling: <a href="../bdc-footnotes/">BDC Footnote Tape</a>, the public-filings view of the same distress question.</p>
+<p>Related project: <a href="../bdc-footnotes/">BDC Footnote Tape</a>. It asks the same question (which borrowers are in trouble) from the public filings of BDCs (stock-listed funds that lend to private companies).</p>
 <ul>
   <li><a href="demo/index.html">Demo</a></li>
-  <li>Earlier prototype and code: link withheld until the name audit is applied to that repo</li>
+  <li>Earlier prototype and code: link withheld until real company names are removed from that repo (name audit)</li>
 </ul>
 </details>
 
@@ -235,11 +249,11 @@
 
 <table>
   <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
-  <tr><td>Discovery</td><td>Clarifying questions for the credit team: distress definition, early-warning window, recall vs precision</td><td><code>/interview-guide</code></td></tr>
-  <tr><td>Opportunity</td><td>Sample bank export analysis: $9.31M total cash, $796K transferable</td><td><code>/opportunity-analysis</code></td></tr>
-  <tr><td>Strategy</td><td>32-page assignment deck: signal, workflow, data roadmap</td><td><code>/write-prod-strategy</code></td></tr>
-  <tr><td>PRD</td><td>Requirements and data model: entities, medallion layers, phases</td><td><code>/prd-draft</code></td></tr>
-  <tr><td>Metrics</td><td>5-layer success model, from signal on time to business outcome</td><td><code>/metrics-framework</code></td></tr>
+  <tr><td>Discovery</td><td>Questions for the credit team: what counts as distress, how early to warn, recall vs precision</td><td><code>/interview-guide</code></td></tr>
+  <tr><td>Opportunity</td><td>Sample bank file analysis: $9.31M total cash, $796K usable</td><td><code>/opportunity-analysis</code></td></tr>
+  <tr><td>Strategy</td><td>32-page assignment deck: warning signal, workflow, data roadmap</td><td><code>/write-prod-strategy</code></td></tr>
+  <tr><td>PRD</td><td>Requirements and data model: entities, data layers from raw to clean (medallion), phases</td><td><code>/prd-draft</code></td></tr>
+  <tr><td>Metrics</td><td>5-layer success model, from warning on time to business outcome</td><td><code>/metrics-framework</code></td></tr>
   <tr><td>Rollout</td><td>Staged internal rollout plan with resources per stage</td><td><code>/launch-checklist</code></td></tr>
   <tr><td>Build</td><td>Static prototype pages with goal files; this demo</td><td><code>/prototype, /goal-gate</code></td></tr>
   <tr><td>Showcase</td><td>This page, name audit, goals and state files</td><td><code>/portfolio-case-study, /name-audit</code></td></tr>

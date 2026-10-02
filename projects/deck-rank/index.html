@@ -47,74 +47,89 @@
 
 <!-- 1. Name + one-line description -->
 <h1>Deck Rank</h1>
-<p class="sub">Inbound pitch decks in, ranked queue out. Every score cites its slide.</p>
+<p class="sub">Founders email pitch decks to a startup fund. Deck Rank ranks them so the best one gets read first. Every score quotes the slide it came from.</p>
 <p><a class="btn" href="https://deck-rank.streamlit.app" style="display:inline-block;background:var(--accent);color:#fff;font-weight:700;padding:10px 18px;border-radius:6px;text-decoration:none">Open the demo</a></p>
-<span class="tag">Venture capital</span><span class="tag">Inbound deal sourcing</span><span class="tag">Prototype</span>
+<span class="tag">Startup investing (venture capital)</span><span class="tag">Decks founders send in</span><span class="tag">Prototype</span>
 
 <!-- 2. Target persona -->
 <h2>Who</h2>
-<pre>ANALYST   early-stage VC fund. decides which inbound decks get a first call this week
-VC CEO    decides where analyst time goes. answers to LPs</pre>
+<pre>JUNIOR INVESTOR   Works at a fund that backs young startups.
+                  Picks which decks get a first call this week.
+HEAD OF THE FUND  Decides where junior investors spend their time.
+                  Reports to the fund's own investors.</pre>
+
+<!-- Plain-language glossary for readers outside venture capital -->
+<h2>Terms on this page</h2>
+<div class="box"><ul>
+  <li><strong>Pitch deck:</strong> slides a founder sends to ask for money.</li>
+  <li><strong>First call:</strong> the first meeting between the fund and a founder.</li>
+  <li><strong>Investment committee:</strong> the group at the fund that approves each investment.</li>
+  <li><strong>The fund's own investors:</strong> the people and institutions whose money the fund invests.</li>
+  <li><strong>Burn:</strong> cash a company loses each month.</li>
+  <li><strong>Runway:</strong> months left before the company runs out of cash.</li>
+  <li><strong>Must-have:</strong> a number the fund needs to see before a first call.</li>
+  <li><strong>Fund weights:</strong> how much each score category counts, agreed once by the team.</li>
+</ul></div>
 
 <!-- User stories: the page and the demo are organised around these -->
 <h2>User stories</h2>
 <ol>
-  <li>As an <strong>investment analyst</strong>, I want inbound decks ranked on upload with each value tied to its slide, so that I call the best fit first.</li>
-  <li>As an <strong>investment analyst</strong>, I want missing must-have data flagged with a drafted founder request, so that the first call doesn't start with basic questions.</li>
-  <li>As a <strong>VC CEO</strong>, I want every rank to show its formula and sources, so that pass and pursue decisions hold up with IC and LPs.</li>
+  <li>As a <strong>junior investor</strong>, I want decks ranked as soon as they're uploaded, with each number tied to its slide, so that I call the best fit first.</li>
+  <li>As a <strong>junior investor</strong>, I want missing must-have numbers flagged with a drafted request to the founder, so that the first call doesn't start with basic questions.</li>
+  <li>As the <strong>head of the fund</strong>, I want every rank to show its formula and sources, so that each yes or no to a company holds up with the investment committee and the fund's own investors.</li>
 </ol>
 
 <!-- 3. Value equation (Hormozi), one block per persona -->
 <h2>Value equation</h2>
-<p class="formula">value = (outcome x likelihood) / (delay x effort &amp; sacrifice)</p>
+<p class="formula">Would they use it? value = (outcome x likelihood it works) / (delay x effort &amp; what they give up)</p>
 <div class="cards">
   <!-- Analyst card -->
   <div class="card">
-    <h3>ANALYST</h3>
+    <h3>JUNIOR INVESTOR</h3>
     <dl>
       <dt>Outcome</dt>
-      <dd>open laptop -> <strong>this week's best deck is #1</strong> -> <strong>first call booked same day</strong> -> <strong>rank defended at IC in 1 click</strong></dd>
+      <dd>They open the laptop and <strong>this week's best deck is #1</strong>. The <strong>first call is booked the same day</strong>. They <strong>explain the rank to the investment committee in 1 click</strong>.</dd>
       <dt>Likelihood</dt>
-      <dd><span class="rate">MEDIUM.</span> every number has a quote to check. untested with analysts</dd>
+      <dd><span class="rate">MEDIUM.</span> Every number has a quote to check. Not yet tested with junior investors.</dd>
       <dt>Delay</dt>
-      <dd><span class="rate">LOW.</span> deck in -> values extracted in 11 to 13 s (observed). time to first-call decision unmeasured</dd>
+      <dd><span class="rate">LOW.</span> Numbers are pulled from a deck in 11 to 13 s (observed). Time to decide on a first call is unmeasured.</dd>
       <dt>Effort</dt>
-      <dd><span class="rate">MEDIUM.</span> no copy-paste. but decks uploaded one by one</dd>
+      <dd><span class="rate">MEDIUM.</span> No copy-paste, but decks are uploaded one by one.</dd>
       <dt>Sacrifice</dt>
-      <dd><span class="rate">LOW.</span> keeps own judgment: overrides lock values, personal weights on top. gives up: one more tool outside the inbox</dd>
+      <dd><span class="rate">LOW.</span> They keep their own judgment: they can lock in their own value, and add personal weights on top. They give up: one more tool outside the inbox.</dd>
     </dl>
   </div>
   <!-- VC CEO card -->
   <div class="card">
-    <h3>VC CEO</h3>
+    <h3>HEAD OF THE FUND</h3>
     <dl>
       <dt>Outcome</dt>
-      <dd><strong>first fund with conviction on the best inbound deals</strong> -> in competitive rounds early -> <strong>more decks per analyst, no new hire</strong> -> every pass/pursue <strong>defensible to LPs</strong></dd>
+      <dd>The fund is <strong>first to be sure about the best decks that come in</strong>. It gets into contested funding rounds early. <strong>Each junior investor handles more decks, with no new hire.</strong> Every yes or no is <strong>explainable to the fund's own investors</strong>.</dd>
       <dt>Likelihood</dt>
-      <dd><span class="rate">LOW-MEDIUM.</span> depends on analyst adoption. no win-rate data</dd>
+      <dd><span class="rate">LOW-MEDIUM.</span> Depends on junior investors using it. No data on deals won.</dd>
       <dt>Delay</dt>
-      <dd><span class="rate">HIGH.</span> effect on wins shows over quarters, not days</dd>
+      <dd><span class="rate">HIGH.</span> The effect on deals won shows over quarters, not days.</dd>
       <dt>Effort</dt>
-      <dd><span class="rate">MEDIUM.</span> setup + team agrees on house weights once</dd>
+      <dd><span class="rate">MEDIUM.</span> Setup, plus the team agrees on fund weights once.</dd>
       <dt>Sacrifice</dt>
-      <dd><span class="rate">MEDIUM.</span> founder decks can go to a cloud database + third-party LLM. analysts give up some ranking freedom to house weights</dd>
+      <dd><span class="rate">MEDIUM.</span> Founder decks can go to a cloud database and an outside AI model. Junior investors give up some freedom to rank their own way.</dd>
     </dl>
   </div>
 </div>
-<div class="box verdict"><strong>Verdict:</strong> outcome strong for both. <strong>likelihood weakest for both.</strong><br>
-analyst -> <strong>20-deck test</strong> (hypotheses 1 and 2). CEO -> <strong>lost-deal audit</strong>: how long did decks later funded by other funds wait for a first call?</div>
+<div class="box verdict"><strong>Verdict:</strong> the outcome is strong for both. <strong>Likelihood is weakest for both.</strong><br>
+Junior investor: run a <strong>20-deck test</strong> (hypotheses 1 and 2). Head of the fund: run a <strong>lost-deal audit</strong>. For decks that other funds later backed, how long did they wait for a first call?</div>
 
 <!-- 4. Problem: one statement, sub-problems, which ones this build tackles -->
 <h2>Problem</h2>
 <div class="box">
-<p><strong>The best inbound deals wait too long for a first call, and faster funds reach the founder first.</strong></p>
+<p><strong>The best decks founders send in wait too long for a first call. Faster funds reach the founder first.</strong></p>
 <p>Why:</p>
 <ol>
-  <li><strong>Speed.</strong> Around 50 decks a week (assumed) are read in arrival order, each in full. The best one can sit behind 49 others.</li>
-  <li><strong>Consistency.</strong> Each analyst ranks in their head, so two analysts can pick a different "best".</li>
-  <li><strong>Conviction.</strong> When IC asks "why this one?", the analyst reopens the deck.</li>
-  <li><strong>Gaps.</strong> Decks miss must-have data, and it only comes up on the first call.</li>
-  <li><strong>Memory.</strong> Why a company was passed on is buried in email.</li>
+  <li><strong>Speed.</strong> Around 50 decks a week (assumed) are read in the order they arrive, each in full. The best one can sit behind 49 others.</li>
+  <li><strong>Consistency.</strong> Each junior investor ranks in their head, so two of them can pick a different "best".</li>
+  <li><strong>Evidence.</strong> When the investment committee asks "why this one?", the junior investor reopens the deck.</li>
+  <li><strong>Gaps.</strong> Decks leave out must-have numbers, and nobody notices until the first call.</li>
+  <li><strong>Memory.</strong> The reason a company was turned down is buried in email.</li>
 </ol>
 <p>This build tackles <strong>1 to 4</strong>. Memory is a non-goal for now.</p>
 </div>
@@ -122,31 +137,31 @@ analyst -> <strong>20-deck test</strong> (hypotheses 1 and 2). CEO -> <strong>lo
 <h2>Fix</h2>
 <div class="box"><ol>
   <li>The deck PDF is <strong>split into one chunk per slide</strong>.</li>
-  <li><strong>Rules extract the metrics first</strong>, using text patterns, tables and slide layouts.</li>
-  <li><strong>A language model fills only the metrics still missing.</strong> Its quote must match the slide text exactly, or the value is rejected.</li>
-  <li>Each value is stored with its <strong>source slide, extractor version and date</strong>.</li>
-  <li>The score is a <strong>weighted average multiplied by the lowest must-have score divided by 5</strong>, so one weak must-have pulls the whole score down.</li>
-  <li>The analyst gets a <strong>ranked queue</strong>, a scorecard per company and follow-up actions for missing data.</li>
+  <li><strong>Fixed rules pull out the numbers first</strong>, using text patterns, tables and slide layouts.</li>
+  <li><strong>An AI language model fills only the numbers still missing.</strong> Its quote must match the slide text exactly, or the value is rejected.</li>
+  <li>Each value is stored with its <strong>source slide, the version of the code that read it, and the date</strong>.</li>
+  <li>The score is a <strong>weighted average multiplied by the lowest must-have score divided by 5</strong>. So one weak must-have pulls the whole score down.</li>
+  <li>The junior investor gets a <strong>ranked list</strong>, a scorecard (score breakdown with sources) per company, and next steps for missing data.</li>
 </ol></div>
 
 <!-- 5. Scope and non-goals (non-goals include untackled sub-problems) -->
 <h2>Scope</h2>
 <div class="box"><ul>
-  <li>Inbound PDF decks</li>
-  <li>Metric extraction with source quote</li>
-  <li>Weighted score, must-have cap, house + personal weights</li>
-  <li>Ranked queue, scorecard, analyst override with reason</li>
-  <li>Gap flag + drafted founder email for analyst review</li>
-  <li>Stale-data flag at 180 days, quote re-checked on refresh</li>
+  <li>PDF decks that founders send in</li>
+  <li>Numbers pulled out with the quote they came from</li>
+  <li>Weighted score, must-have cap, fund weights plus personal weights</li>
+  <li>Ranked list, scorecard, junior investor can override a value with a reason</li>
+  <li>Missing-data flag plus a drafted founder email for the junior investor to review</li>
+  <li>Data older than 180 days flagged, quote re-checked on refresh</li>
 </ul></div>
 
 <h2>Non-goals</h2>
 <div class="box"><ul>
-  <li>Finding companies that haven't pitched. That's <a href="../alpha-scout/">Alpha Scout</a> (outbound)</li>
-  <li>Memory (sub-problem 5): why a company was passed. The stage log keeps date, who and score, not the reason</li>
+  <li>Finding companies that haven't sent a deck. That's <a href="../alpha-scout/">Alpha Scout</a></li>
+  <li>Memory (sub-problem 5): why a company was turned down. The status log keeps date, who and score, not the reason</li>
   <li>Sending email automatically</li>
-  <li>Invest / pass decisions. Analyst decides</li>
-  <li>Valuation, CRM sync</li>
+  <li>Deciding to invest or pass. The junior investor decides</li>
+  <li>Valuing the company, syncing with the fund's contact database (CRM)</li>
 </ul></div>
 
 <!-- 6. One hypothesis per tackled sub-problem, each with its own before -> after -->
@@ -156,48 +171,48 @@ analyst -> <strong>20-deck test</strong> (hypotheses 1 and 2). CEO -> <strong>lo
     <h3>1 · SPEED</h3>
     <dl>
       <dt>Before -> after</dt>
-      <dd>arrival order, read in full -> <strong>ranked on upload, best first</strong></dd>
+      <dd>read in arrival order, in full -> <strong>ranked on upload, best first</strong></dd>
       <dt>Hypothesis</dt>
-      <dd><strong>If</strong> decks are extracted and ranked on upload, <strong>then</strong> the highest-fit deck gets a first-call decision sooner, <strong>because</strong> the analyst starts at the top of the queue instead of reading in arrival order.</dd>
+      <dd><strong>If</strong> decks are read and ranked on upload, <strong>then</strong> the best-fit deck gets a first-call decision sooner, <strong>because</strong> the junior investor starts at the top of the list instead of reading in arrival order.</dd>
       <dt>Metric</dt>
-      <dd>Time from deck received to first-call decision, top 5 decks. <span class="rate">Down.</span> Baseline unobserved. Guardrail: top-10 companies later passed on stays flat or goes down.</dd>
+      <dd>Time from deck received to first-call decision, top 5 decks. <span class="rate">Down.</span> Baseline unobserved. Must not get worse: the number of top-10 companies later turned down stays flat or goes down.</dd>
       <dt>Test</dt>
-      <dd>Two analysts, same 20 decks, arrival order vs ranked queue. "Top 5" = the 5 decks they'd call first after reading all 20.</dd>
+      <dd>Two junior investors, same 20 decks, arrival order vs ranked list. "Top 5" = the 5 decks they'd call first after reading all 20.</dd>
     </dl>
   </div>
   <div class="card">
     <h3>2 · CONSISTENCY</h3>
     <dl>
       <dt>Before -> after</dt>
-      <dd>ranking in each analyst's head -> <strong>one house formula and weights</strong>, personal view kept separate</dd>
+      <dd>ranking in each junior investor's head -> <strong>one shared formula and fund weights</strong>, personal view kept separate</dd>
       <dt>Hypothesis</dt>
-      <dd><strong>If</strong> every analyst starts from the same house weights, <strong>then</strong> two analysts' top 10 overlap more, <strong>because</strong> the ranking rule is written down instead of remembered.</dd>
+      <dd><strong>If</strong> every junior investor starts from the same fund weights, <strong>then</strong> two investors' top 10 lists overlap more, <strong>because</strong> the ranking rule is written down instead of remembered.</dd>
       <dt>Metric</dt>
-      <dd>Top-10 overlap between two analysts on the same batch. <span class="rate">Up.</span> Baseline unobserved.</dd>
+      <dd>Top-10 overlap between two junior investors on the same batch. <span class="rate">Up.</span> Baseline unobserved.</dd>
       <dt>Test</dt>
-      <dd>Same 20 decks. Compare top-10 overlap by hand vs with the house view.</dd>
+      <dd>Same 20 decks. Compare top-10 overlap when ranked by hand vs with the fund weights.</dd>
     </dl>
   </div>
   <div class="card">
-    <h3>3 · CONVICTION</h3>
+    <h3>3 · EVIDENCE</h3>
     <dl>
       <dt>Before -> after</dt>
       <dd>reopen the deck -> <strong>formula, inputs and source quote per score</strong></dd>
       <dt>Hypothesis</dt>
-      <dd><strong>If</strong> every score shows its formula and source quote, <strong>then</strong> the analyst answers IC's "why this one?" faster, <strong>because</strong> the evidence is one click away.</dd>
+      <dd><strong>If</strong> every score shows its formula and source quote, <strong>then</strong> the junior investor answers the committee's "why this one?" faster, <strong>because</strong> the evidence is one click away.</dd>
       <dt>Metric</dt>
       <dd>Time to answer a "why" question on a ranked company. <span class="rate">Down.</span> Baseline unobserved.</dd>
       <dt>Test</dt>
-      <dd>Mock IC with 5 "why" questions, deck only vs scorecard.</dd>
+      <dd>Practice investment committee with 5 "why" questions, deck only vs scorecard.</dd>
     </dl>
   </div>
   <div class="card">
     <h3>4 · GAPS</h3>
     <dl>
       <dt>Before -> after</dt>
-      <dd>missing must-have found on the first call -> <strong>flagged at upload, sorted to the bottom, founder email drafted for review</strong>. Stale data flagged at 180 days</dd>
+      <dd>missing must-have found on the first call -> <strong>flagged at upload, moved to the bottom, founder email drafted for review</strong>. Data older than 180 days flagged</dd>
       <dt>Hypothesis</dt>
-      <dd><strong>If</strong> missing must-haves are flagged at upload with a drafted request, <strong>then</strong> fewer first calls start with data still missing, <strong>because</strong> the ask goes out the day the deck arrives.</dd>
+      <dd><strong>If</strong> missing must-haves are flagged at upload with a drafted request, <strong>then</strong> fewer first calls start with data still missing, <strong>because</strong> the request goes out the day the deck arrives.</dd>
       <dt>Metric</dt>
       <dd>Share of first calls with a must-have still missing. <span class="rate">Down.</span> Baseline unobserved.</dd>
       <dt>Test</dt>
@@ -209,38 +224,39 @@ analyst -> <strong>20-deck test</strong> (hypotheses 1 and 2). CEO -> <strong>lo
 <!-- 7. Observed (from pipeline.log and the test suite) -->
 <h2>Observed in the build</h2>
 <div class="box"><ul>
-  <li><strong>Sample deck:</strong> 12 slides produced 49 values, all from the rules, covering 9 of 12 target metrics. The language model was asked for the other 3 and returned none rather than guess.</li>
+  <li><strong>Sample deck:</strong> 12 slides produced 49 values, all from the fixed rules. They covered 9 of 12 target numbers. The AI model was asked for the other 3 and returned none rather than guess.</li>
   <li><strong>Speed:</strong> upload to extracted values took 11 to 13 seconds, over 3 runs on the same deck. This supports "ranked on upload". It says nothing yet about time to a first-call decision.</li>
-  <li><strong>Worked example:</strong> a Financials score of 3.16 out of 5, built from four inputs: 71% gross margin, 24 months of runway, revenue over burn, and funding stage.</li>
-  <li><strong>Tests:</strong> 66 unit tests. One fails if any stored quote doesn't appear in its source slide.</li>
+  <li><strong>Worked example:</strong> a Financials score of 3.16 out of 5, built from four inputs: 71% gross margin (revenue left after direct costs), 24 months of runway, revenue compared with burn, and funding stage.</li>
+  <li><strong>Tests:</strong> 66 unit tests (small automated code checks). One fails if any stored quote doesn't appear in its source slide.</li>
 </ul></div>
 
 <!-- 8. Limits + trade-offs -->
 <h2>Limits</h2>
 <div class="box"><ul>
-  <li><strong>Data:</strong> three fictional companies. No real deal flow yet.</li>
-  <li><strong>Users:</strong> no analyst has tested it. Every "before" is assumed, not observed.</li>
-  <li><strong>Accuracy:</strong> extraction hasn't been measured against hand-labelled decks.</li>
-  <li><strong>Coverage:</strong> only Financials has its own formula. Founders, Market and Tech Moat still use a generic weighted average.</li>
+  <li><strong>Data:</strong> three fictional companies. No real decks from founders yet.</li>
+  <li><strong>Users:</strong> no junior investor has tested it. Every "before" is assumed, not observed.</li>
+  <li><strong>Accuracy:</strong> the numbers it pulls out haven't been compared with decks checked by hand.</li>
+  <li><strong>Coverage:</strong> only Financials has its own formula. Founders, Market and Tech Moat (how hard the tech is to copy) still use a generic weighted average.</li>
   <li><strong>Ranking quality:</strong> hypothesis 1 only helps if the ranking is right. If ranks are wrong, faster isn't better, so the accuracy test comes before the speed test.</li>
 </ul></div>
 
 <h2>Trade-offs</h2>
 <table>
   <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
-  <tr><td>rules first, LLM second</td><td>LLM for everything</td><td>reproducible, cheap, auditable</td><td>misses metrics the rules don't cover</td></tr>
-  <tr><td>reject value if quote doesn't match</td><td>accept LLM output</td><td>no unsourced numbers</td><td>fewer values filled</td></tr>
-  <tr><td>must-have cap on score</td><td>plain weighted avg</td><td>weak must-have can't hide</td><td>punishes thin seed decks. may need tuning</td></tr>
-  <tr><td>append-only storage</td><td>overwrite on re-run</td><td>full history, safe re-runs</td><td>more rows, resolver needed</td></tr>
-  <tr><td>email drafted, not sent</td><td>auto-send</td><td>analyst stays in control</td><td>one manual step</td></tr>
+  <tr><td>fixed rules first, AI model second</td><td>AI model for everything</td><td>same result every run, cheap, easy to check</td><td>misses numbers the rules don't cover</td></tr>
+  <tr><td>reject value if quote doesn't match</td><td>accept whatever the AI model returns</td><td>no numbers without a source</td><td>fewer values filled</td></tr>
+  <tr><td>must-have cap on score</td><td>plain weighted average</td><td>a weak must-have can't hide</td><td>punishes short decks from very early startups. may need tuning</td></tr>
+  <tr><td>keep every old value, add new ones</td><td>overwrite on re-run</td><td>full history, safe re-runs</td><td>more stored rows, needs code to pick the current value</td></tr>
+  <tr><td>email drafted, not sent</td><td>auto-send</td><td>junior investor stays in control</td><td>one manual step</td></tr>
 </table>
 
 <!-- 9. Other side -->
 <h2>Other side</h2>
-<pre>FUNNEL DREAM: see the best deal in your thesis first. be first with conviction.
+<pre>SHARED GOAL: see the best startup in the fund's focus area first.
+             be the first fund ready to invest.
 
-Alpha Scout = SEE FIRST.  outbound. company hasn't pitched -> find it, score it
-Deck Rank   = ACT FIRST.  inbound.  deck arrives -> conviction -> first call</pre>
+Alpha Scout = SEE FIRST.  company hasn't sent a deck -> find it, score it
+Deck Rank   = ACT FIRST.  deck arrives -> fund is sure -> first call</pre>
 <p><a href="../alpha-scout/">Alpha Scout case study</a></p>
 
 <!-- 10. Links -->
@@ -255,7 +271,7 @@ Deck Rank   = ACT FIRST.  inbound.  deck arrives -> conviction -> first call</pr
   <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
   <tr><td>Opportunity</td><td>Business proposal: problem, product, personas (README section 1)</td><td><code>/opportunity-analysis</code></td></tr>
   <tr><td>PRD</td><td>User stories one-pager: advantage and business outcome per persona</td><td><code>/prd-draft</code></td></tr>
-  <tr><td>Metrics</td><td>North star: invest in more great deals, faster, backed by defensible data</td><td><code>/define-north-star</code></td></tr>
+  <tr><td>Metrics</td><td>North star: invest in more great deals, faster, backed by data that holds up to questions</td><td><code>/define-north-star</code></td></tr>
   <tr><td>Build</td><td>7-phase roadmap, extraction pipeline, 66 product tests + 7 demo tests</td><td><code>/code-first-draft</code></td></tr>
   <tr><td>Launch</td><td>5-minute demo script and walkthrough deck</td><td><code>/prototype</code></td></tr>
   <tr><td>Showcase</td><td>This page, name audit, goals and state files, public demo</td><td><code>/portfolio-case-study, /name-audit, /goal-gate</code></td></tr>

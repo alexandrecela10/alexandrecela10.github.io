@@ -68,30 +68,30 @@
 <body>
 <header>
   <h1>Shield</h1>
-  <p>Project documents in, contract deadlines and equity at risk out. A named person approves every notice.</p>
+  <p>Reads project documents. Shows each contract deadline and how much of the fund's own money is at risk. A named person approves every notice.</p>
 </header>
-<div class="banner"><b>Synthetic data.</b> Fictional fund, project company, project and contractor. Today is fixed at <b id="today"></b>. Nothing is sent. Drafts are illustrative, not legal advice. Your decisions stay in this browser (local storage).</div>
+<div class="banner"><b>Fictional data.</b> The fund, project company, project and contractor are made up. Today is fixed at <b id="today"></b>. Nothing is sent. Drafts are examples, not legal advice. Your decisions stay in this browser (local storage).</div>
 <div class="strip" id="strip"></div>
 
 <div class="wrap">
   <div>
     <div class="card">
-      <h2><span class="step">1</span>Pick a detected event</h2>
+      <h2><span class="step">1</span>Pick an event the tool found</h2>
       <div id="events"></div>
     </div>
     <div class="card">
-      <h2>Fund view: equity at risk, all open events</h2>
+      <h2>Fund view: the fund's money at risk, all open events</h2>
       <div class="body" id="fundview"></div>
     </div>
     <div class="card">
-      <h2>Read but not surfaced</h2>
+      <h2>Documents read but not flagged</h2>
       <div class="body" id="notsurfaced"></div>
     </div>
   </div>
 
   <div>
     <div class="card">
-      <h2><span class="step">2</span>Follow the evidence chain</h2>
+      <h2><span class="step">2</span>Follow the document trail</h2>
       <div class="body">
         <div class="kind" id="evkind"></div>
         <div class="big" id="evtitle"></div>
@@ -101,7 +101,7 @@
       </div>
     </div>
     <div class="card">
-      <h2>Value at risk, in equity terms</h2>
+      <h2>Value at risk: the fund's own money</h2>
       <div class="body" id="value"></div>
     </div>
     <div class="card">
@@ -110,7 +110,7 @@
         <div class="notice" id="notice"></div>
         <textarea id="reason" placeholder="Reason (required to reject, optional to approve)"></textarea>
         <div class="btns">
-          <button class="approve" id="btnApprove">Approve for issue by ProjectCo</button>
+          <button class="approve" id="btnApprove">Approve for sending by the project company</button>
           <button class="reject" id="btnReject">Reject</button>
         </div>
         <div class="msg" id="gatemsg"></div>
@@ -119,12 +119,12 @@
     <div class="card">
       <h2>Decision log</h2>
       <div class="body">
-        <table><thead><tr><th>Time</th><th>Actor</th><th>Event</th><th>Decision</th><th>Reason</th></tr></thead><tbody id="log"></tbody></table>
+        <table><thead><tr><th>Time</th><th>Person</th><th>Event</th><th>Decision</th><th>Reason</th></tr></thead><tbody id="log"></tbody></table>
         <div class="btns"><button class="ghost" id="btnExport">Export log (JSON)</button><button class="ghost" id="btnReset">Reset demo</button></div>
       </div>
     </div>
     <div class="card">
-      <h2>Agent run behind this demo (precomputed, offline)</h2>
+      <h2>Agent run behind this demo (computed beforehand, offline)</h2>
       <div class="body" id="agentrun"></div>
     </div>
   </div>
@@ -169,8 +169,8 @@
   function renderStrip() {
     $("today").textContent = fmtDate(D.today);
     var opts = D.actors.map(function (a, i) { return '<option value="' + i + '">' + esc(a.label) + "</option>"; }).join("");
-    $("strip").innerHTML = "<span>Fund <b>" + esc(D.fund.name) + "</b></span><span>Asset <b>" + esc(D.fund.asset) + "</b> (" + pct(A.fundShare) + " equity)</span>" +
-      "<span>Project <b>" + esc(D.fund.project) + "</b></span><span>Stake value <b>" + usdM(A.stakeValueUsd) + "</b></span>" +
+    $("strip").innerHTML = "<span>Fund <b>" + esc(D.fund.name) + "</b></span><span>Project company <b>" + esc(D.fund.asset) + "</b> (fund owns " + pct(A.fundShare) + ")</span>" +
+      "<span>Project <b>" + esc(D.fund.project) + "</b></span><span>Fund's stake value <b>" + usdM(A.stakeValueUsd) + "</b></span>" +
       '<span>Acting as <select id="actor">' + opts + "</select></span>";
     $("actor").onchange = renderGate;
   }
@@ -181,7 +181,7 @@
       return '<div class="ev' + (ev.id === selected ? " sel" : "") + '" data-id="' + ev.id + '"><div class="kind">' + esc(ev.kind) + "</div>" +
         '<div class="t">' + esc(ev.id + " · " + ev.title) + "</div>" +
         '<div class="m">' + statusPill(ev.primary) + fmtDate(ev.primary.deadline) + ", " + daysText(ev.primary) + "</div>" +
-        '<div class="m">Fund equity at risk <b>' + usdM(eqById[ev.id].fundEquityUsd) + "</b> · " + ev.chain.filter(function (l) { return l.verified; }).length + "/" + ev.chain.length + " quotes verified" +
+        '<div class="m">Fund money at risk <b>' + usdM(eqById[ev.id].fundEquityUsd) + "</b> · " + ev.chain.filter(function (l) { return l.verified; }).length + "/" + ev.chain.length + " quotes checked" +
         (d ? " · <b>" + d.decision + "</b>" : " · pending approval") + "</div></div>";
     }).join("");
     Array.prototype.forEach.call(document.querySelectorAll(".ev"), function (el) {
@@ -190,11 +190,11 @@
   }
 
   function renderFund() {
-    $("fundview").innerHTML = "<table><tr><th>Event</th><th>Project exposure</th><th>Fund equity at risk</th><th>% of stake</th></tr>" +
+    $("fundview").innerHTML = "<table><tr><th>Event</th><th>Cost to project if lost</th><th>Fund money at risk</th><th>% of stake value</th></tr>" +
       equity.rows.map(function (r) { return "<tr><td>" + r.id + '</td><td class="n">' + usdM(r.exposureUsd) + '</td><td class="n">' + usdM(r.fundEquityUsd) + '</td><td class="n">' + pct(r.pctOfStake) + "</td></tr>"; }).join("") +
       '<tr><td><b>Total</b></td><td class="n"><b>' + usdM(equity.totalExposureUsd) + '</b></td><td class="n"><b>' + usdM(equity.fundEquityUsd) + '</b></td><td class="n"><b>' + pct(equity.pctOfStake) + "</b></td></tr></table>" +
-      '<p class="dim">Total exposure ' + usdM(equity.totalExposureUsd) + " minus remaining contingency " + usdM(A.contingencyUsd) + " = " + usdM(equity.aboveContingencyUsd) +
-      " funded by equity. Fund share " + pct(A.fundShare) + " = " + usdM(equity.fundEquityUsd) + ". Each event gets its pro rata slice. Assumes every open position is lost.</p>";
+      '<p class="dim">Total cost if lost ' + usdM(equity.totalExposureUsd) + ", minus the remaining overrun budget (contingency) " + usdM(A.contingencyUsd) + ", = " + usdM(equity.aboveContingencyUsd) +
+      " paid by the owners. The fund's share, " + pct(A.fundShare) + ", = " + usdM(equity.fundEquityUsd) + ". Each event gets a slice in proportion to its cost. Assumes every open dispute is lost.</p>";
     $("notsurfaced").innerHTML = "<table>" + D.notSurfaced.map(function (n) { return "<tr><td>" + esc(n.ref) + "</td><td>" + esc(n.why) + "</td></tr>"; }).join("") + "</table>";
   }
 
@@ -211,27 +211,27 @@
     $("evsummary").textContent = ev.summary;
     $("chain").innerHTML = ev.chain.map(function (l) {
       var doc = D.docs[l.ref];
-      return '<li><div class="h">' + esc(l.step) + " · " + esc(doc.type) + " " + esc(l.ref) + " · " + fmtDate(doc.date) + " · " + esc(doc.system) + (doc.demoAddition ? " · demo addition" : "") + "</div>" +
+      return '<li><div class="h">' + esc(l.step) + " · " + esc(doc.type) + " " + esc(l.ref) + " · " + fmtDate(doc.date) + " · " + esc(doc.system) + (doc.demoAddition ? " · added for the demo" : "") + "</div>" +
         "<blockquote>" + inContext(doc.text, l.quote) + "</blockquote>" +
         (l.verified ? '<span class="ok">Quote found in source</span>' : '<span class="bad">Quote not found: not verified</span>') + ' <span class="dim">' + esc(l.note) + "</span></li>";
     }).join("");
     $("clocks").innerHTML = ev.clocks.map(function (c) {
       var r = c.result;
-      return '<div class="clock' + (c.primary ? " primary" : "") + '"><div class="kind">' + esc(c.label) + (c.primary ? " · ProjectCo action" : " · " + esc(c.owner)) + "</div>" +
-        '<div class="big">' + daysText(r) + "</div>" + statusPill(r) + "<div class='dim'>Due " + fmtDate(r.deadline) + ". Trigger " + fmtDate(c.triggerDate) + " + " + r.periodDays + " days (" + esc(r.basis) + ").</div></div>";
+      return '<div class="clock' + (c.primary ? " primary" : "") + '"><div class="kind">' + esc(c.label) + (c.primary ? " · project company must act" : " · " + esc(c.owner)) + "</div>" +
+        '<div class="big">' + daysText(r) + "</div>" + statusPill(r) + "<div class='dim'>Due " + fmtDate(r.deadline) + ". Event date " + fmtDate(c.triggerDate) + " + " + r.periodDays + " days (" + esc(r.basis) + ").</div></div>";
     }).join("");
 
     var x = NC.exposure(ev.value, A.dailyDelayCostUsd), r = eqById[ev.id];
     $("value").innerHTML = "<table>" +
-      "<tr><td>Critical path delay at risk</td><td class='n'>" + ev.value.delayDays + " days - " + ev.value.floatDays + " float = " + x.netDelayDays + " days</td></tr>" +
-      "<tr><td>Cost of delay to ProjectCo</td><td class='n'>" + x.netDelayDays + " x $" + A.dailyDelayCostUsd.toLocaleString("en-US") + " a day = " + usdM(x.netDelayDays * A.dailyDelayCostUsd) + "</td></tr>" +
+      "<tr><td>Delay to the finish date</td><td class='n'>" + ev.value.delayDays + " days - " + ev.value.floatDays + " spare days (float) = " + x.netDelayDays + " days</td></tr>" +
+      "<tr><td>Cost of delay to the project company</td><td class='n'>" + x.netDelayDays + " x $" + A.dailyDelayCostUsd.toLocaleString("en-US") + " a day = " + usdM(x.netDelayDays * A.dailyDelayCostUsd) + "</td></tr>" +
       "<tr><td>Direct cost</td><td class='n'>" + usdM(ev.value.directCostUsd) + "</td></tr>" +
-      "<tr><td><b>Project exposure if the position is lost</b></td><td class='n'><b>" + usdM(x.usd) + "</b></td></tr>" +
-      "<tr><td><b>Fund equity at risk</b> (pro rata slice after contingency)</td><td class='n'><b>" + usdM(r.fundEquityUsd) + "</b> = " + pct(r.pctOfStake) + " of stake value</td></tr></table>" +
-      '<p class="dim">' + esc(ev.value.directNote) + " All inputs synthetic. The agent does not compute value; this is demo logic in calc.js.</p>";
+      "<tr><td><b>Cost to the project if the dispute is lost</b></td><td class='n'><b>" + usdM(x.usd) + "</b></td></tr>" +
+      "<tr><td><b>Fund money at risk</b> (its share of the cost above contingency)</td><td class='n'><b>" + usdM(r.fundEquityUsd) + "</b> = " + pct(r.pctOfStake) + " of stake value</td></tr></table>" +
+      '<p class="dim">' + esc(ev.value.directNote) + " All inputs fictional. The agent doesn't compute value. This calculation lives in the demo, in calc.js.</p>";
     $("notice").innerHTML = ev.notice.map(function (line) {
       return esc(line).replace(/\[([^\]]+)\]/g, '<span class="cite">[$1]</span>');
-    }).join("\n") + "\n\nStatus: " + (decisionFor(ev.id) ? decisionFor(ev.id).decision : "PENDING_APPROVAL") + ". Shield has no send function.";
+    }).join("\n") + "\n\nStatus: " + (decisionFor(ev.id) ? decisionFor(ev.id).decision : "PENDING_APPROVAL") + ". Shield can't send anything.";
   }
 
   // 3. The human gate. Same rules as the agent's governance kernel (approve_notice):
@@ -240,15 +240,15 @@
     var ev = D.events.filter(function (e) { return e.id === selected; })[0];
     var d = decisionFor(ev.id);
     $("btnApprove").disabled = $("btnReject").disabled = !!d;
-    $("gatemsg").innerHTML = d ? "Decided: <b>" + d.decision + "</b> by " + esc(d.actor) + "." : '<span class="dim">Pending approval. Approver list: ' + D.actors.filter(function (a) { return a.approver; }).map(function (a) { return esc(a.id); }).join(", ") + ".</span>";
+    $("gatemsg").innerHTML = d ? "Decided: <b>" + d.decision + "</b> by " + esc(d.actor) + "." : '<span class="dim">Waiting for approval. People allowed to approve: ' + D.actors.filter(function (a) { return a.approver; }).map(function (a) { return esc(a.id); }).join(", ") + ".</span>";
   }
 
   function decide(decision) {
     var ev = D.events.filter(function (e) { return e.id === selected; })[0];
     var actor = D.actors[+$("actor").value], reason = $("reason").value.trim();
     var entry = { time: new Date().toISOString(), actor: actor.id, event: ev.id, notice: "ntc-" + ev.id, reason: reason };
-    if (!actor.approver) { entry.decision = "REFUSED"; entry.reason = "not a registered approver"; }
-    else if (!ev.allVerified) { entry.decision = "REFUSED"; entry.reason = "notice has unverified quotes"; }
+    if (!actor.approver) { entry.decision = "REFUSED"; entry.reason = "not on the approver list"; }
+    else if (!ev.allVerified) { entry.decision = "REFUSED"; entry.reason = "notice has quotes not found in their source"; }
     else if (decision === "REJECTED" && !reason) { $("gatemsg").innerHTML = '<span class="bad">Add a reason to reject.</span>'; return; }
     else { entry.decision = decision; entry.deadline = ev.primary.deadline; entry.daysLeft = ev.primary.daysLeft; entry.fundEquityAtRiskUsd = Math.round(eqById[ev.id].fundEquityUsd); }
     log.push(entry); save(); $("reason").value = "";
@@ -270,11 +270,11 @@
       var same = mine.deadline === d.deadline_date && mine.provisional === d.provisional;
       return "<tr><td>" + esc(d.event_id) + "</td><td>" + esc(d.clause) + "</td><td>" + d.deadline_date + (d.provisional ? " (provisional)" : "") + "</td><td>" + (same ? '<span class="ok">same</span>' : '<span class="bad">differs</span>') + "</td></tr>";
     }).join("");
-    $("agentrun").innerHTML = "<p>Source: " + esc(R.source) + ". Documents admitted " + R.admitted.length + ", refused " + R.refused.length +
-      ", events surfaced " + R.events.filter(function (e) { return e.surfaced; }).length + ", notices stopped at PENDING_APPROVAL " + R.notices.filter(function (n) { return n.status === "PENDING_APPROVAL"; }).length +
+    $("agentrun").innerHTML = "<p>Source: " + esc(R.source) + ". Documents accepted " + R.admitted.length + ", refused " + R.refused.length +
+      ", events flagged " + R.events.filter(function (e) { return e.surfaced; }).length + ", notices held at PENDING_APPROVAL " + R.notices.filter(function (n) { return n.status === "PENDING_APPROVAL"; }).length +
       ". Missed: " + R.golden_missed.map(function (m) { return m.join(" "); }).join(", ") + ".</p>" +
-      "<table><tr><th>Agent event</th><th>Clause</th><th>Agent deadline</th><th>This page's engine</th></tr>" + rows + "</table>" +
-      '<p class="dim">EV-2 and EV-3 use the agent\'s eval letters. EV-1 uses the richer walkthrough record of the same ground event, which adds Amendment 2 (21 days). The agent\'s eval version of that event has a 28-day period and a 29 Aug deadline.</p>';
+      "<table><tr><th>Agent event</th><th>Clause</th><th>Agent deadline</th><th>This page's calculation</th></tr>" + rows + "</table>" +
+      '<p class="dim">EV-2 and EV-3 use the agent\'s test letters. EV-1 uses a fuller record of the same ground event, which adds Amendment 2 (21 days). The agent\'s test version of that event has a 28-day period and a 29 Aug deadline.</p>';
   }
 
   function renderAll() { renderEvents(); renderEvent(); renderGate(); renderLog(); }

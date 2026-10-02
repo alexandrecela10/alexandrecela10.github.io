@@ -47,34 +47,47 @@
 
 <!-- TOP: problem, player, demo. Readable in under 30 seconds -->
 <h1>Shield</h1>
-<p class="sub">Reads a capital project's documents, finds claims exposure and contract notice deadlines, and drafts the notice for a named person to approve.</p>
-<span class="tag">Infrastructure equity</span><span class="tag">Asset management</span><span class="tag">Prototype</span><span class="tag">Synthetic data</span>
+<p class="sub">Finds events in a construction project's letters and reports that could cost the owners money. Shows each contract deadline and drafts the formal notice for a named person to approve.</p>
+<span class="tag">Infrastructure investing</span><span class="tag">Overseeing fund investments</span><span class="tag">Prototype</span><span class="tag">Fictional data</span>
 
 <h2>Problem</h2>
-<p><strong>Contractor claims and missed contract notice deadlines move value from the project company to the contractor, and the fund's asset manager first sees the loss in the quarterly valuation.</strong></p>
+<p><strong>When a contractor claims extra money, or a contract notice deadline is missed, money moves from the project company to the contractor. The fund that owns part of the project often first sees the loss when its stake is revalued at quarter end.</strong></p>
+<p>Example: in the demo, the project company has 6 days left to send notice about rock found on site. The fund's share of what's at stake is $6.63M.</p>
 
 <h2>For</h2>
 <table>
-  <tr><th>Player</th><td>Infrastructure fund holding equity in a project company that runs a large capital project</td></tr>
-  <tr><th>User</th><td>Asset manager: decides which commercial events to escalate to the project company, and whether a drafted notice is approved for issue</td></tr>
-  <tr><th>Buyer</th><td>Fund partner or head of asset management: decides whether to fund the tool across the portfolio, and what goes into the quarterly valuation</td></tr>
+  <tr><th>Organisation</th><td>An infrastructure fund that owns part of a project company building something large, such as a gas plant</td></tr>
+  <tr><th>User</th><td>The fund's asset manager (the person overseeing this investment). Decides which events to raise with the project company, and whether a draft notice can go out</td></tr>
+  <tr><th>Buyer</th><td>A fund partner or the head of asset management. Decides whether to pay for the tool across all the fund's projects, and what goes into each quarter's valuation of the stake</td></tr>
 </table>
+
+<h2>Terms on this page</h2>
+<div class="box"><ul>
+  <li><strong>Infrastructure fund:</strong> a fund that invests in roads, power plants and similar projects.</li>
+  <li><strong>Project company (ProjectCo):</strong> the company that owns the project and signs the building contract.</li>
+  <li><strong>Contractor (EPC):</strong> the firm hired to design, buy for and build the project.</li>
+  <li><strong>Claim:</strong> a formal request for extra money or time under the contract.</li>
+  <li><strong>Notice deadline (time bar):</strong> the last day to send a written notice. Miss it and the right to claim can be lost.</li>
+  <li><strong>Clause, amendment:</strong> a numbered rule in the contract, and a later change to it.</li>
+  <li><strong>Contingency:</strong> money set aside in the budget for overruns.</li>
+  <li><strong>Fund equity at risk:</strong> the part of a loss that comes out of the fund's own money.</li>
+</ul></div>
 
 <h2>User stories</h2>
 <div class="box"><ol>
-  <li><strong>Deadline.</strong> As an asset manager, I want each open notice deadline with the documents behind it, so the project company acts before the window closes.</li>
-  <li><strong>Equity at risk.</strong> As an asset manager, I want each event's value at risk in fund equity terms, so I tell the partner before the quarterly valuation.</li>
+  <li><strong>Deadline.</strong> As an asset manager, I want every open notice deadline listed with the documents behind it, so the project company sends notice before the deadline passes.</li>
+  <li><strong>Equity at risk.</strong> As an asset manager, I want each event's cost shown as the fund's share, so I can tell the partner before the quarterly valuation.</li>
   <li><strong>Control.</strong> As a fund partner, I want every notice approved by a named person and logged, so the fund can show who decided what.</li>
 </ol></div>
 
 <h2>Try it</h2>
 <div class="box">
 <ol>
-  <li>Pick a detected event. EV-1 has 6 days left on the project company's notice window.</li>
-  <li>Follow the evidence chain: letter, site record, schedule entry, contract clause, deadline countdown. Read the fund equity at risk below it.</li>
-  <li>Review the draft notice, then approve or reject it. The decision lands in the log. Switch "Acting as" to the analyst to see the gate refuse.</li>
+  <li>Pick an event the tool found. EV-1 has 6 days left before the project company's notice deadline.</li>
+  <li>Follow the document trail: letter, site record, schedule entry, contract clause, deadline countdown. Below it, read how much of the fund's own money is at risk.</li>
+  <li>Read the draft notice, then approve or reject it. The decision goes into the log. Switch "Acting as" to the analyst to see the tool refuse someone who isn't allowed to approve.</li>
 </ol>
-<p><strong>Sample data only.</strong> Fictional fund, project company, project and contractor. "Today" is fixed at 26 Aug 2026. The page runs in the browser with no server and no model call. Agent outputs were computed offline and frozen into the page.</p>
+<p><strong>Sample data only.</strong> The fund, project company, project and contractor are fictional. "Today" is fixed at 26 Aug 2026. The page runs in the browser, with no server and no AI model call. The agent's outputs were computed beforehand and saved into the page.</p>
 <a class="btn" href="demo/index.html">Open the demo</a>
 </div>
 
@@ -85,93 +98,93 @@
 <p class="formula">value = (outcome x likelihood) / (time delay x effort &amp; sacrifice)</p>
 <div class="cards">
   <div class="card"><h3>ASSET MANAGER</h3><dl>
-    <dt>Outcome</dt><dd>"I hear about a claim or a closing notice window weeks before quarter end, with the documents, and the project company files on time."</dd>
-    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Every deadline and quote can be checked. The detector found 3 of 4 events on the eval set. No asset manager has tested it.</dd>
-    <dt>Delay</dt><dd><span class="rate">LOW.</span> It runs on documents the project company already holds. Time to first alert is unmeasured.</dd>
-    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Needs read access to the project company's document and schedule exports. Each draft needs a review.</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Project company management may read it as the fund checking their work. A register of known exposures can be disclosed in a dispute.</dd>
+    <dt>Outcome</dt><dd>"I hear about a claim or a notice deadline weeks before the quarter ends, with the documents, and the project company sends notice on time."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Every deadline and quote can be checked. The tool found 3 of 4 events in the test set. No asset manager has tried it.</dd>
+    <dt>Delay</dt><dd><span class="rate">LOW.</span> It reads documents the project company already holds. Time to first alert is unmeasured.</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Needs read access to the project company's document and schedule files. Each draft needs a human review.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> The project company's managers may see it as the fund checking their work. A list of known risks can be handed to the other side in a legal dispute.</dd>
   </dl></div>
   <div class="card"><h3>FUND PARTNER</h3><dl>
-    <dt>Outcome</dt><dd>"No write-down from a claim we could have seen. Each valuation cut traces to a document."</dd>
-    <dt>Likelihood</dt><dd><span class="rate">LOW.</span> The link from earlier notices to fewer valuation surprises is a hypothesis. No portfolio data.</dd>
-    <dt>Delay</dt><dd><span class="rate">HIGH.</span> The effect on valuations shows over quarters.</dd>
-    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Document access depends on the fund's information rights in each asset.</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Some goodwill with project company management. Legal review of the exposure register.</dd>
+    <dt>Outcome</dt><dd>"No drop in our stake's value from a claim we could have seen. Each cut traces back to a document."</dd>
+    <dt>Likelihood</dt><dd><span class="rate">LOW.</span> That earlier notices lead to fewer surprise drops in value is a hypothesis. There's no data across the fund's projects.</dd>
+    <dt>Delay</dt><dd><span class="rate">HIGH.</span> The effect on valuations shows over several quarters.</dd>
+    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Document access depends on the fund's right to information in each project.</dd>
+    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Some goodwill with the project company's managers. Lawyers must review the list of risks.</dd>
   </dl></div>
 </div>
-<p><strong>Verdict:</strong> outcome is clear for both. <strong>The partner's likelihood and delay are weakest.</strong></p>
+<p><strong>Verdict:</strong> the outcome is clear for both. <strong>The partner's likelihood and delay are weakest.</strong></p>
 <ul>
-  <li><strong>Fix 1, backtest:</strong> run it on one closed project's archive. Count the valuation write-downs from commercial events, and check whether the documents showed each one earlier. This gives evidence in weeks, not quarters.</li>
-  <li><strong>Fix 2, sacrifice:</strong> run read-only, with the project company's counsel as owner of the register. Disclosure risk then sits with the party that already holds the documents.</li>
+  <li><strong>Fix 1, backtest:</strong> run it on the archive of one finished project. Count the drops in stake value caused by claims and similar events. Check whether the documents showed each one earlier. This gives evidence in weeks, not quarters.</li>
+  <li><strong>Fix 2, sacrifice:</strong> run it read-only, with the project company's lawyers owning the list of risks. The risk of handing it over in a dispute then sits with the party that already holds the documents.</li>
 </ul>
 </details>
 
 <details><summary>Sub-problems</summary>
-<p>"Commercial event" here means a fact in a document that can start a contract notice period or a claim.</p>
+<p>"Commercial event" here means something in a document, like a late site handover, that can start a notice deadline or a claim.</p>
 <ol>
-  <li><strong>Detection.</strong> Claim signals sit in letters, minutes and daily reports that nobody reads in full.</li>
-  <li><strong>Evidence.</strong> The link from a letter to its site record, schedule entry and clause is assembled by hand.</li>
-  <li><strong>Deadline.</strong> Notice periods depend on the clause and its amendments. A missed window can waive the entitlement.</li>
-  <li><strong>Equity view.</strong> Event cost is stated in project dollars. The fund reads value in equity terms.</li>
-  <li><strong>Control.</strong> A drafted notice must not go out without a named person's approval.</li>
-  <li><strong>Quantum.</strong> What a claim is worth needs a quantity surveyor's assessment.</li>
-  <li><strong>Reporting.</strong> Events need to reach the quarterly valuation and the LP report.</li>
-  <li><strong>Portfolio coverage.</strong> Each asset has its own contract form, amendments and document systems.</li>
+  <li><strong>Detection.</strong> Signs of a claim sit in letters, meeting minutes and daily site reports that nobody reads in full.</li>
+  <li><strong>Evidence.</strong> Linking a letter to its site record, schedule entry and clause is done by hand.</li>
+  <li><strong>Deadline.</strong> Each notice deadline depends on the clause and its amendments. Missing one can cost the right to claim.</li>
+  <li><strong>Equity view.</strong> Event costs are stated for the whole project. The fund thinks in terms of its own share.</li>
+  <li><strong>Control.</strong> A draft notice must not go out without a named person's approval.</li>
+  <li><strong>Claim value.</strong> Working out what a claim is worth needs a construction cost expert.</li>
+  <li><strong>Reporting.</strong> Events need to reach the quarterly valuation and the report to the fund's own investors.</li>
+  <li><strong>All projects.</strong> Each project has its own contract form, amendments and document systems.</li>
 </ol>
 <p>This build tackles <strong>1 to 5</strong>. 1, 2 and 4 are partial.</p>
 <table>
   <tr><th>#</th><th>Status</th><th>Proof</th></tr>
-  <tr><td>1</td><td>Partial</td><td>Agent: <code>agent/llm.py</code> <code>DummyExtractor</code>, keyword rules, surfacing threshold 0.6. Recall 0.75</td></tr>
-  <tr><td>2</td><td>Partial</td><td>Agent: <code>nodes.verify_citations</code> checks the letter quote. Demo: <code>demo/data.js</code> chain is a hand-built fixture, checked by <code>calc.js</code> <code>verifyQuote</code></td></tr>
-  <tr><td>3</td><td>Tackled</td><td>Agent: <code>nodes.compute_deadlines</code>, provisional when an amendment is missing. Demo: <code>calc.js</code> <code>deadline</code> adds the amended period when the amendment is on file</td></tr>
-  <tr><td>4</td><td>Partial</td><td>Demo only: <code>calc.js</code> <code>equityAtRisk</code>. Not in the agent. Inputs synthetic</td></tr>
-  <tr><td>5</td><td>Tackled</td><td>Agent: <code>governance.approve_notice</code>, no send capability. Demo: approve / reject gate and decision log</td></tr>
+  <tr><td>1</td><td>Partial</td><td>Agent: <code>agent/llm.py</code> <code>DummyExtractor</code> matches keywords. Events scored below 0.6 stay hidden. Recall 0.75 (share of real events found)</td></tr>
+  <tr><td>2</td><td>Partial</td><td>Agent: <code>nodes.verify_citations</code> checks the letter quote. Demo: the trail in <code>demo/data.js</code> is built by hand, then checked by <code>calc.js</code> <code>verifyQuote</code></td></tr>
+  <tr><td>3</td><td>Tackled</td><td>Agent: <code>nodes.compute_deadlines</code> marks a date provisional when an amendment is missing. Demo: <code>calc.js</code> <code>deadline</code> uses the changed period when the amendment is on file</td></tr>
+  <tr><td>4</td><td>Partial</td><td>Demo only: <code>calc.js</code> <code>equityAtRisk</code>. Not in the agent. Inputs fictional</td></tr>
+  <tr><td>5</td><td>Tackled</td><td>Agent: <code>governance.approve_notice</code>, can't send anything. Demo: approve / reject step and decision log</td></tr>
 </table>
 </details>
 
 <details><summary>How it works</summary>
 <ol>
-  <li><strong>Ingest:</strong> documents in. Documents from another project are refused and logged.</li>
-  <li><strong>Detect:</strong> each document is scanned for trigger phrases. Each hit gets a clause and a confidence. Below 0.6, it is not surfaced.</li>
-  <li><strong>Verify:</strong> each quote must appear word for word in its source document, or the event is downgraded.</li>
-  <li><strong>Deadline:</strong> trigger date plus the clause's notice period. A missing amendment makes the date provisional.</li>
-  <li><strong>Value (demo):</strong> delay beyond float times daily cost, plus direct cost. The amount above remaining contingency, times the fund's share, is equity at risk.</li>
-  <li><strong>Draft:</strong> a notice citing each source, with status PENDING_APPROVAL.</li>
-  <li><strong>Gate:</strong> only a registered approver can approve. Every approval, rejection and refusal is logged. Nothing is sent.</li>
+  <li><strong>Read in:</strong> documents arrive. Documents from another project are refused and logged.</li>
+  <li><strong>Find:</strong> each document is scanned for trigger phrases. Each hit gets a clause and a confidence score. Below 0.6, it stays hidden.</li>
+  <li><strong>Check:</strong> each quote must appear word for word in its source document, or the event is marked down.</li>
+  <li><strong>Deadline:</strong> the event date plus the clause's notice period. If an amendment is missing, the date is marked provisional.</li>
+  <li><strong>Value (demo):</strong> days of delay beyond the schedule's spare days (float), times the cost per day, plus direct costs. The part above the remaining contingency, times the fund's share, is fund equity at risk.</li>
+  <li><strong>Draft:</strong> a notice that cites each source, with status PENDING_APPROVAL.</li>
+  <li><strong>Approval:</strong> only a person on the approver list can approve. Every approval, rejection and refusal is logged. Nothing is sent.</li>
 </ol>
 </details>
 
 <details><summary>Hypotheses, one per tackled sub-problem</summary>
 <div class="cards">
   <div class="card"><h3>1 · DETECTION</h3><dl>
-    <dt>Before -> after</dt><dd>event found when the formal claim arrives or in the quarterly pack -> <strong>flagged on the date of the document that shows it</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> every letter, minute and daily report is scanned against clause triggers, <strong>then</strong> the asset manager learns of an event sooner, <strong>because</strong> the signal is in the documents before the formal claim.</dd>
-    <dt>Metric</dt><dd>Days from triggering document to asset manager awareness. <span class="rate">Down.</span> Baseline unobserved. Guardrail: precision at or above 0.85 (eval: 1.00 on 8 documents).</dd>
-    <dt>Test</dt><dd>Backtest on one closed project's archive against an expert-labelled event list.</dd>
+    <dt>Before -> after</dt><dd>event found when the formal claim arrives or in the quarterly report -> <strong>flagged on the date of the document that shows it</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> every letter, minute and daily report is checked against the contract's trigger phrases, <strong>then</strong> the asset manager learns of an event sooner, <strong>because</strong> the signs are in the documents before the formal claim.</dd>
+    <dt>Metric</dt><dd>Days from the first document to the asset manager knowing. <span class="rate">Down.</span> Baseline unobserved. Guardrail: precision (share of alerts that are real) at or above 0.85 (test: 1.00 on 8 documents).</dd>
+    <dt>Test</dt><dd>Run it on one finished project's archive and compare with a list of events marked by an expert.</dd>
   </dl></div>
   <div class="card"><h3>2 · EVIDENCE</h3><dl>
-    <dt>Before -> after</dt><dd>chain assembled by hand -> <strong>each link quote-checked against its source</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> each event arrives with verified links from letter to clause, <strong>then</strong> review time per event goes down, <strong>because</strong> the reviewer checks links instead of searching for them.</dd>
-    <dt>Metric</dt><dd>Minutes to review one event; share of chains needing correction. <span class="rate">Down.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Two reviewers, 10 events, with and without the chain.</dd>
+    <dt>Before -> after</dt><dd>trail put together by hand -> <strong>each link's quote checked against its source</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> each event arrives with checked links from letter to clause, <strong>then</strong> review time per event goes down, <strong>because</strong> the reviewer checks links instead of searching for them.</dd>
+    <dt>Metric</dt><dd>Minutes to review one event; share of trails needing correction. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Two reviewers, 10 events, with and without the trail.</dd>
   </dl></div>
   <div class="card"><h3>3 · DEADLINE</h3><dl>
-    <dt>Before -> after</dt><dd>periods tracked from memory or a spreadsheet -> <strong>computed from clause and amendments, provisional if one is missing</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> deadlines come from the clause and its amendment chain, <strong>then</strong> fewer windows close without a notice, <strong>because</strong> errors like 28 days vs an amended 21 are caught.</dd>
-    <dt>Metric</dt><dd>Notice windows closed without a notice, per project-year. <span class="rate">Down.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Recompute deadlines on a closed project and compare with the notices actually filed.</dd>
+    <dt>Before -> after</dt><dd>periods tracked from memory or a spreadsheet -> <strong>computed from the clause and its amendments, provisional if one is missing</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> deadlines come from the clause and all its amendments, <strong>then</strong> fewer deadlines pass without a notice, <strong>because</strong> errors like 28 days vs an amended 21 are caught.</dd>
+    <dt>Metric</dt><dd>Deadlines passed without a notice, per project per year. <span class="rate">Down.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Recompute deadlines on a finished project and compare with the notices actually sent.</dd>
   </dl></div>
   <div class="card"><h3>4 · EQUITY VIEW</h3><dl>
-    <dt>Before -> after</dt><dd>project dollars, seen in the quarterly pack -> <strong>fund equity at risk per event, inputs on the page</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> the asset manager sees equity at risk when an event is detected, <strong>then</strong> fewer valuation moves reach the partner unannounced, <strong>because</strong> the partner hears before the valuation date.</dd>
-    <dt>Metric</dt><dd>Share of commercial-event valuation moves flagged before quarter end. <span class="rate">Up.</span> Baseline unobserved.</dd>
-    <dt>Test</dt><dd>Walk the last 4 quarters of one asset. For each write-down, was there an earlier document trail?</dd>
+    <dt>Before -> after</dt><dd>whole-project dollars, seen in the quarterly report -> <strong>fund's own money at risk per event, inputs on the page</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> the asset manager sees fund equity at risk when an event is found, <strong>then</strong> fewer drops in value reach the partner as a surprise, <strong>because</strong> the partner hears before the valuation date.</dd>
+    <dt>Metric</dt><dd>Share of event-driven drops in value flagged before quarter end. <span class="rate">Up.</span> Baseline unobserved.</dd>
+    <dt>Test</dt><dd>Go through the last 4 quarters of one project. For each write-down, was there an earlier document trail?</dd>
   </dl></div>
   <div class="card"><h3>5 · CONTROL</h3><dl>
-    <dt>Before -> after</dt><dd>drafts by email, approver unclear -> <strong>registered approver, logged decision, no send function</strong></dd>
-    <dt>Hypothesis</dt><dd><strong>If</strong> only registered approvers can approve and every decision is logged, <strong>then</strong> no notice leaves without an owner, <strong>because</strong> the system can't send and refuses anyone else.</dd>
-    <dt>Metric</dt><dd>Notices issued without a logged approver. <span class="rate">Down to zero.</span> Eval: 3 of 3 notices stopped at PENDING_APPROVAL.</dd>
-    <dt>Test</dt><dd>Governance evals, plus attempts to approve as a non-approver.</dd>
+    <dt>Before -> after</dt><dd>drafts by email, approver unclear -> <strong>approver list, logged decision, no send function</strong></dd>
+    <dt>Hypothesis</dt><dd><strong>If</strong> only people on the approver list can approve and every decision is logged, <strong>then</strong> no notice leaves without an owner, <strong>because</strong> the system can't send and refuses anyone else.</dd>
+    <dt>Metric</dt><dd>Notices sent without a logged approver. <span class="rate">Down to zero.</span> Test: 3 of 3 notices stopped at PENDING_APPROVAL.</dd>
+    <dt>Test</dt><dd>Approval rule tests, plus attempts to approve as someone not on the list.</dd>
   </dl></div>
 </div>
 </details>
@@ -179,79 +192,79 @@
 <details><summary>Scope and non-goals</summary>
 <table>
   <tr><th>In scope</th><th>Non-goal (incl. untackled sub-problems)</th></tr>
-  <tr><td>Letters, minutes, daily reports, schedule entries, contract clauses (synthetic)</td><td><strong>6 Quantum:</strong> no claim valuation. Delay days, daily cost and direct cost are synthetic placeholders</td></tr>
-  <tr><td>Keyword detection with a confidence threshold</td><td><strong>7 Reporting:</strong> no export to the valuation model or LP report</td></tr>
-  <tr><td>Word-for-word quote check on every link</td><td><strong>8 Portfolio coverage:</strong> one contract, one project. No per-contract-form rules</td></tr>
-  <tr><td>Deadline per clause, amendment-aware, provisional flag</td><td><strong>1 partial:</strong> no model-based extractor. Keyword rules missed LTR-006</td></tr>
-  <tr><td>Equity at risk with stated inputs (demo)</td><td><strong>2 partial:</strong> links beyond the first letter quote are hand-built, not found by the agent</td></tr>
-  <tr><td>Draft notice, approval gate, decision log</td><td><strong>4 partial:</strong> value logic lives in the demo, not the agent</td></tr>
+  <tr><td>Letters, minutes, daily reports, schedule entries, contract clauses (fictional)</td><td><strong>6 Claim value:</strong> the tool doesn't value claims. Delay days, daily cost and direct cost are fictional placeholders</td></tr>
+  <tr><td>Keyword matching with a confidence threshold</td><td><strong>7 Reporting:</strong> no export to the valuation model or the report to the fund's investors</td></tr>
+  <tr><td>Word-for-word quote check on every link</td><td><strong>8 All projects:</strong> one contract, one project. No rules per contract form</td></tr>
+  <tr><td>Deadline per clause, using amendments, provisional flag</td><td><strong>1 partial:</strong> no AI-model extractor. Keyword rules missed LTR-006</td></tr>
+  <tr><td>Fund equity at risk with stated inputs (demo)</td><td><strong>2 partial:</strong> links beyond the first letter quote are built by hand, not found by the agent</td></tr>
+  <tr><td>Draft notice, approval step, decision log</td><td><strong>4 partial:</strong> value logic lives in the demo, not the agent</td></tr>
   <tr><td></td><td>Claim strategy and legal advice. The agent refuses strategy questions</td></tr>
-  <tr><td></td><td>Sending notices, OCR, connectors to document and schedule systems</td></tr>
+  <tr><td></td><td>Sending notices, OCR (reading scanned pages), links to document and schedule systems</td></tr>
 </table>
 </details>
 
 <details><summary>Success tracking</summary>
 <table>
   <tr><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
-  <tr><td>Days from triggering document to asset manager awareness</td><td>Leading</td><td>1</td><td>Document date vs first view in the event log</td></tr>
-  <tr><td>Precision and recall vs expert labels</td><td>Leading</td><td>1</td><td>Backtest on a closed project archive</td></tr>
-  <tr><td>Share of chains corrected by the reviewer</td><td>Leading</td><td>2</td><td>Edits logged per chain</td></tr>
-  <tr><td>Computed deadline vs filed notice date</td><td>Leading</td><td>3</td><td>Backtest comparison</td></tr>
-  <tr><td>Windows closed without a notice, per project-year</td><td>Lagging</td><td>3</td><td>Event register vs notices filed</td></tr>
-  <tr><td>Commercial-event valuation moves flagged before quarter end</td><td>Lagging</td><td>4</td><td>Quarterly valuation bridge vs event log dates</td></tr>
-  <tr><td>Notices issued without a logged approver</td><td>Lagging</td><td>5</td><td>Decision log vs issued correspondence</td></tr>
+  <tr><td>Days from the first document to the asset manager knowing</td><td>Early signal</td><td>1</td><td>Document date vs first view in the event log</td></tr>
+  <tr><td>Precision and recall vs an expert's list</td><td>Early signal</td><td>1</td><td>Backtest on a finished project's archive</td></tr>
+  <tr><td>Share of trails corrected by the reviewer</td><td>Early signal</td><td>2</td><td>Edits logged per trail</td></tr>
+  <tr><td>Computed deadline vs date the notice was sent</td><td>Early signal</td><td>3</td><td>Backtest comparison</td></tr>
+  <tr><td>Deadlines passed without a notice, per project per year</td><td>Late result</td><td>3</td><td>Event list vs notices sent</td></tr>
+  <tr><td>Event-driven drops in value flagged before quarter end</td><td>Late result</td><td>4</td><td>Quarterly valuation changes vs event log dates</td></tr>
+  <tr><td>Notices sent without a logged approver</td><td>Late result</td><td>5</td><td>Decision log vs letters sent</td></tr>
 </table>
 </details>
 
 <details><summary>Observed in the build</summary>
 <ul>
-  <li><strong>Eval run (2026-10-01, 8 synthetic documents):</strong> 17 of 17 evals passed. Precision 1.00 (3 of 3), recall 0.75 (3 of 4, missed LTR-006), 2 of 2 non-events suppressed. Supports 1, with a recall gap.</li>
-  <li><strong>Evidence:</strong> 3 of 3 surfaced citations verified. The adversarial adapter emitted 7 fabricated citations; 0 surfaced. Supports 2.</li>
-  <li><strong>Deadlines:</strong> 3 of 3 match the golden dates, incl. 1 flagged provisional for a missing amendment. Supports 3.</li>
-  <li><strong>Governance:</strong> 1 out-of-scope document refused. 3 of 3 notices stopped at PENDING_APPROVAL. An unauthorised approver was refused. 21 audit events, hash chain intact. Supports 5.</li>
-  <li><strong>Demo tests:</strong> 10 of 10 pass (<code>node --test demo/tests/calc.test.js</code>). They cover deadlines, amendments, status boundaries, parity with the agent's 3 deadlines, 15 chain quotes and value at risk.</li>
-  <li><strong>Demo figures:</strong> EV-1 shows $19.58M project exposure and $6.63M fund equity at risk. All 3 events total $9.34M, 3.9% of stake value. Inputs are synthetic, so these show the mechanism, not a result. Relates to 4.</li>
+  <li><strong>Test run (2026-10-01, 8 fictional documents):</strong> 17 of 17 tests passed. Precision 1.00 (3 of 3 alerts real), recall 0.75 (3 of 4 events found, missed LTR-006), 2 of 2 non-events correctly ignored. Supports 1, with a gap in recall.</li>
+  <li><strong>Evidence:</strong> 3 of 3 shown citations verified. A test setup built to invent citations produced 7 fake ones; 0 were shown. Supports 2.</li>
+  <li><strong>Deadlines:</strong> 3 of 3 match the expected dates, incl. 1 flagged provisional for a missing amendment. Supports 3.</li>
+  <li><strong>Approval controls:</strong> 1 document from another project refused. 3 of 3 notices stopped at PENDING_APPROVAL. A person not on the approver list was refused. 21 audit log entries, tamper check (hash chain) intact. Supports 5.</li>
+  <li><strong>Demo tests:</strong> 10 of 10 pass (<code>node --test demo/tests/calc.test.js</code>). They cover deadlines, amendments, status cut-offs, matching the agent's 3 deadlines, 15 trail quotes and value at risk.</li>
+  <li><strong>Demo figures:</strong> EV-1 shows $19.58M at stake for the project and $6.63M of fund equity at risk. All 3 events total $9.34M, 3.9% of the stake's value. Inputs are fictional, so these show how the calculation works, not a result. Relates to 4.</li>
 </ul>
 </details>
 
 <details><summary>Limits and trade-offs</summary>
 <ul>
-  <li><strong>Data:</strong> synthetic. 8 eval documents. The demo shows 15 documents, 2 of them added for the demo.</li>
+  <li><strong>Data:</strong> fictional. 8 test documents. The demo shows 15 documents, 2 of them added for the demo.</li>
   <li><strong>Users:</strong> no asset manager or partner has used it. Every "before" is assumed.</li>
-  <li><strong>Detection:</strong> keyword rules, not a model. Accuracy on real correspondence is unmeasured.</li>
-  <li><strong>Awareness date:</strong> the agent uses the document date. Contracts often use "became aware, or should have", which can be earlier.</li>
-  <li><strong>Value:</strong> assumes every open position is lost, and that equity funds overruns above contingency. That overstates expected loss.</li>
-  <li><strong>Who approves:</strong> the demo makes the asset manager the approver. In practice the project company issues notices, and the fund acts through its shareholder rights.</li>
-  <li><strong>Source mismatch:</strong> EV-1 in the demo uses the walkthrough record (21-day amended bar). The agent's eval version of the same event uses 28 days.</li>
+  <li><strong>Detection:</strong> keyword rules, not an AI model. Accuracy on real letters is unmeasured.</li>
+  <li><strong>Awareness date:</strong> the agent uses the document date. Contracts often start the clock when a party "became aware, or should have", which can be earlier.</li>
+  <li><strong>Value:</strong> assumes every open dispute is lost, and that the owners' money covers overruns above contingency. That overstates the expected loss.</li>
+  <li><strong>Who approves:</strong> the demo makes the asset manager the approver. In practice the project company sends notices, and the fund acts through its rights as a shareholder.</li>
+  <li><strong>Source mismatch:</strong> EV-1 in the demo uses the walkthrough record (deadline amended to 21 days). The agent's test version of the same event uses 28 days.</li>
 </ul>
 <table>
   <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
-  <tr><td>Deadline rules in code</td><td>Model computes dates</td><td>Reproducible, testable</td><td>Each contract form needs set-up</td></tr>
-  <tr><td>Exact quote match</td><td>Accept model output</td><td>No unsourced evidence</td><td>Paraphrases and OCR errors are dropped</td></tr>
-  <tr><td>Precision gate first</td><td>Recall first</td><td>Fewer false alarms in review</td><td>Missed LTR-006</td></tr>
+  <tr><td>Deadline rules in code</td><td>AI model computes dates</td><td>Same answer every time, testable</td><td>Each contract form needs set-up</td></tr>
+  <tr><td>Exact quote match</td><td>Accept model output</td><td>No evidence without a source</td><td>Reworded quotes and scanning errors are dropped</td></tr>
+  <tr><td>Precision first</td><td>Recall first</td><td>Fewer false alarms to review</td><td>Missed LTR-006</td></tr>
   <tr><td>No send function</td><td>Auto-send</td><td>A named owner per notice</td><td>One manual step before the deadline</td></tr>
-  <tr><td>Static page, outputs precomputed</td><td>Live agent behind an API</td><td>$0, works offline</td><td>Visitors can't upload documents</td></tr>
-  <tr><td>"All positions lost" value</td><td>Probability-weighted value</td><td>Simple, every input visible</td><td>Overstates expected loss</td></tr>
+  <tr><td>Static page, outputs computed beforehand</td><td>Live agent behind an API</td><td>$0, works offline</td><td>Visitors can't upload documents</td></tr>
+  <tr><td>"All disputes lost" value</td><td>Probability-weighted value</td><td>Simple, every input visible</td><td>Overstates expected loss</td></tr>
 </table>
 </details>
 
 <details><summary>Links</summary>
 <ul>
   <li><a href="demo/index.html">Demo</a></li>
-  <li>Code: published after the name audit is applied.</li>
+  <li>Code: published once real company names are checked and replaced (name audit).</li>
 </ul>
 </details>
 
 <details><summary>PM OS lifecycle</summary>
-<p>These artifacts were written for an owner-side persona. The infrastructure fund framing on this page is new and has no PRD yet.</p>
+<p>These documents were written for a project-owner persona. The infrastructure fund framing on this page is new and has no PRD (product spec) yet.</p>
 <table>
   <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
-  <tr><td>Discovery</td><td>Capital projects research report; persona journeys</td><td><code>/competitor-analysis, /journey-map</code></td></tr>
-  <tr><td>Opportunity</td><td>Impact sizing (all figures modelled from assumptions); challenge on the competitive analysis</td><td><code>/impact-sizing, /ralph-wiggum</code></td></tr>
-  <tr><td>PRD</td><td>Product PRD and AI engineering PRD, reviewed by 5 sub-agent personas</td><td><code>/prd-draft, /prd-review-panel</code></td></tr>
-  <tr><td>Strategy</td><td>Strategy and 3-horizon roadmap; delivery plan with OKRs</td><td><code>/write-prod-strategy, /metrics-framework</code></td></tr>
-  <tr><td>Build</td><td>Agent with governance kernel; clickable prototype</td><td><code>/code-first-draft, /prototype</code></td></tr>
-  <tr><td>Evaluation</td><td>17 agent evals, 10 demo tests</td><td><code>/goal-gate</code></td></tr>
+  <tr><td>Discovery</td><td>Research report on large construction projects; persona journeys</td><td><code>/competitor-analysis, /journey-map</code></td></tr>
+  <tr><td>Opportunity</td><td>Impact sizing (all figures modelled from assumptions); challenge on the competitor analysis</td><td><code>/impact-sizing, /ralph-wiggum</code></td></tr>
+  <tr><td>PRD</td><td>Product spec (PRD) and AI engineering spec, reviewed by 5 AI reviewer personas</td><td><code>/prd-draft, /prd-review-panel</code></td></tr>
+  <tr><td>Strategy</td><td>Strategy and 3-horizon roadmap; delivery plan with goals (OKRs)</td><td><code>/write-prod-strategy, /metrics-framework</code></td></tr>
+  <tr><td>Build</td><td>Agent with built-in approval rules; clickable prototype</td><td><code>/code-first-draft, /prototype</code></td></tr>
+  <tr><td>Evaluation</td><td>17 agent evals (automated tests), 10 demo tests</td><td><code>/goal-gate</code></td></tr>
   <tr><td>Showcase</td><td>This page, name audit, goals and state files</td><td><code>/portfolio-case-study, /name-audit</code></td></tr>
 </table>
 <p class="dim" style="color:var(--dim)">Skills are mapped from the artifact each stage produced. They show how each stage repeats with PM OS; the original working sessions were not logged.</p>

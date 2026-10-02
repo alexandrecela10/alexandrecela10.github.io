@@ -81,26 +81,26 @@
 <body>
 <header>
   <h1>Night’s Watch <span class="sub">demo</span></h1>
-  <p>Ranks borrowers by the risk of missing their next cash interest payment. Edit the simulated CRM and bank feed and watch the ranking recompute.</p>
+  <p>Ranks borrowers by their risk of missing the next interest payment in cash. Edit the simulated loan record and bank balances, and the ranking updates.</p>
 </header>
-<div class="notice"><b>Simulated connector, synthetic data.</b> Every borrower, account, currency code and FX rate here is fictional. Nothing leaves your browser: no backend, no model call. The next step is a Salesforce (or other CRM) adapter for the loan record and a bank-feed adapter for balances. As-at date: <b id="today"></b>.</div>
+<div class="notice"><b>Simulated connector, made-up data.</b> Every borrower, account, currency code and exchange rate (FX) here is fictional. Nothing leaves your browser: no server, no AI model call. Next step: real connectors to Salesforce (or another loan database, CRM) and to bank balances. Data as of: <b id="today"></b>.</div>
 
 <div class="wrap">
   <!-- LEFT: ranked portfolio, worst first -->
   <section class="card">
-    <h2>Portfolio, worst first</h2>
+    <h2>All borrowers, worst first</h2>
     <div style="overflow-x:auto">
     <table id="rank">
       <thead><tr>
         <th class="l">#</th><th class="l">Borrower</th><th class="l">Level</th>
-        <th title="P50 transferable cash at T1 / cash due at T1">Coverage</th>
-        <th title="Coverage at P10 to P40 of forecast transferable cash at T1">Band P10-P40</th>
-        <th>Cash due T1</th><th>Days to T1</th><th>Principal at risk</th><th class="l">Priority</th>
+        <th title="Middle estimate (P50) of usable cash on the payment date (T1) / cash due">Coverage</th>
+        <th title="Coverage using the low (P10) to lower-middle (P40) estimates of usable cash at T1">Band P10-P40</th>
+        <th>Cash due at T1</th><th>Days to T1</th><th>Principal at risk</th><th class="l">Priority</th>
       </tr></thead>
       <tbody></tbody>
     </table>
     </div>
-    <div style="padding:10px 14px" class="sub">Click a row to open its connector, trace and actions. Ranking: level, then principal at risk, then lowest coverage. Principal at risk counts the full principal of any loan at Low or above.</div>
+    <div style="padding:10px 14px" class="sub">T1 = next payment date. Coverage = usable cash on T1 / cash due; below 1 means short. Click a row to see its data, the maths and actions. Order: level, then principal at risk (amount lent), then lowest coverage. Principal at risk counts the full loan amount at level Low or above.</div>
   </section>
 
   <!-- RIGHT: selected borrower -->
@@ -117,36 +117,36 @@
       <div class="band" id="band"></div>
       <div class="sub" id="bandNote"></div>
 
-      <h3>Feed events (replay)</h3>
+      <h3>Replay a bank event</h3>
       <div class="events">
         <div class="ev"><button class="btn" id="evFx">FX freeze</button><select id="evFxCcy"></select></div>
-        <div class="ev"><button class="btn" id="evOut">Large outflow</button><input id="evOutAmt" type="number" value="150000" step="5000"></div>
+        <div class="ev"><button class="btn" id="evOut">Large payment out</button><input id="evOutAmt" type="number" value="150000" step="5000"></div>
         <div class="ev"><button class="btn" id="evPay">Payment received</button><input id="evPayAmt" type="number" value="60000" step="5000"></div>
-        <div class="ev"><button class="btn ghost" id="evStale">Feed goes stale</button><button class="btn ghost" id="evRefresh">Refresh</button></div>
+        <div class="ev"><button class="btn ghost" id="evStale">Bank data stops updating</button><button class="btn ghost" id="evRefresh">Refresh</button></div>
       </div>
-      <div class="status" id="status">Pick an event or edit a field below. Every change recomputes the whole portfolio.</div>
+      <div class="status" id="status">Pick an event or edit a field below. Every change recalculates all borrowers.</div>
 
-      <h3>Simulated CRM record (loan)</h3>
+      <h3>Simulated loan record (from the CRM)</h3>
       <div class="grid2" id="crm"></div>
 
-      <h3>Simulated bank feed (balances)</h3>
-      <table class="feed" id="feed"><thead><tr><th class="l">Account</th><th class="l">Ccy</th><th>Balance (LCY)</th><th>FX to USD</th><th class="l">Convertibility</th></tr></thead><tbody></tbody></table>
+      <h3>Simulated bank balances</h3>
+      <table class="feed" id="feed"><thead><tr><th class="l">Account</th><th class="l">Currency</th><th>Balance (local currency)</th><th>Rate to USD</th><th class="l">Can convert?</th></tr></thead><tbody></tbody></table>
       <div class="grid2" id="feedParams" style="margin-top:8px"></div>
       <p style="margin-top:12px"><button class="btn ghost" id="reset">Reset this borrower</button> <button class="btn ghost" id="resetAll">Reset all</button></p>
     </div>
 
     <div class="pane" id="pane-trace">
-      <p class="sub">Every number on the left, rebuilt from the simulated raw records. The source column names the field in the simulated CRM or bank feed.</p>
+      <p class="sub">Every number on the left, rebuilt from the simulated records. Source names the field in the loan record (crm) or bank data (bank.feed). Convertible cash counts in full, partial at half, restricted at zero.</p>
       <table class="trace" id="trace"><thead><tr><th class="l">Number</th><th class="l">Formula</th><th>Value</th><th class="l">Source</th></tr></thead><tbody></tbody></table>
     </div>
 
     <div class="pane" id="pane-act">
-      <h3>Priority: money at stake x recoverability</h3>
+      <h3>Priority: money at stake x chance of recovery</h3>
       <div class="quad" id="quad"></div>
       <div class="sub" id="prioNote"></div>
       <h3>Log an action</h3>
       <label>Action</label><select id="actSel"></select>
-      <label style="margin-top:8px">Note (outcome, owner, next date)</label><textarea id="actNote" placeholder="e.g. Called treasurer, FX bridge requested, follow-up Friday"></textarea>
+      <label style="margin-top:8px">Note (result, who owns it, next date)</label><textarea id="actNote" placeholder="e.g. Called the finance head, asked for short-term currency funding, follow up Friday"></textarea>
       <p><button class="btn" id="actLog">Log action</button></p>
       <h3>Action log (this borrower)</h3>
       <ul class="log" id="actLogList"></ul>
@@ -155,7 +155,7 @@
     </div>
   </section>
 </div>
-<footer>Method: transferable cash today (hard currency in full, partially convertible at 50%, restricted at 0) runs down at the observed burn rate to the next payment date (T1); daily net-flow noise sets the P10 and P40 quantiles. Level comes from where the cash due lands against P10, P40 and P50. Assignment prototype on synthetic data, not a validated model. <a href="../index.html">Back to the case study</a>.</footer>
+<footer>Method: usable cash today (convertible currency in full, partly convertible at 50%, blocked at 0) falls by the daily spending rate until the next payment date (T1). The usual daily swing in cash sets the low (P10) and lower-middle (P40) estimates. The level comes from where the cash due falls against P10, P40 and P50. Assignment prototype on made-up data, not a tested model. <a href="../index.html">Back to the case study</a>.</footer>
 
 <script id="engine">
 var CC = (function () {
@@ -201,12 +201,12 @@ var CC = (function () {
 
     // Where the obligation lands against the forecast quantiles sets the level (deck appendix D).
     var level, rule;
-    if (due <= 0) { level = 'None'; rule = 'No cash due at T1 (full PIK)'; }
-    else if (due <= p10) { level = 'None'; rule = 'Cash due <= P10: even the pessimistic tail covers it'; }
+    if (due <= 0) { level = 'None'; rule = 'No cash due at T1 (all interest added to the loan, PIK)'; }
+    else if (due <= p10) { level = 'None'; rule = 'Cash due <= P10: even the low estimate covers it'; }
     else if (due <= p40) { level = 'Low'; rule = 'P10 < cash due <= P40: borderline, watch'; }
-    else if (due <= p50) { level = 'Medium'; rule = 'P40 < cash due <= P50: flag, shortfall risk beyond tolerance'; }
+    else if (due <= p50) { level = 'Medium'; rule = 'P40 < cash due <= P50: flag, risk of falling short is too high'; }
     else { level = 'High'; rule = 'Cash due > P50: more likely than not to fall short'; }
-    if (stale && SEVERITY[level] > SEVERITY.Low) { level = 'Low'; rule += '; raised to Low because the feed is stale'; }
+    if (stale && SEVERITY[level] > SEVERITY.Low) { level = 'Low'; rule += '; raised to Low because bank data is out of date'; }
 
     var coverage = due > 0 ? p50 / due : null;
     var principalAtRisk = level === 'None' ? 0 : loan.principal;
@@ -241,7 +241,7 @@ var CC = (function () {
   var events = {
     fxFreeze: function (co, ccy) {
       co.feed.accounts.forEach(function (a) { if (a.ccy === ccy) a.cls = 'restricted'; });
-      return 'FX freeze on ' + ccy + ': ' + ccy + ' accounts now restricted';
+      return 'FX freeze on ' + ccy + ': ' + ccy + ' accounts can no longer be converted';
     },
     outflow: function (co, usd) {
       var acc = co.feed.accounts.filter(function (a) { return CLASS_FACTOR[a.cls] === 1; })
@@ -257,8 +257,8 @@ var CC = (function () {
       acc.lcy = round(acc.lcy + usd);
       return 'Payment received: $' + Math.round(usd).toLocaleString('en-US') + ' into ' + acc.id;
     },
-    stale: function (co) { co.feed.feedAgeDays = 5; return 'Feed stopped: last update 5 days ago'; },
-    refresh: function (co) { co.feed.feedAgeDays = 0; return 'Feed refreshed: last update today'; }
+    stale: function (co) { co.feed.feedAgeDays = 5; return 'Bank data stopped: last update 5 days ago'; },
+    refresh: function (co) { co.feed.feedAgeDays = 0; return 'Bank data refreshed: last update today'; }
   };
 
   return { compute: compute, rank: rank, cashDue: cashDue, events: events, addDays: addDays,
@@ -330,8 +330,8 @@ var SEED = [
     Monitor: ['Keep monitoring', 'Request updated bank file']
   };
   var QUADS = [
-    ['P3', 'Help them recover', 'Small money, can recover'], ['P1', 'Roll up sleeves', 'Large money, can recover'],
-    ['P4', 'Handle leanly', 'Small money, unlikely to recover'], ['P2', 'Stop the bleeding', 'Large money, unlikely to recover']
+    ['P3', 'Help them recover', 'Under $2M, likely to recover'], ['P1', 'Roll up sleeves', '$2M or more, likely to recover'],
+    ['P4', 'Handle with little effort', 'Under $2M, unlikely to recover'], ['P2', 'Stop the losses', '$2M or more, unlikely to recover']
   ];
   var $ = function (id) { return document.getElementById(id); };
   var usd = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
@@ -369,7 +369,7 @@ var SEED = [
       var changed = was != null && (was !== i + 1 || x.co._lastLevel !== r.level);
       return '<tr data-id="' + x.co.id + '" class="' + (x.co.id === selected ? 'sel ' : '') + (changed ? 'flash' : '') + '">' +
         '<td class="l num">' + (i + 1) + mv + '</td>' +
-        '<td class="l"><b>' + esc(x.co.name) + '</b><div class="sub">' + esc(x.co.sector) + (r.stale ? ' · <span class="High">stale feed</span>' : '') + '</div></td>' +
+        '<td class="l"><b>' + esc(x.co.name) + '</b><div class="sub">' + esc(x.co.sector) + (r.stale ? ' · <span class="High">old bank data</span>' : '') + '</div></td>' +
         '<td class="l"><span class="pill ' + r.level + '">' + r.level + '</span></td>' +
         '<td class="num">' + ratio(r.coverage) + '</td>' +
         '<td class="num">' + (r.bandLow == null ? 'n/a' : ratio(r.bandLow) + ' - ' + ratio(r.bandHigh)) + '</td>' +
@@ -385,8 +385,8 @@ var SEED = [
     var c = co(), r = CC.compute(c, TODAY);
     $('selName').textContent = c.name + ' · ' + c.crm.loanId;
     $('kpis').innerHTML = [
-      [ratio(r.coverage), 'Coverage (P50 / due)'], [usd(r.transferable), 'Transferable now'],
-      [usd(r.trapped), 'Trapped now'], ['<span class="' + r.level + '">' + r.level + '</span>', 'Distress level']
+      [ratio(r.coverage), 'Coverage (P50 / due)'], [usd(r.transferable), 'Usable cash now'],
+      [usd(r.trapped), 'Trapped cash now'], ['<span class="' + r.level + '">' + r.level + '</span>', 'Risk level']
     ].map(function (k) { return '<div class="kpi"><div class="n">' + k[0] + '</div><div class="l">' + k[1] + '</div></div>'; }).join('');
     renderBand(r);
     renderCrm(c); renderFeed(c); renderTrace(c, r); renderAct(c, r);
@@ -402,7 +402,7 @@ var SEED = [
       '<div class="mk" style="left:' + pos(r.p40) + '"><span>P40</span></div>' +
       '<div class="mk" style="left:' + pos(r.p50) + '"><span>P50</span></div>' +
       (r.due > 0 ? '<div class="due" style="left:' + pos(r.due) + '"><span>due ' + usd(r.due) + '</span></div>' : '');
-    $('bandNote').textContent = 'Forecast transferable cash at T1 (' + r.t1 + (r.t1Fallback ? ', fallback: tomorrow' : '') + '): P10 ' + usd(r.p10) + ', P40 ' + usd(r.p40) + ', P50 ' + usd(r.p50) + '. Rule: ' + r.rule + '.';
+    $('bandNote').textContent = 'Estimated usable cash at T1 (' + r.t1 + (r.t1Fallback ? ', fallback: tomorrow' : '') + '): P10 ' + usd(r.p10) + ', P40 ' + usd(r.p40) + ', P50 ' + usd(r.p50) + '. Rule: ' + r.rule + '.';
   }
 
   function field(path, label, value, type, opts) {
@@ -415,13 +415,13 @@ var SEED = [
   function renderCrm(c) {
     var l = c.crm;
     $('crm').innerHTML =
-      field('crm.principal', 'Principal (USD)', l.principal, 'number') +
-      field('crm.coupon', 'Coupon (annual, decimal)', l.coupon, 'number') +
+      field('crm.principal', 'Principal: amount lent (USD)', l.principal, 'number') +
+      field('crm.coupon', 'Interest rate (yearly, decimal)', l.coupon, 'number') +
       field('crm.periodsPerYear', 'Payments per year', l.periodsPerYear, 'number') +
-      field('crm.cashShare', 'Cash share of coupon % (0 = full PIK)', l.cashShare, 'number') +
+      field('crm.cashShare', 'Share of interest paid in cash % (0 = all added to loan, PIK)', l.cashShare, 'number') +
       field('crm.nextPaymentDate', 'Next payment date (empty = tomorrow)', l.nextPaymentDate, 'date') +
-      field('crm.recoverability', 'Recoverability (first-pass)', l.recoverability, null, ['Strong', 'Partial', 'Weak']) +
-      field('crm.seniority', 'Seniority', l.seniority, null, ['Senior secured', 'Senior unsecured', 'Subordinated']);
+      field('crm.recoverability', 'Chance of recovery (first guess)', l.recoverability, null, ['Strong', 'Partial', 'Weak']) +
+      field('crm.seniority', 'Repayment rank', l.seniority, null, ['Senior secured', 'Senior unsecured', 'Subordinated']);
   }
 
   function renderFeed(c) {
@@ -433,27 +433,27 @@ var SEED = [
           return '<option' + (k === a.cls ? ' selected' : '') + '>' + k + '</option>'; }).join('') + '</select></td></tr>';
     }).join('');
     $('feedParams').innerHTML =
-      field('feed.burnPerDay', 'Burn per day, USD (from feed history)', c.feed.burnPerDay, 'number') +
-      field('feed.volPerDay', 'Daily net-flow std dev, USD', c.feed.volPerDay, 'number') +
-      field('feed.feedAgeDays', 'Feed age (days since last update)', c.feed.feedAgeDays, 'number');
+      field('feed.burnPerDay', 'Spending per day, USD (from bank history)', c.feed.burnPerDay, 'number') +
+      field('feed.volPerDay', 'Usual daily swing in cash (std dev), USD', c.feed.volPerDay, 'number') +
+      field('feed.feedAgeDays', 'Days since bank data last updated', c.feed.feedAgeDays, 'number');
     var ccys = []; c.feed.accounts.forEach(function (a) { if (ccys.indexOf(a.ccy) < 0 && a.cls !== 'restricted') ccys.push(a.ccy); });
     $('evFxCcy').innerHTML = ccys.map(function (k) { return '<option>' + k + '</option>'; }).join('') || '<option value="">none</option>';
   }
 
   function renderTrace(c, r) {
     var l = c.crm, f = c.feed, rows = r.trace.map(function (t) { return [t.label, t.formula, usd(t.value), t.source]; });
-    rows.push(['Transferable cash now', 'sum of the account rows above', usd(r.transferable), 'bank.feed[*]']);
-    rows.push(['Trapped cash now', 'total USD ' + usd(r.total) + ' - transferable', usd(r.trapped), 'bank.feed[*]']);
+    rows.push(['Usable cash now', 'sum of the account rows above', usd(r.transferable), 'bank.feed[*]']);
+    rows.push(['Trapped cash now', 'total USD ' + usd(r.total) + ' - usable', usd(r.trapped), 'bank.feed[*]']);
     rows.push(['Days to T1', 'T1 ' + r.t1 + ' - as-at ' + TODAY, String(r.days), r.t1Fallback ? 'fallback: tomorrow (no date in CRM)' : 'crm.loan[' + l.loanId + '].next_payment_date']);
-    rows.push(['P50 cash at T1', usd(r.transferable) + ' - ' + usd(f.burnPerDay) + '/day x ' + r.days, usd(r.p50), 'bank.feed history: burn_per_day']);
+    rows.push(['P50 (middle estimate) at T1', usd(r.transferable) + ' - ' + usd(f.burnPerDay) + '/day x ' + r.days, usd(r.p50), 'bank.feed history: burn_per_day']);
     rows.push(['Spread to T1', usd(f.volPerDay) + ' x sqrt(' + r.days + ')', usd(r.sigma), 'bank.feed history: daily net-flow std dev']);
-    rows.push(['P40 cash at T1', 'P50 - ' + CC.Z40 + ' x spread', usd(r.p40), 'derived']);
-    rows.push(['P10 cash at T1', 'P50 - ' + CC.Z10 + ' x spread', usd(r.p10), 'derived']);
+    rows.push(['P40 (lower-middle) at T1', 'P50 - ' + CC.Z40 + ' x spread', usd(r.p40), 'derived']);
+    rows.push(['P10 (low estimate) at T1', 'P50 - ' + CC.Z10 + ' x spread', usd(r.p10), 'derived']);
     rows.push(['Cash due at T1', usd(l.principal) + ' x ' + l.coupon + ' / ' + l.periodsPerYear + ' x ' + l.cashShare + '% cash', usd(r.due), 'crm.loan[' + l.loanId + '].principal, .coupon, .cash_vs_pik']);
     rows.push(['Coverage', 'P50 / cash due', ratio(r.coverage), 'derived']);
     rows.push(['Band', 'P10 / due to P40 / due', r.bandLow == null ? 'n/a' : ratio(r.bandLow) + ' - ' + ratio(r.bandHigh), 'derived']);
-    rows.push(['Distress level', r.rule, r.level, 'rule (deck appendix D)']);
-    rows.push(['Feed freshness', f.feedAgeDays + ' days (stale above ' + CC.STALE_DAYS + ')', r.stale ? 'stale' : 'fresh', 'bank.feed.last_updated']);
+    rows.push(['Risk level', r.rule, r.level, 'rule (deck appendix D)']);
+    rows.push(['Bank data age', f.feedAgeDays + ' days (stale above ' + CC.STALE_DAYS + ')', r.stale ? 'stale' : 'fresh', 'bank.feed.last_updated']);
     rows.push(['Principal at risk', r.level === 'None' ? 'level None: 0' : 'full principal', usd(r.principalAtRisk), 'crm.loan[' + l.loanId + '].principal']);
     rows.push(['Priority', 'principal ' + (l.principal >= 2e6 ? '>=' : '<') + ' $2M, recoverability ' + l.recoverability + ' (' + r.recovScore + ')', r.priority, 'crm.loan[' + l.loanId + '].recoverability']);
     $('trace').querySelector('tbody').innerHTML = rows.map(function (x) {
@@ -466,8 +466,8 @@ var SEED = [
       return '<div class="' + (r.priority === q[0] ? 'on' : '') + '"><b>' + q[0] + ' · ' + q[1] + '</b><br>' + q[2] + '</div>';
     }).join('');
     $('prioNote').textContent = r.priority === 'Monitor'
-      ? 'Level ' + r.level + ': not in the P1-P4 queue. Monitor only.'
-      : 'Level ' + r.level + ', principal ' + usdM(c.crm.principal) + ', recoverability ' + c.crm.recoverability + ' (first-pass, analyst-entered). Priority sets the order of work, not whether a loan is worth saving.';
+      ? 'Level ' + r.level + ': not in the P1-P4 work queue. Keep watching.'
+      : 'Level ' + r.level + ', principal ' + usdM(c.crm.principal) + ', chance of recovery ' + c.crm.recoverability + ' (first guess, entered by the analyst). Priority sets the order of work, not whether a loan is worth saving.';
     $('actSel').innerHTML = ACTIONS[r.priority].map(function (a) { return '<option>' + a + '</option>'; }).join('');
     var list = actLog[c.id] || [];
     $('actLogList').innerHTML = list.map(function (a) {

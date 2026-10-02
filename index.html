@@ -37,23 +37,24 @@
 <main>
   <h1>Alexandre Cela</h1>
   <p class="tagline">I build data and AI products for private capital, end to end.</p>
+  <p class="how">Private capital is money invested in companies and loans that don't trade on a stock exchange: startup funds, private lenders, infrastructure funds. These investors decide with little public data, so the work is turning documents into data they can trust, then into tools that speed up their decisions.</p>
   <p class="links"><a href="https://www.linkedin.com/in/alexandrecela/">LinkedIn</a><a href="https://github.com/alexandrecela10">GitHub</a><a href="mailto:alexandrecelap@gmail.com">alexandrecelap@gmail.com</a></p>
 
   <div class="pillars">
-    <div><b>Data foundations</b>Unstructured private markets data, made reliable and secure</div>
-    <div><b>Data and AI products</b>Faster, informed decisions for investment teams and MDs</div>
-    <div><b>Track record</b>Preqin's first client-facing and asset-level benchmarking products</div>
+    <div><b>Data foundations</b>Messy documents such as filings, decks and bank exports, turned into data you can check</div>
+    <div><b>Data and AI products</b>Tools that show investors what to look at first, and why</div>
+    <div><b>Track record</b>Preqin's first client-facing and asset-level benchmarking products: clients compare one investment's results with similar ones</div>
   </div>
 
-  <p class="how">Each project starts from a private capital problem and one player. Each case study shows the user stories, a hypothesis per sub-problem, what was measured, what wasn't, and the product management steps behind it. Demos use public or fictional data.</p>
+  <p class="how">Each project below starts from one real problem for one type of investor. Each case study says who it is for, what they can now do, what was measured and what wasn't, and the product steps behind it. Every demo uses public or made-up data, so you can try it.</p>
 
   <h2>Data foundations</h2>
-  <p class="group-sub">Unstructured private markets data, made reliable</p>
+  <p class="group-sub">Turning messy financial documents into clean, checked data</p>
   <div class="grid">
     <article class="card">
       <h3>BDC Footnote Tape</h3>
-      <p>Any BDC 10-K or 10-Q in. One row per loan, with its footnotes resolved, out.</p>
-      <p class="for">For: Private credit analyst</p>
+      <p>Give it any BDC&#x27;s 10-K or 10-Q (annual or quarterly report). Get back one spreadsheet row per loan, with each footnote&#x27;s meaning attached.</p>
+      <p class="for">For: An analyst at a private lender</p>
       <div class="actions">
         <a class="btn" href="projects/bdc-footnotes/">Case study</a>
         <a class="btn ghost" href="https://bdc-footnote-tape.streamlit.app">Demo</a><span class="kind">Interactive app</span>
@@ -61,8 +62,8 @@
     </article>
     <article class="card">
       <h3>BDC Mark Tape</h3>
-      <p>Public BDC filings turned into one loan tape: spread comparables for pricing, a lowest-mark review list for monitoring. Every number links to its SEC filing.</p>
-      <p class="for">For: Credit underwriter, monitoring analyst</p>
+      <p>BDCs (stock-listed funds that lend to private companies) publish every loan they hold. This tool puts those public reports into one table. Lenders use it to price a new loan and to pick which existing loans to check first. Every number links to its SEC filing.</p>
+      <p class="for">For: A lender pricing a new loan or reviewing its loans</p>
       <div class="actions">
         <a class="btn" href="projects/parallax/">Case study</a>
         <a class="btn ghost" href="https://bdc-mark-tape.streamlit.app">Demo</a><span class="kind">Interactive app</span>
@@ -71,12 +72,12 @@
   </div>
 
   <h2>Data and AI products</h2>
-  <p class="group-sub">Faster, informed decisions for investment teams</p>
+  <p class="group-sub">Tools that help investors decide faster, with the evidence shown</p>
   <div class="grid">
     <article class="card">
       <h3>Deck Rank</h3>
-      <p>Inbound pitch decks in, ranked queue out. Every score cites its slide.</p>
-      <p class="for">For: VC investment analyst</p>
+      <p>Founders email pitch decks to a startup fund. Deck Rank ranks them so the best one gets read first. Every score quotes the slide it came from.</p>
+      <p class="for">For: A junior investor at a startup fund</p>
       <div class="actions">
         <a class="btn" href="projects/deck-rank/">Case study</a>
         <a class="btn ghost" href="https://deck-rank.streamlit.app">Demo</a><span class="kind">Interactive app</span>
@@ -84,8 +85,8 @@
     </article>
     <article class="card">
       <h3>Alpha Scout</h3>
-      <p>Describe the startup you want. Get a scored shortlist from the web, every score tied to a quote and a link.</p>
-      <p class="for">For: VC investment analyst</p>
+      <p>Describe the kind of startup a fund wants to back. Get a scored shortlist from the web, each score backed by a quote and a link.</p>
+      <p class="for">For: A junior investor at a startup fund</p>
       <div class="actions">
         <a class="btn" href="projects/alpha-scout/">Case study</a>
         <a class="btn ghost" href="https://alpha-scout.streamlit.app">Demo</a><span class="kind">Interactive app</span>
@@ -93,8 +94,8 @@
     </article>
     <article class="card">
       <h3>Night’s Watch</h3>
-      <p>Flags private credit borrowers that may miss their next cash interest payment, then ranks the credit team&#x27;s work by money at stake.</p>
-      <p class="for">For: Private credit lender</p>
+      <p>Warns a lender when a company it lends to may not have enough usable cash for its next interest payment. Then it ranks which companies the lender&#x27;s staff should handle first, by money at stake.</p>
+      <p class="for">For: The team that checks borrowers at a private lender</p>
       <div class="actions">
         <a class="btn" href="projects/nights-watch/">Case study</a>
         <a class="btn ghost" href="projects/nights-watch/demo/">Demo</a><span class="kind">Runs in your browser</span>
@@ -102,8 +103,8 @@
     </article>
     <article class="card">
       <h3>Shield</h3>
-      <p>Reads a capital project&#x27;s documents, finds claims exposure and contract notice deadlines, and drafts the notice for a named person to approve.</p>
-      <p class="for">For: Infrastructure fund asset manager</p>
+      <p>Finds events in a construction project&#x27;s letters and reports that could cost the owners money. Shows each contract deadline and drafts the formal notice for a named person to approve.</p>
+      <p class="for">For: A fund that owns part of a large construction project</p>
       <div class="actions">
         <a class="btn" href="projects/shield/">Case study</a>
         <a class="btn ghost" href="projects/shield/demo/">Demo</a><span class="kind">Runs in your browser</span>
@@ -111,7 +112,7 @@
     </article>
   </div>
 
-  <footer>Demos run on free tiers with daily limits. Sample companies are fictional unless taken from public SEC filings or public web sources.</footer>
+  <footer>Demos run on free plans with daily limits. Sample companies are made up, unless they come from public US regulatory filings or public websites.</footer>
 </main>
 </body>
 </html>
