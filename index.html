@@ -28,6 +28,12 @@
   .btn { background:var(--accent); color:#fff; font-weight:700; padding:8px 14px; border-radius:6px; text-decoration:none; font-size:14px; }
   .btn.ghost { background:transparent; border:1px solid var(--accent); color:var(--accent); }
   .kind { color:var(--dim); font-size:13px; }
+  .stages { margin:0 0 10px; display:flex; gap:6px; flex-wrap:wrap; }
+  .stage { font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:2px 9px; }
+  .lifecycle { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin:28px 0 0; }
+  .lifecycle div { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:13px; color:var(--dim); }
+  .lifecycle b { display:block; color:var(--text); font-size:14px; margin-bottom:4px; }
+  @media (max-width:760px) { .lifecycle { grid-template-columns:1fr 1fr; } }
   .how { color:var(--dim); font-size:15px; max-width:760px; }
   footer { margin-top:64px; color:var(--dim); font-size:14px; }
   @media (max-width:760px) { .pillars { grid-template-columns:1fr; } }
@@ -46,6 +52,10 @@
     <div><b>Track record</b>Preqin's first client-facing and asset-level benchmarking products: clients compare one investment's results with similar ones</div>
   </div>
 
+  <h2>Across the deal lifecycle</h2>
+  <p class="group-sub">Where each project sits, from finding a company to managing the investment.</p>
+  <div class="lifecycle"><div><b>Sourcing</b>Alpha Scout</div><div><b>Screening</b>Deck Rank</div><div><b>Due diligence</b>Data Room Check</div><div><b>Pricing</b>BDC Mark Tape</div><div><b>Monitoring</b>BDC Footnote Tape<br>BDC Mark Tape<br>Night’s Watch</div><div><b>Asset management</b>Shield</div></div>
+
   <p class="how">Each project below starts from one real problem for one type of investor. Each case study says who it is for, what they can now do, what was measured and what wasn't, and the product steps behind it. Every demo uses public or made-up data, so you can try it.</p>
   <p class="how"><strong>These are side projects: prototypes and proofs of concept, built outside work.</strong> My main work is at BlackRock, with real data for real clients, and isn't shareable.</p>
 
@@ -53,6 +63,7 @@
   <p class="group-sub">Turning messy financial documents into clean, checked data</p>
   <div class="grid">
     <article class="card">
+      <div class="stages"><span class="stage">Monitoring</span></div>
       <h3>BDC Footnote Tape</h3>
       <p>Give it any BDC&#x27;s 10-K or 10-Q (annual or quarterly report). Get back one spreadsheet row per loan, with each footnote&#x27;s meaning attached.</p>
       <p class="for">For: An analyst at a private lender</p>
@@ -62,6 +73,7 @@
       </div>
     </article>
     <article class="card">
+      <div class="stages"><span class="stage">Pricing</span><span class="stage">Monitoring</span></div>
       <h3>BDC Mark Tape</h3>
       <p>BDCs (stock-listed funds that lend to private companies) publish every loan they hold. This tool puts those public reports into one table. Lenders use it to price a new loan and to pick which existing loans to check first. Every number links to its SEC filing.</p>
       <p class="for">For: A lender pricing a new loan or reviewing its loans</p>
@@ -76,6 +88,17 @@
   <p class="group-sub">Tools that help investors decide faster, with the evidence shown</p>
   <div class="grid">
     <article class="card">
+      <div class="stages"><span class="stage">Due diligence</span></div>
+      <h3>Data Room Check</h3>
+      <p>Checks every number in a seller&#x27;s deck against the data room, reads every file for red flags, and shows you the page behind each result.</p>
+      <p class="for">For: An analyst at a family office, before investing</p>
+      <div class="actions">
+        <a class="btn" href="projects/data-room-check/">Case study</a>
+        <a class="btn ghost" href="https://data-room-check.streamlit.app">Demo</a><span class="kind">Interactive app</span>
+      </div>
+    </article>
+    <article class="card">
+      <div class="stages"><span class="stage">Screening</span></div>
       <h3>Deck Rank</h3>
       <p>Founders email pitch decks to a startup fund. Deck Rank ranks them so the best one gets read first. Every score quotes the slide it came from.</p>
       <p class="for">For: A junior investor at a startup fund</p>
@@ -85,6 +108,7 @@
       </div>
     </article>
     <article class="card">
+      <div class="stages"><span class="stage">Sourcing</span></div>
       <h3>Alpha Scout</h3>
       <p>Describe the kind of startup a fund wants to back. Get a scored shortlist from the web, each score backed by a quote and a link.</p>
       <p class="for">For: A junior investor at a startup fund</p>
@@ -94,6 +118,7 @@
       </div>
     </article>
     <article class="card">
+      <div class="stages"><span class="stage">Monitoring</span></div>
       <h3>Night’s Watch</h3>
       <p>Warns a lender when a company it lends to may not have enough usable cash for its next interest payment. Then it ranks which companies the lender&#x27;s staff should handle first, by money at stake.</p>
       <p class="for">For: The team that checks borrowers at a private lender</p>
@@ -103,6 +128,7 @@
       </div>
     </article>
     <article class="card">
+      <div class="stages"><span class="stage">Asset management</span></div>
       <h3>Shield</h3>
       <p>Finds events in a construction project&#x27;s letters and reports that could cost the owners money. Shows each contract deadline and drafts the formal notice for a named person to approve.</p>
       <p class="for">For: A fund that owns part of a large construction project</p>
