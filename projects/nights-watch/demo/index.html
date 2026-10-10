@@ -81,14 +81,14 @@
 <body>
 <header>
   <h1>Night’s Watch <span class="sub">demo</span></h1>
-  <p>Ranks borrowers by their risk of missing the next interest payment in cash. Edit the simulated loan record and bank balances, and the ranking updates.</p>
+  <p>You're a credit analyst at a fund that lends to private companies. Your borrowers are ranked by their risk of missing the next interest payment in cash. Edit the simulated loan record and bank balances, and watch your ranking update.</p>
 </header>
 <div class="notice"><b>Simulated connector, made-up data.</b> Every borrower, account, currency code and exchange rate (FX) here is fictional. Nothing leaves your browser: no server, no AI model call. Next step: real connectors to Salesforce (or another loan database, CRM) and to bank balances. Data as of: <b id="today"></b>.</div>
 
 <div class="wrap">
   <!-- LEFT: ranked portfolio, worst first -->
   <section class="card">
-    <h2>All borrowers, worst first</h2>
+    <h2>Your borrowers, worst first</h2>
     <div style="overflow-x:auto">
     <table id="rank">
       <thead><tr>
@@ -467,7 +467,7 @@ var SEED = [
     }).join('');
     $('prioNote').textContent = r.priority === 'Monitor'
       ? 'Level ' + r.level + ': not in the P1-P4 work queue. Keep watching.'
-      : 'Level ' + r.level + ', principal ' + usdM(c.crm.principal) + ', chance of recovery ' + c.crm.recoverability + ' (first guess, entered by the analyst). Priority sets the order of work, not whether a loan is worth saving.';
+      : 'Level ' + r.level + ', principal ' + usdM(c.crm.principal) + ', chance of recovery ' + c.crm.recoverability + ' (first guess, entered by you). Priority sets the order of work, not whether a loan is worth saving.';
     $('actSel').innerHTML = ACTIONS[r.priority].map(function (a) { return '<option>' + a + '</option>'; }).join('');
     var list = actLog[c.id] || [];
     $('actLogList').innerHTML = list.map(function (a) {

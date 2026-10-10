@@ -4,157 +4,294 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shield | Alexandre Cela</title>
+<meta name="description" content="Finds events in a construction project&#x27;s documents that could cost your fund money, shows each contract deadline, and drafts the notice for you to approve.">
 <!-- Lato matches the LinkedIn banner typeface -->
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-  /* Colours taken from the LinkedIn banner: navy background, blue accent */
-  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff; }
+  /* Brand: navy background, blue accent (LinkedIn banner). Layout: company case-study pattern. */
+  :root { --bg:#070b24; --panel:#0e1538; --line:#24306b; --text:#e8ecff; --dim:#9aa6d6; --accent:#4f7cff;
+          --pass:#3ecf8e; --fail:#ff6b6b; --key:#ffd23f; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.6 Lato, system-ui, sans-serif; }
-  main { max-width:880px; margin:0 auto; padding:56px 24px 80px; }
-  h1 { font-size:44px; font-weight:900; margin:0 0 6px; }
-  /* display:table keeps the blue rule as wide as the text but forces its own line */
-  h2 { font-size:20px; margin:44px 0 12px; padding-top:12px; border-top:2px solid var(--accent); display:table; }
-  .sub { color:var(--dim); font-size:19px; margin:0 0 20px; }
-  .tag { display:inline-block; font-size:13px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:2px 8px; margin:0 6px 6px 0; }
-  .box { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 24px; }
-  table { width:100%; border-collapse:collapse; font-size:15px; }
-  th, td { text-align:left; vertical-align:top; padding:9px 12px; border-bottom:1px solid var(--line); }
-  th { color:var(--dim); font-weight:700; }
-  code { font-family:ui-monospace, Menlo, monospace; font-size:14px; }
+  body { margin:0; background:var(--bg); color:var(--text); font:18px/1.65 Lato, system-ui, sans-serif; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
+  .read { max-width:760px; }
   a { color:var(--accent); }
-  ul, ol { padding-left:20px; margin:8px 0; }
-  footer { margin-top:56px; color:var(--dim); font-size:14px; }
-  /* Primary call to action for the demo */
-  .btn { display:inline-block; background:var(--accent); color:#fff; font-weight:700; padding:10px 18px; border-radius:6px; text-decoration:none; margin-top:10px; }
-  /* Card grid: persona and hypothesis cards side by side, stacked on small screens */
-  .formula { font-family:ui-monospace, Menlo, monospace; font-size:15px; color:var(--dim); margin:0 0 14px; }
-  .cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  @media (max-width:700px) { .cards { grid-template-columns:1fr; } }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px 20px; font-size:15px; }
-  .card h3 { margin:0 0 12px; font-size:15px; letter-spacing:.08em; color:var(--accent); }
+  .dim { color:var(--dim); }
+  /* Hero */
+  .hero { padding:72px 0 40px; }
+  .eyebrow { color:var(--accent); font-weight:900; font-size:13px; letter-spacing:.14em; text-transform:uppercase; }
+  .hero h1 { font-size:52px; line-height:1.1; font-weight:900; margin:14px 0 18px; max-width:900px; }
+  @media (max-width:700px) { .hero h1 { font-size:34px; } }
+  .lede { font-size:21px; color:var(--dim); max-width:760px; margin:0; }
+  .cta { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:26px; }
+  .btn { background:var(--accent); color:#fff; font-weight:900; padding:12px 20px; border-radius:8px; text-decoration:none; }
+  .btn.off { background:transparent; border:1px solid var(--line); color:var(--dim); font-weight:700; }
+  /* Stat strip */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin:40px 0 0; }
+  @media (max-width:800px) { .stats { grid-template-columns:1fr 1fr; } }
+  .stat { padding:22px 18px 22px 0; }
+  .stat b { display:block; font-size:38px; font-weight:900; line-height:1.1; }
+  .stat span { color:var(--dim); font-size:14px; }
+  .shot { margin:40px 0 0; }
+  .shot img, figure img { width:100%; display:block; border:1px solid var(--line); border-radius:12px; }
+  figcaption { color:var(--dim); font-size:14px; margin-top:8px; }
+  /* At a glance */
+  .glance { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin:36px 0 0; font-size:15px; }
+  @media (max-width:800px) { .glance { grid-template-columns:1fr 1fr; } }
+  .glance dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+  .glance dd { margin:4px 0 0; }
+  /* Numbered sections */
+  section { padding:64px 0 0; }
+  .num { color:var(--accent); font-weight:900; font-size:14px; letter-spacing:.12em; }
+  h2 { font-size:34px; line-height:1.2; margin:6px 0 18px; font-weight:900; }
+  h3 { font-size:19px; margin:0 0 8px; }
+  p { margin:0 0 14px; }
+  .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .cards.two { grid-template-columns:1fr 1fr; }
+  @media (max-width:800px) { .cards, .cards.two { grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; font-size:16px; }
+  .card .k { color:var(--accent); font-weight:900; font-size:13px; letter-spacing:.1em; text-transform:uppercase; }
+  .card dl { margin:0; }
   .card dt { color:var(--dim); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin-top:12px; }
   .card dd { margin:2px 0 0; }
   .rate { font-weight:900; color:#fff; }
-  /* Details: collapsible sections so the top of the page stays short */
-  details { border-top:1px solid var(--line); padding:14px 0; }
-  summary { cursor:pointer; font-weight:700; font-size:18px; }
-  details[open] summary { margin-bottom:12px; }
+  .pull { border-left:3px solid var(--accent); padding:4px 0 4px 20px; font-size:24px; line-height:1.4; font-weight:700; margin:28px 0; max-width:820px; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  .scroll { overflow-x:auto; }
+  th, td { text-align:left; vertical-align:top; padding:12px; border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.05em; }
+  td b.res { color:var(--pass); }
+  ul, ol { padding-left:20px; margin:8px 0; }
+  li { margin:4px 0; }
+  .steps { counter-reset:s; list-style:none; padding:0; }
+  .steps li { counter-increment:s; padding-left:44px; position:relative; margin:14px 0; }
+  .steps li::before { content:counter(s); position:absolute; left:0; top:0; width:30px; height:30px; border-radius:50%;
+                      background:var(--panel); border:1px solid var(--accent); color:var(--accent); font-weight:900;
+                      font-size:14px; display:flex; align-items:center; justify-content:center; }
+  /* Resources: collapsed */
+  .resources { margin-top:72px; border-top:2px solid var(--accent); padding-top:24px; }
+  details { border-bottom:1px solid var(--line); padding:18px 0; }
+  summary { cursor:pointer; font-weight:900; font-size:20px; list-style:none; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"+"; color:var(--accent); display:inline-block; width:26px; }
+  details[open] summary::before { content:"\2212"; }
+  summary small { color:var(--dim); font-weight:400; font-size:15px; margin-left:8px; }
+  details[open] > *:not(summary) { margin-top:14px; }
+  details h4 { font-size:17px; margin:26px 0 8px; }
+  details .card { font-size:15px; }
+  /* Data room grid (main learnings) */
+  .room { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; overflow:hidden; margin:0; }
+  .room figcaption { margin:0 0 8px; }
+  .room .row { display:flex; align-items:center; gap:2px; margin:2px 0; }
+  .room .fname { width:150px; flex:none; font-size:12px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cell { width:11px; height:11px; border-radius:3px; background:#1b2552; display:inline-block; flex:none; }
+  .cell.lit { background:var(--accent); }
+  .cell.key { box-shadow:0 0 0 2px var(--key); }
+  .legend { font-size:13px; color:var(--dim); }
+  .legend .cell { vertical-align:middle; margin:0 4px 0 10px; }
+  .rooms { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .lanes { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .lanes .fname { width:96px; }
+  .lanes .cell { width:9px; height:9px; }
+  .lanes .room { padding:10px; }
+  @media (max-width:800px) { .rooms, .lanes { grid-template-columns:1fr; } }
+  .pages { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:700px) { .pages { grid-template-columns:1fr; } }
+  .chart { margin:10px 0; }
+  .chart svg { width:100%; max-width:640px; height:auto; }
+  .chart .bar { fill:var(--accent); }
+  .chart .lab { fill:var(--dim); font-size:13px; }
+  .chart .val { fill:var(--text); font-size:13px; font-weight:700; }
+  .chip { font-weight:900; font-size:12px; padding:1px 8px; border-radius:10px; }
+  .chip.pass { color:#062b1b; background:var(--pass); }
+  .chip.fail { color:#2b0606; background:var(--fail); }
+  .type { font-family:ui-monospace, Menlo, monospace; font-size:12px; color:var(--key); }
+  .tree { font-size:14px; line-height:1.9; }
+  footer { margin:72px 0 48px; color:var(--dim); font-size:14px; }
+  /* The original documents, rendered from markdown */
+  .doc { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:8px 28px 24px; font-size:15px; max-width:900px; }
+  .doc h1 { font-size:24px; margin:20px 0 8px; } .doc h2 { font-size:20px; margin:26px 0 8px; } .doc h3 { font-size:16px; }
+  .doc table { margin:10px 0; display:block; overflow-x:auto; } .doc hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
+  .doc blockquote { border-left:3px solid var(--accent); margin:12px 0; padding:2px 14px; color:var(--dim); }
+  .doc code { font-size:13px; color:var(--dim); }
+  /* Blocks moved from the earlier page layout */
+  .card h3 { margin:0 0 12px; font-size:13px; letter-spacing:.1em; color:var(--accent); text-transform:uppercase; }
+  .formula { font-family:ui-monospace, Menlo, monospace; font-size:15px; color:var(--dim); margin:0 0 14px; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 24px; font-size:16px; }
+  code { font-family:ui-monospace, Menlo, monospace; font-size:14px; }
+  pre { white-space:pre-wrap; font-size:14px; }
+  details .cards { grid-template-columns:1fr 1fr; }
+  @media (max-width:800px) { details .cards { grid-template-columns:1fr; } }
+  details table { display:block; overflow-x:auto; }
+  details code { overflow-wrap:anywhere; }
+  .deck { width:100%; height:80vh; border:1px solid var(--line); border-radius:12px; background:#fff; }
 </style>
 </head>
 <body>
-<main>
+<div class="wrap">
 
-<!-- TOP: problem, player, demo. Readable in under 30 seconds -->
-<h1>Shield</h1>
-<p class="sub">Finds events in a construction project's letters and reports that could cost the owners money. Shows each contract deadline and drafts the formal notice for a named person to approve.</p>
-<span class="tag">Infrastructure investing</span><span class="tag">Overseeing fund investments</span><span class="tag">Prototype</span><span class="tag">Fictional data</span>
+<!-- HERO -->
+<header class="hero">
+  <div class="eyebrow">Case study · Infrastructure investing · AI agent</div>
+  <h1>See the contractor's claim before it reaches your quarterly valuation.</h1>
+  <p class="lede">You're an asset manager at an infrastructure fund that owns part of a company building a gas plant. Shield reads the project's letters and reports for events that could cost the fund money. It shows each contract deadline and drafts the formal notice. You approve it, or not.</p>
+  <div class="cta">
+    <a class="btn" href="demo/index.html">Try the demo</a>
+    <span class="dim" style="font-size:14px">The fund, project company, project and contractor are fictional. The page runs in your browser, with no server and no AI model call.</span>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>6 days</b><span>left to send notice about rock found on site (demo event EV-1)</span></div>
+    <div class="stat"><b>$6.63M</b><span>of fund equity at risk on that event, on fictional inputs</span></div>
+    <div class="stat"><b>3 of 4</b><span>events found in the test set, with 0 false alarms</span></div>
+    <div class="stat"><b>0 of 7</b><span>invented citations shown, in a test built to produce them</span></div>
+  </div>
+  <dl class="glance">
+    <div><dt>For</dt><dd>An infrastructure fund that owns part of a project company</dd></div>
+    <div><dt>Users</dt><dd>You, the asset manager, and your fund partner, who decides what goes into each valuation</dd></div>
+    <div><dt>Data</dt><dd>Fictional: 8 test documents, 15 in the demo</dd></div>
+    <div><dt>Built with</dt><dd>Python agent with approval rules, static demo page</dd></div>
+  </dl>
+</header>
 
-<h2>Problem</h2>
-<p><strong>When a contractor claims extra money, or a contract notice deadline is missed, money moves from the project company to the contractor. The fund that owns part of the project often first sees the loss when its stake is revalued at quarter end.</strong></p>
-<p>Example: in the demo, the project company has 6 days left to send notice about rock found on site. The fund's share of what's at stake is $6.63M.</p>
+<!-- 01 VISION -->
+<section class="read">
+  <div class="num">01 · VISION</div>
+  <h2>No drop in your stake's value from a claim you could have seen.</h2>
+  <p>The signs of a claim sit in letters, meeting minutes and daily site reports weeks before the formal claim. The vision: every document read, every notice deadline counted from the clause and its amendments, and every cost shown as your fund's share, with a named person approving every notice.</p>
+</section>
 
-<h2>For</h2>
-<table>
-  <tr><th>Organisation</th><td>An infrastructure fund that owns part of a project company building something large, such as a gas plant</td></tr>
-  <tr><th>User</th><td>The fund's asset manager (the person overseeing this investment). Decides which events to raise with the project company, and whether a draft notice can go out</td></tr>
-  <tr><th>Buyer</th><td>A fund partner or the head of asset management. Decides whether to pay for the tool across all the fund's projects, and what goes into each quarter's valuation of the stake</td></tr>
-</table>
+<!-- 02 PROBLEM -->
+<section>
+  <div class="num">02 · THE PROBLEM</div>
+  <h2 class="read">Five things go wrong today.</h2>
+  <div class="cards">
+    <div class="card"><div class="k">1 · You hear about a claim late</div><p>Its signs sit in letters, minutes and daily site reports nobody reads in full.</p></div>
+    <div class="card"><div class="k">2 · Every event costs a manual search</div><p>Linking a letter to its site record, schedule entry and clause is done by hand.</p></div>
+    <div class="card"><div class="k">3 · A missed deadline loses the right to claim</div><p>Each notice deadline depends on the clause and its amendments, tracked from memory or a spreadsheet.</p></div>
+    <div class="card"><div class="k">4 · Your partner learns at quarter end</div><p>Event costs are stated for the whole project. You think in terms of the fund's own share.</p></div>
+    <div class="card"><div class="k">5 · A notice can go out with no owner</div><p>Drafts move by email, and who approved what is unclear.</p></div>
+  </div>
+</section>
 
-<h2>Terms on this page</h2>
-<div class="box"><ul>
-  <li><strong>Infrastructure fund:</strong> a fund that invests in roads, power plants and similar projects.</li>
-  <li><strong>Project company (ProjectCo):</strong> the company that owns the project and signs the building contract.</li>
-  <li><strong>Contractor (EPC):</strong> the firm hired to design, buy for and build the project.</li>
-  <li><strong>Claim:</strong> a formal request for extra money or time under the contract.</li>
-  <li><strong>Notice deadline (time bar):</strong> the last day to send a written notice. Miss it and the right to claim can be lost.</li>
-  <li><strong>Clause, amendment:</strong> a numbered rule in the contract, and a later change to it.</li>
-  <li><strong>Contingency:</strong> money set aside in the budget for overruns.</li>
-  <li><strong>Fund equity at risk:</strong> the part of a loss that comes out of the fund's own money.</li>
-</ul></div>
+<!-- 03 SOLUTION -->
+<section>
+  <div class="num">03 · THE SOLUTION</div>
+  <h2 class="read">The agent reads. Code counts the days. You approve.</h2>
+  <ol class="steps read">
+    <li><strong>Every document is scanned for trigger phrases.</strong> Each hit gets a clause and a confidence score. Below 0.6, it stays hidden. Documents from another project are refused.</li>
+    <li><strong>Every quote is checked.</strong> It must appear word for word in its source, or the event is marked down.</li>
+    <li><strong>Every deadline is counted.</strong> Event date plus the clause's notice period. If an amendment is missing, the date is marked provisional.</li>
+    <li><strong>You see your fund's share.</strong> The cost above the remaining contingency, times the fund's share, is fund equity at risk.</li>
+    <li><strong>You approve the draft notice.</strong> Only a person on the approver list can approve. Every decision is logged. Nothing is sent.</li>
+  </ol>
+</section>
 
-<h2>User stories</h2>
-<div class="box"><ol>
-  <li><strong>Deadline.</strong> As an asset manager, I want every open notice deadline listed with the documents behind it, so the project company sends notice before the deadline passes.</li>
-  <li><strong>Equity at risk.</strong> As an asset manager, I want each event's cost shown as the fund's share, so I can tell the partner before the quarterly valuation.</li>
-  <li><strong>Control.</strong> As a fund partner, I want every notice approved by a named person and logged, so the fund can show who decided what.</li>
-</ol></div>
+<!-- 04 JTBD / HYPOTHESIS / IMPACT -->
+<section>
+  <div class="num">04 · HYPOTHESES AND IMPACT</div>
+  <h2 class="read">One job, one bet, one number each.</h2>
+  <div class="scroll"><table>
+    <tr><th>Your job</th><th>Hypothesis</th><th>Metric and target, then result</th><th>Expected impact</th></tr>
+    <tr><td>When a document arrives, I want events that could cost money flagged, so I hear before the formal claim.</td><td>If every letter, minute and daily report is checked against the contract's trigger phrases, you learn of an event sooner, because the signs are in the documents first.</td><td>Days from the first document to you knowing: down. Baseline unobserved. Guardrail precision 0.85 or more: <b class="res">1.00</b> on 8 documents</td><td>Earlier action on events (unobserved)</td></tr>
+    <tr><td>When an event is flagged, I want the trail from letter to clause checked, so I review instead of search.</td><td>If each event arrives with checked links from letter to clause, review time per event goes down, because you check links instead of searching for them.</td><td>Minutes to review one event: down. Baseline unobserved. <b class="res">3 of 3</b> citations shown verified</td><td>Less review time per event (unobserved)</td></tr>
+    <tr><td>When an event starts a clock, I want the deadline from the clause and its amendments, so notice goes out in time.</td><td>If deadlines come from the clause and all its amendments, fewer deadlines pass without a notice, because errors like 28 days vs an amended 21 are caught.</td><td>Deadlines passed without a notice, per project per year: down. Baseline unobserved. <b class="res">3 of 3</b> deadlines correct</td><td>Fewer rights to claim lost</td></tr>
+    <tr><td>When I find an event, I want its cost as the fund's share, so my partner hears before the valuation.</td><td>If you see fund equity at risk when an event is found, fewer drops in value reach your partner as a surprise, because they hear before the valuation date.</td><td>Share of event-driven drops in value flagged before quarter end: up. Baseline unobserved</td><td>Fewer surprise write-downs (unobserved)</td></tr>
+    <tr><td>When a notice is drafted, I want a named person to approve it, so the fund can show who decided.</td><td>If only people on the approver list can approve and every decision is logged, no notice leaves without an owner, because the system can't send and refuses anyone else.</td><td>Notices sent without a logged approver: down to zero. <b class="res">3 of 3</b> stopped at PENDING_APPROVAL</td><td>Every notice has an owner</td></tr>
+  </table></div>
+  <p class="dim" style="margin-top:12px">Results from the 2026-10-01 test run: 17 of 17 agent tests and 10 of 10 demo tests pass. Must not get worse: precision, the share of alerts that are real, stays at 0.85 or more. No asset manager has used it.</p>
+</section>
 
-<h2>Try it</h2>
-<div class="box">
-<ol>
-  <li>Pick an event the tool found. EV-1 has 6 days left before the project company's notice deadline.</li>
-  <li>Follow the document trail: letter, site record, schedule entry, contract clause, deadline countdown. Below it, read how much of the fund's own money is at risk.</li>
-  <li>Read the draft notice, then approve or reject it. The decision goes into the log. Switch "Acting as" to the analyst to see the tool refuse someone who isn't allowed to approve.</li>
-</ol>
-<p><strong>Sample data only.</strong> The fund, project company, project and contractor are fictional. "Today" is fixed at 26 Aug 2026. The page runs in the browser, with no server and no AI model call. The agent's outputs were computed beforehand and saved into the page.</p>
-<a class="btn" href="demo/index.html">Open the demo</a>
+<!-- 05 VALUE -->
+<section>
+  <div class="num">05 · THE VALUE</div>
+  <h2 class="read">What it's worth, and what it asks of you.</h2>
+  <p class="pull">In the demo, the rock found on site puts $19.58M at stake for the project and $6.63M of the fund's own money at risk. The notice window closes in 6 days.</p>
+  <p class="dim">Illustrative, on fictional inputs. All 3 demo events total $9.34M, 3.9% of the stake's value.</p>
+  <div class="cards two" style="margin-top:22px">
+    <div class="card"><div class="k">You, the asset manager</div><dl>
+      <dt>You get</dt><dd>"I hear about a claim or a notice deadline weeks before the quarter ends, with the documents, and the project company sends notice on time."</dd>
+      <dt>Will you believe it?</dt><dd><span class="rate">Medium.</span> Every deadline and quote can be checked. The tool found 3 of 4 events in the test set.</dd>
+      <dt>How fast</dt><dd><span class="rate">Low delay.</span> It reads documents the project company already holds. Time to first alert is unmeasured.</dd>
+      <dt>What it takes</dt><dd><span class="rate">Medium.</span> Read access to the project company's document and schedule files. Each draft needs your review.</dd>
+      <dt>What you give up</dt><dd><span class="rate">Medium.</span> The project company's managers may see it as the fund checking their work. A list of known risks can be handed to the other side in a legal dispute.</dd>
+    </dl></div>
+    <div class="card"><div class="k">Your fund partner</div><dl>
+      <dt>They get</dt><dd>"No drop in our stake's value from a claim we could have seen. Each cut traces back to a document."</dd>
+      <dt>Will they believe it?</dt><dd><span class="rate">Low.</span> That earlier notices lead to fewer surprise drops in value is a hypothesis. There's no data across the fund's projects.</dd>
+      <dt>How fast</dt><dd><span class="rate">High delay.</span> The effect on valuations shows over several quarters.</dd>
+      <dt>What it takes</dt><dd><span class="rate">Medium.</span> Document access depends on the fund's right to information in each project.</dd>
+      <dt>What they give up</dt><dd><span class="rate">Medium.</span> Some goodwill with the project company's managers. Lawyers must review the list of risks.</dd>
+    </dl></div>
+  </div>
+  <p style="margin-top:18px"><strong>The weak link is your partner's belief and the delay.</strong> The cheapest fix: run it on the archive of one finished project, count the drops in stake value caused by claims, and check whether the documents showed each one earlier. That gives evidence in weeks, not quarters.</p>
+</section>
+
+<!-- 06 LIMITATIONS -->
+<section class="read">
+  <div class="num">06 · LIMITATIONS</div>
+  <h2>What this doesn't prove yet.</h2>
+  <ul>
+    <li><strong>Data:</strong> fictional. 8 test documents. The demo shows 15 documents, 2 of them added for the demo.</li>
+    <li><strong>Users:</strong> no asset manager or partner has used it. Every "before" is assumed.</li>
+    <li><strong>Detection:</strong> keyword rules, not an AI model. Accuracy on real letters is unmeasured.</li>
+    <li><strong>Awareness date:</strong> the agent uses the document date. Contracts often start the clock when a party "became aware, or should have", which can be earlier.</li>
+    <li><strong>Value:</strong> assumes every open dispute is lost, and that the owners' money covers overruns above contingency. That overstates the expected loss.</li>
+    <li><strong>Who approves:</strong> the demo makes you the approver. In practice the project company sends notices, and the fund acts through its rights as a shareholder.</li>
+    <li><strong>Source mismatch:</strong> EV-1 in the demo uses the walkthrough record (deadline amended to 21 days). The agent's test version of the same event uses 28 days.</li>
+  </ul>
+</section>
+
+<!-- 07 NON-GOALS / NEXT -->
+<section>
+  <div class="num">07 · SCOPE AND NEXT STEPS</div>
+  <h2 class="read">What it won't do, and what comes next.</h2>
+  <div class="cards two">
+    <div class="card"><div class="k">Non-goals</div><ul>
+      <li><strong>Valuing claims.</strong> Delay days, daily cost and direct cost are fictional placeholders.</li>
+      <li><strong>Reporting.</strong> No export to the valuation model or the report to the fund's investors.</li>
+      <li><strong>All projects.</strong> One contract, one project. No rules per contract form.</li>
+      <li><strong>Claim strategy and legal advice.</strong> The agent refuses strategy questions.</li>
+      <li><strong>Sending notices,</strong> reading scanned pages, links to document and schedule systems.</li>
+    </ul></div>
+    <div class="card"><div class="k">Next</div><ol>
+      <li><strong>A backtest on one finished project's archive,</strong> against a list of events marked by an expert.</li>
+      <li><strong>Read-only, with the project company's lawyers owning the list of risks,</strong> so a dispute can't turn it against the fund.</li>
+      <li><strong>An AI-model extractor</strong> in place of keyword rules, to find events like the missed LTR-006.</li>
+      <li><strong>Two reviewers, 10 events,</strong> with and without the trail, to time the review.</li>
+      <li><strong>Publish the code</strong> once real company names are checked and replaced.</li>
+    </ol></div>
+  </div>
+</section>
+
+<!-- RESOURCES: collapsed -->
+<div class="resources">
+  <div class="num">RESOURCES</div>
+  <h2>Go deeper.</h2>
+
+  <details><summary>Try the demo, step by step <small>three steps, in order</small></summary>
+<div class="read">
+  <ol class="steps">
+    <li><strong>Pick an event the tool found.</strong> EV-1 has 6 days left before the project company's notice deadline.</li>
+    <li><strong>Follow the document trail:</strong> letter, site record, schedule entry, contract clause, deadline countdown. Below it, you read how much of your fund's own money is at risk.</li>
+    <li><strong>Read the draft notice, then approve or reject it.</strong> Your decision goes into the log. Switch "Acting as" to the analyst to see the tool refuse someone who isn't allowed to approve.</li>
+  </ol>
+  <p><strong>Sample data only.</strong> The fund, project company, project and contractor are fictional. "Today" is fixed at 26 Aug 2026. The agent's outputs were computed beforehand and saved into the page.</p>
 </div>
+  </details>
+  <details><summary>Main learnings <small>test run, evidence checks, deadlines, approval controls</small></summary>
 
-<!-- DETAILS: everything a reviewer needs, collapsed by default -->
-<h2>Details</h2>
-
-<details><summary>Value equation</summary>
-<p class="formula">value = (outcome x likelihood) / (time delay x effort &amp; sacrifice)</p>
-<div class="cards">
-  <div class="card"><h3>ASSET MANAGER</h3><dl>
-    <dt>Outcome</dt><dd>"I hear about a claim or a notice deadline weeks before the quarter ends, with the documents, and the project company sends notice on time."</dd>
-    <dt>Likelihood</dt><dd><span class="rate">MEDIUM.</span> Every deadline and quote can be checked. The tool found 3 of 4 events in the test set. No asset manager has tried it.</dd>
-    <dt>Delay</dt><dd><span class="rate">LOW.</span> It reads documents the project company already holds. Time to first alert is unmeasured.</dd>
-    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Needs read access to the project company's document and schedule files. Each draft needs a human review.</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> The project company's managers may see it as the fund checking their work. A list of known risks can be handed to the other side in a legal dispute.</dd>
-  </dl></div>
-  <div class="card"><h3>FUND PARTNER</h3><dl>
-    <dt>Outcome</dt><dd>"No drop in our stake's value from a claim we could have seen. Each cut traces back to a document."</dd>
-    <dt>Likelihood</dt><dd><span class="rate">LOW.</span> That earlier notices lead to fewer surprise drops in value is a hypothesis. There's no data across the fund's projects.</dd>
-    <dt>Delay</dt><dd><span class="rate">HIGH.</span> The effect on valuations shows over several quarters.</dd>
-    <dt>Effort</dt><dd><span class="rate">MEDIUM.</span> Document access depends on the fund's right to information in each project.</dd>
-    <dt>Sacrifice</dt><dd><span class="rate">MEDIUM.</span> Some goodwill with the project company's managers. Lawyers must review the list of risks.</dd>
-  </dl></div>
-</div>
-<p><strong>Verdict:</strong> the outcome is clear for both. <strong>The partner's likelihood and delay are weakest.</strong></p>
 <ul>
-  <li><strong>Fix 1, backtest:</strong> run it on the archive of one finished project. Count the drops in stake value caused by claims and similar events. Check whether the documents showed each one earlier. This gives evidence in weeks, not quarters.</li>
-  <li><strong>Fix 2, sacrifice:</strong> run it read-only, with the project company's lawyers owning the list of risks. The risk of handing it over in a dispute then sits with the party that already holds the documents.</li>
+  <li><strong>Test run (2026-10-01, 8 fictional documents):</strong> 17 of 17 tests passed. Precision 1.00 (3 of 3 alerts real), recall 0.75 (3 of 4 events found, missed LTR-006), 2 of 2 non-events correctly ignored. Supports 1, with a gap in recall.</li>
+  <li><strong>Evidence:</strong> 3 of 3 shown citations verified. A test setup built to invent citations produced 7 fake ones; 0 were shown. Supports 2.</li>
+  <li><strong>Deadlines:</strong> 3 of 3 match the expected dates, incl. 1 flagged provisional for a missing amendment. Supports 3.</li>
+  <li><strong>Approval controls:</strong> 1 document from another project refused. 3 of 3 notices stopped at PENDING_APPROVAL. A person not on the approver list was refused. 21 audit log entries, tamper check (hash chain) intact. Supports 5.</li>
+  <li><strong>Demo tests:</strong> 10 of 10 pass (<code>node --test demo/tests/calc.test.js</code>). They cover deadlines, amendments, status cut-offs, matching the agent's 3 deadlines, 15 trail quotes and value at risk.</li>
+  <li><strong>Demo figures:</strong> EV-1 shows $19.58M at stake for the project and $6.63M of fund equity at risk. All 3 events total $9.34M, 3.9% of the stake's value. Inputs are fictional, so these show how the calculation works, not a result. Relates to 4.</li>
 </ul>
-</details>
 
-<details><summary>Sub-problems</summary>
-<p>"Commercial event" here means something in a document, like a late site handover, that can start a notice deadline or a claim.</p>
-<ol>
-  <li><strong>Detection.</strong> Signs of a claim sit in letters, meeting minutes and daily site reports that nobody reads in full.</li>
-  <li><strong>Evidence.</strong> Linking a letter to its site record, schedule entry and clause is done by hand.</li>
-  <li><strong>Deadline.</strong> Each notice deadline depends on the clause and its amendments. Missing one can cost the right to claim.</li>
-  <li><strong>Equity view.</strong> Event costs are stated for the whole project. The fund thinks in terms of its own share.</li>
-  <li><strong>Control.</strong> A draft notice must not go out without a named person's approval.</li>
-  <li><strong>Claim value.</strong> Working out what a claim is worth needs a construction cost expert.</li>
-  <li><strong>Reporting.</strong> Events need to reach the quarterly valuation and the report to the fund's own investors.</li>
-  <li><strong>All projects.</strong> Each project has its own contract form, amendments and document systems.</li>
-</ol>
-<p>This build tackles <strong>1 to 5</strong>. 1, 2 and 4 are partial.</p>
-<table>
-  <tr><th>#</th><th>Status</th><th>Proof</th></tr>
-  <tr><td>1</td><td>Partial</td><td>Agent: <code>agent/llm.py</code> <code>DummyExtractor</code> matches keywords. Events scored below 0.6 stay hidden. Recall 0.75 (share of real events found)</td></tr>
-  <tr><td>2</td><td>Partial</td><td>Agent: <code>nodes.verify_citations</code> checks the letter quote. Demo: the trail in <code>demo/data.js</code> is built by hand, then checked by <code>calc.js</code> <code>verifyQuote</code></td></tr>
-  <tr><td>3</td><td>Tackled</td><td>Agent: <code>nodes.compute_deadlines</code> marks a date provisional when an amendment is missing. Demo: <code>calc.js</code> <code>deadline</code> uses the changed period when the amendment is on file</td></tr>
-  <tr><td>4</td><td>Partial</td><td>Demo only: <code>calc.js</code> <code>equityAtRisk</code>. Not in the agent. Inputs fictional</td></tr>
-  <tr><td>5</td><td>Tackled</td><td>Agent: <code>governance.approve_notice</code>, can't send anything. Demo: approve / reject step and decision log</td></tr>
-</table>
-</details>
+  </details>
+  <details><summary>Hypotheses in full <small>before and after, and the test for each</small></summary>
 
-<details><summary>How it works</summary>
-<ol>
-  <li><strong>Read in:</strong> documents arrive. Documents from another project are refused and logged.</li>
-  <li><strong>Find:</strong> each document is scanned for trigger phrases. Each hit gets a clause and a confidence score. Below 0.6, it stays hidden.</li>
-  <li><strong>Check:</strong> each quote must appear word for word in its source document, or the event is marked down.</li>
-  <li><strong>Deadline:</strong> the event date plus the clause's notice period. If an amendment is missing, the date is marked provisional.</li>
-  <li><strong>Value (demo):</strong> days of delay beyond the schedule's spare days (float), times the cost per day, plus direct costs. The part above the remaining contingency, times the fund's share, is fund equity at risk.</li>
-  <li><strong>Draft:</strong> a notice that cites each source, with status PENDING_APPROVAL.</li>
-  <li><strong>Approval:</strong> only a person on the approver list can approve. Every approval, rejection and refusal is logged. Nothing is sent.</li>
-</ol>
-</details>
-
-<details><summary>Hypotheses, one per tackled sub-problem</summary>
 <div class="cards">
   <div class="card"><h3>1 · DETECTION</h3><dl>
     <dt>Before -> after</dt><dd>event found when the formal claim arrives or in the quarterly report -> <strong>flagged on the date of the document that shows it</strong></dd>
@@ -187,9 +324,61 @@
     <dt>Test</dt><dd>Approval rule tests, plus attempts to approve as someone not on the list.</dd>
   </dl></div>
 </div>
-</details>
 
-<details><summary>Scope and non-goals</summary>
+  </details>
+  <details><summary>All sub-problems <small>the 8 found, what's tackled, and where in the code</small></summary>
+
+<p>"Commercial event" here means something in a document, like a late site handover, that can start a notice deadline or a claim.</p>
+<ol>
+  <li><strong>Detection.</strong> Signs of a claim sit in letters, meeting minutes and daily site reports that nobody reads in full.</li>
+  <li><strong>Evidence.</strong> Linking a letter to its site record, schedule entry and clause is done by hand.</li>
+  <li><strong>Deadline.</strong> Each notice deadline depends on the clause and its amendments. Missing one can cost the right to claim.</li>
+  <li><strong>Equity view.</strong> Event costs are stated for the whole project. The fund thinks in terms of its own share.</li>
+  <li><strong>Control.</strong> A draft notice must not go out without a named person's approval.</li>
+  <li><strong>Claim value.</strong> Working out what a claim is worth needs a construction cost expert.</li>
+  <li><strong>Reporting.</strong> Events need to reach the quarterly valuation and the report to the fund's own investors.</li>
+  <li><strong>All projects.</strong> Each project has its own contract form, amendments and document systems.</li>
+</ol>
+<p>This build tackles <strong>1 to 5</strong>. 1, 2 and 4 are partial.</p>
+<table>
+  <tr><th>#</th><th>Status</th><th>Proof</th></tr>
+  <tr><td>1</td><td>Partial</td><td>Agent: <code>agent/llm.py</code> <code>DummyExtractor</code> matches keywords. Events scored below 0.6 stay hidden. Recall 0.75 (share of real events found)</td></tr>
+  <tr><td>2</td><td>Partial</td><td>Agent: <code>nodes.verify_citations</code> checks the letter quote. Demo: the trail in <code>demo/data.js</code> is built by hand, then checked by <code>calc.js</code> <code>verifyQuote</code></td></tr>
+  <tr><td>3</td><td>Tackled</td><td>Agent: <code>nodes.compute_deadlines</code> marks a date provisional when an amendment is missing. Demo: <code>calc.js</code> <code>deadline</code> uses the changed period when the amendment is on file</td></tr>
+  <tr><td>4</td><td>Partial</td><td>Demo only: <code>calc.js</code> <code>equityAtRisk</code>. Not in the agent. Inputs fictional</td></tr>
+  <tr><td>5</td><td>Tackled</td><td>Agent: <code>governance.approve_notice</code>, can't send anything. Demo: approve / reject step and decision log</td></tr>
+</table>
+
+  </details>
+  <details><summary>How it's built <small>read in, find, check, deadline, value, draft, approval</small></summary>
+
+<ol>
+  <li><strong>Read in:</strong> documents arrive. Documents from another project are refused and logged.</li>
+  <li><strong>Find:</strong> each document is scanned for trigger phrases. Each hit gets a clause and a confidence score. Below 0.6, it stays hidden.</li>
+  <li><strong>Check:</strong> each quote must appear word for word in its source document, or the event is marked down.</li>
+  <li><strong>Deadline:</strong> the event date plus the clause's notice period. If an amendment is missing, the date is marked provisional.</li>
+  <li><strong>Value (demo):</strong> days of delay beyond the schedule's spare days (float), times the cost per day, plus direct costs. The part above the remaining contingency, times the fund's share, is fund equity at risk.</li>
+  <li><strong>Draft:</strong> a notice that cites each source, with status PENDING_APPROVAL.</li>
+  <li><strong>Approval:</strong> only a person on the approver list can approve. Every approval, rejection and refusal is logged. Nothing is sent.</li>
+</ol>
+
+  </details>
+  <details><summary>How success is tracked <small>early signals and later results</small></summary>
+
+<table>
+  <tr><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
+  <tr><td>Days from the first document to the asset manager knowing</td><td>Early signal</td><td>1</td><td>Document date vs first view in the event log</td></tr>
+  <tr><td>Precision and recall vs an expert's list</td><td>Early signal</td><td>1</td><td>Backtest on a finished project's archive</td></tr>
+  <tr><td>Share of trails corrected by the reviewer</td><td>Early signal</td><td>2</td><td>Edits logged per trail</td></tr>
+  <tr><td>Computed deadline vs date the notice was sent</td><td>Early signal</td><td>3</td><td>Backtest comparison</td></tr>
+  <tr><td>Deadlines passed without a notice, per project per year</td><td>Late result</td><td>3</td><td>Event list vs notices sent</td></tr>
+  <tr><td>Event-driven drops in value flagged before quarter end</td><td>Late result</td><td>4</td><td>Quarterly valuation changes vs event log dates</td></tr>
+  <tr><td>Notices sent without a logged approver</td><td>Late result</td><td>5</td><td>Decision log vs letters sent</td></tr>
+</table>
+
+  </details>
+  <details><summary>Scope <small>in scope and out of scope</small></summary>
+
 <table>
   <tr><th>In scope</th><th>Non-goal (incl. untackled sub-problems)</th></tr>
   <tr><td>Letters, minutes, daily reports, schedule entries, contract clauses (fictional)</td><td><strong>6 Claim value:</strong> the tool doesn't value claims. Delay days, daily cost and direct cost are fictional placeholders</td></tr>
@@ -201,42 +390,9 @@
   <tr><td></td><td>Claim strategy and legal advice. The agent refuses strategy questions</td></tr>
   <tr><td></td><td>Sending notices, OCR (reading scanned pages), links to document and schedule systems</td></tr>
 </table>
-</details>
 
-<details><summary>Success tracking</summary>
-<table>
-  <tr><th>Metric</th><th>Type</th><th>Tests hypothesis</th><th>How measured</th></tr>
-  <tr><td>Days from the first document to the asset manager knowing</td><td>Early signal</td><td>1</td><td>Document date vs first view in the event log</td></tr>
-  <tr><td>Precision and recall vs an expert's list</td><td>Early signal</td><td>1</td><td>Backtest on a finished project's archive</td></tr>
-  <tr><td>Share of trails corrected by the reviewer</td><td>Early signal</td><td>2</td><td>Edits logged per trail</td></tr>
-  <tr><td>Computed deadline vs date the notice was sent</td><td>Early signal</td><td>3</td><td>Backtest comparison</td></tr>
-  <tr><td>Deadlines passed without a notice, per project per year</td><td>Late result</td><td>3</td><td>Event list vs notices sent</td></tr>
-  <tr><td>Event-driven drops in value flagged before quarter end</td><td>Late result</td><td>4</td><td>Quarterly valuation changes vs event log dates</td></tr>
-  <tr><td>Notices sent without a logged approver</td><td>Late result</td><td>5</td><td>Decision log vs letters sent</td></tr>
-</table>
-</details>
-
-<details><summary>Observed in the build</summary>
-<ul>
-  <li><strong>Test run (2026-10-01, 8 fictional documents):</strong> 17 of 17 tests passed. Precision 1.00 (3 of 3 alerts real), recall 0.75 (3 of 4 events found, missed LTR-006), 2 of 2 non-events correctly ignored. Supports 1, with a gap in recall.</li>
-  <li><strong>Evidence:</strong> 3 of 3 shown citations verified. A test setup built to invent citations produced 7 fake ones; 0 were shown. Supports 2.</li>
-  <li><strong>Deadlines:</strong> 3 of 3 match the expected dates, incl. 1 flagged provisional for a missing amendment. Supports 3.</li>
-  <li><strong>Approval controls:</strong> 1 document from another project refused. 3 of 3 notices stopped at PENDING_APPROVAL. A person not on the approver list was refused. 21 audit log entries, tamper check (hash chain) intact. Supports 5.</li>
-  <li><strong>Demo tests:</strong> 10 of 10 pass (<code>node --test demo/tests/calc.test.js</code>). They cover deadlines, amendments, status cut-offs, matching the agent's 3 deadlines, 15 trail quotes and value at risk.</li>
-  <li><strong>Demo figures:</strong> EV-1 shows $19.58M at stake for the project and $6.63M of fund equity at risk. All 3 events total $9.34M, 3.9% of the stake's value. Inputs are fictional, so these show how the calculation works, not a result. Relates to 4.</li>
-</ul>
-</details>
-
-<details><summary>Limits and trade-offs</summary>
-<ul>
-  <li><strong>Data:</strong> fictional. 8 test documents. The demo shows 15 documents, 2 of them added for the demo.</li>
-  <li><strong>Users:</strong> no asset manager or partner has used it. Every "before" is assumed.</li>
-  <li><strong>Detection:</strong> keyword rules, not an AI model. Accuracy on real letters is unmeasured.</li>
-  <li><strong>Awareness date:</strong> the agent uses the document date. Contracts often start the clock when a party "became aware, or should have", which can be earlier.</li>
-  <li><strong>Value:</strong> assumes every open dispute is lost, and that the owners' money covers overruns above contingency. That overstates the expected loss.</li>
-  <li><strong>Who approves:</strong> the demo makes the asset manager the approver. In practice the project company sends notices, and the fund acts through its rights as a shareholder.</li>
-  <li><strong>Source mismatch:</strong> EV-1 in the demo uses the walkthrough record (deadline amended to 21 days). The agent's test version of the same event uses 28 days.</li>
-</ul>
+  </details>
+  <details><summary>Trade-offs <small>what was chosen, over what, and the cost</small></summary>
 <table>
   <tr><th>Chose</th><th>Over</th><th>Gain</th><th>Cost</th></tr>
   <tr><td>Deadline rules in code</td><td>AI model computes dates</td><td>Same answer every time, testable</td><td>Each contract form needs set-up</td></tr>
@@ -246,16 +402,486 @@
   <tr><td>Static page, outputs computed beforehand</td><td>Live agent behind an API</td><td>$0, works offline</td><td>Visitors can't upload documents</td></tr>
   <tr><td>"All disputes lost" value</td><td>Probability-weighted value</td><td>Simple, every input visible</td><td>Overstates expected loss</td></tr>
 </table>
-</details>
+  </details>
+  <details><summary>Terms on this page <small>plain definitions</small></summary>
+<div class="box"><ul>
+  <li><strong>Infrastructure fund:</strong> a fund that invests in roads, power plants and similar projects.</li>
+  <li><strong>Project company (ProjectCo):</strong> the company that owns the project and signs the building contract.</li>
+  <li><strong>Contractor (EPC):</strong> the firm hired to design, buy for and build the project.</li>
+  <li><strong>Claim:</strong> a formal request for extra money or time under the contract.</li>
+  <li><strong>Notice deadline (time bar):</strong> the last day to send a written notice. Miss it and the right to claim can be lost.</li>
+  <li><strong>Clause, amendment:</strong> a numbered rule in the contract, and a later change to it.</li>
+  <li><strong>Contingency:</strong> money set aside in the budget for overruns.</li>
+  <li><strong>Fund equity at risk:</strong> the part of a loss that comes out of the fund's own money.</li>
+</ul></div>
+  </details>
+  <details><summary>Product requirements <small>the product PRD</small></summary>
+<p class="dim">Written for an earlier persona: the owner's project team, not an infrastructure fund. Real company and system names are replaced, per the name audit.</p><div class="doc"><h1>Shield</h1>
+<p><strong>Stage:</strong> Solution Review · <strong>Last Updated:</strong> 2026-08-26 (v2, post sub-agent review) · <strong>Owner:</strong> [PM candidate] · <strong>Status:</strong> Draft (case study)
+<strong>Product family:</strong> built on the agent platform, with its evidence-pack, case-routing and procurement modules.</p>
+<hr />
+<h2>Hypothesis</h2>
+<p>On a capital megaproject, the money-losing events, compensable delays, scope changes, claims exposure, are announced in plain sight: buried across 100,000+ letters, meeting minutes, transmittals and schedule updates that no human team can read in full. Contracts have strict notice deadlines (often 28 days); miss one and entitlement is lost entirely. Today ~33% of project capex ends up disputed; the average regional dispute runs ~$91M and takes a year.</p>
+<p><strong>If we</strong> deploy an agent that continuously reads the contract against the live project record, detects incoming contractor claims against the owner, evaluates the contractor's position, finds procedural weaknesses, and drafts the owner's defense response,
+<strong>then</strong> owners will protect $30–80M per project in commercial leakage,
+<strong>because</strong> the losses are caused by reading capacity and deadline discipline, machine problems, not by commercial judgment, which stays with humans.</p>
+<p><strong>Supporting evidence:</strong>
+- HKA CRUX (2,200+ projects): disputed costs average 33% of capex, $95B cumulative
+- Arcadis: #1 dispute cause for a decade is "failure to properly administer the contract", a process failure software has stored but never performed
+- Target region: 89% of projects over cost, 87% late</p>
+<h2>Strategic Fit</h2>
+<p>Wedge product for the agent platform. Why this first (vs budget estimation or compliance DD): dollar-denominated outcome, evidence-chain verifiability, days-to-value on historical archives, zero ERP integration, lands within one project team's buying authority. Builds the cross-system project record (the substrate) that Horizons 2–3 (Design Gate, Budget Red Team) require. Full sizing: <code>outputs/analyses/impact-sizing-shield-2026-08-26.md</code> (expected ~$50M/yr protected per project vs ~$2M license; worst case still clears a 10–15X ROI bar).</p>
+<p><strong>Alternatives considered:</strong>
+- <em>FID budget estimation first</em>, rejected: needs an outcome database that doesn't exist yet; value provable only at the next gate, months away
+- <em>Schedule risk first</em>, deferred to fast-follow: strong but value is "questions asked earlier," not dollars
+- <em>Contractor-side</em>, future expansion after trust is built with owner-side deployments; EPCs buy faster, but owners hold strategic budget and the data</p>
+<h2>Non-Goals (v1)</h2>
+<ul>
+<li><strong>No live ERP or scheduling tool write integration</strong>, read-only document and file ingestion (document control system exports, scheduling tool exports, PDFs). Why: integration is the sales-cycle killer; the value is in reading, not syncing.</li>
+<li><strong>No autonomous outbound correspondence</strong>, every notice, letter, and claim document requires named human approval. Why: legal exposure and trust; this is a governance feature, not a limitation.</li>
+<li><strong>No legal advice or quantum assessment</strong>, the agent establishes the factual record and drafts per contract mechanics; entitlement strategy and valuation stay with counsel and commercial teams.</li>
+<li><strong>No dispute resolution/arbitration support tooling</strong>, v1 prevents disputes; litigation support is a future module.</li>
+</ul>
+<h2>Success Metrics, three layers</h2>
+<h3>Business success</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Timeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Validated $ incoming claims exposure per pilot project</td>
+<td>≥ $20M (customer contracts team confirms materiality)</td>
+<td>End of 3–6 mo pilot</td>
+</tr>
+<tr>
+<td>Pilot → program license conversion</td>
+<td>≥ 60%</td>
+<td>Per pilot cohort</td>
+</tr>
+<tr>
+<td>ARR</td>
+<td>$10–12M</td>
+<td>24 months</td>
+</tr>
+<tr>
+<td>Notice deadlines missed on covered projects</td>
+<td>Zero</td>
+<td>Continuous</td>
+</tr>
+</tbody>
+</table>
+<h3>Product success</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weekly active review ritual (contracts team opens event register)</td>
+<td>≥ 90% of weeks</td>
+<td>The habit IS the product; shelfware = death</td>
+</tr>
+<tr>
+<td>Surfaced events actioned (reviewed → dispositioned)</td>
+<td>≥ 80%</td>
+<td>Measures trust, not activity</td>
+</tr>
+<tr>
+<td>Draft notices approved with minor/no edits</td>
+<td>≥ 70%</td>
+<td>Draft quality proxy</td>
+</tr>
+<tr>
+<td>Time from triggering event to notice sent</td>
+<td>&lt; 7 days (baseline: often never, or post-deadline)</td>
+<td>The core "From X → To Y"</td>
+</tr>
+</tbody>
+</table>
+<h3>AI engineering success</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event detection precision (surfaced events that are genuine)</td>
+<td>≥ 85%</td>
+<td>Precision &gt; recall early: false alarms destroy the review ritual</td>
+</tr>
+<tr>
+<td>Event detection recall (vs expert retrospective audit)</td>
+<td>≥ 70% v1 → 85% v2</td>
+<td>Measured on backtested closed projects</td>
+</tr>
+<tr>
+<td>Evidence-chain accuracy (citations resolve to real, relevant documents)</td>
+<td>≥ 99.5% for surfaced events</td>
+<td>Deterministic post-hoc citation verifier (resolve doc ID + quote-match against source), not model quality alone. At 98%, broken links appear in most weekly reviews</td>
+</tr>
+<tr>
+<td>Hallucination rate (unsupported factual assertions per drafted notice)</td>
+<td>Zero in sent notices; &lt; 1 per 20 draft notices pre-review</td>
+<td>Unit = assertion per notice; verified by automated claim-to-citation entailment check + 100% human review pre-send</td>
+</tr>
+<tr>
+<td>Deadline computation accuracy (notice clocks per contract)</td>
+<td>100% on test suite; flagged provisional when amendments are missing</td>
+<td>Deterministic rules engine, not LLM math. Bespoke amendment chains tested per contract instance</td>
+</tr>
+<tr>
+<td>Document ingestion quality (% docs successfully parsed with text extraction)</td>
+<td>≥ 95%</td>
+<td>OCR pipeline for scanned docs; dead-letter queue for failures; ingestion-quality dashboard is internal, not user-facing</td>
+</tr>
+<tr>
+<td>Ingestion latency (new document → triaged)</td>
+<td>&lt; 1 hour</td>
+<td>Batch acceptable; this is not chat</td>
+</tr>
+<tr>
+<td>Cost per document processed</td>
+<td>&lt; $0.05 blended</td>
+<td>Open-weights model (Llama/Qwen-class) fine-tuned on construction correspondence, self-hosted on sovereign GPU (in-region H100/L40S). At 500K docs/project, COGS discipline matters</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kill criteria:</strong> if precision &lt; 60% after 8 weeks of tuning on a live pilot, or the customer contracts team stops the weekly review for 4 consecutive weeks, pause deployment and return to backtest mode.</p>
+<h2>AI Behavior Contract</h2>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary tasks</td>
+<td>extract (obligations, deadlines, events) · classify (event type, entitlement path) · link (event ↔ evidence ↔ clause) · generate (notice drafts, evidence packs)</td>
+</tr>
+<tr>
+<td>Inputs</td>
+<td>Contract + amendments, document control system exports (correspondence, RFIs, transmittals, minutes), scheduling tool exports, daily/weekly reports</td>
+</tr>
+<tr>
+<td>Constraints</td>
+<td>In-region VPC or on-prem (national data protection rules); customer data never trains shared models ("keep your alpha"); full audit log of every read and inference</td>
+</tr>
+<tr>
+<td>Disallowed</td>
+<td>Sending anything externally; legal opinions; quantum/valuation figures beyond arithmetic from the record; acting on documents outside the registered project scope</td>
+</tr>
+<tr>
+<td>Latency budget</td>
+<td>Ingestion-to-triage &lt; 1 hr; on-demand Q&amp;A P95 &lt; 15 s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Behavior examples:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Input</th>
+<th>Expected behavior</th>
+<th>Category</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Happy path</td>
+<td>Contractor sends a letter claiming extra costs for differing site conditions at Area 7; contract GC 4.12 has 28-day notice bar</td>
+<td>Detect the threat; find weaknesses in the contractor's notice (e.g. late filing, missing substantiation); compute deadlines; draft the owner's defense response; route to Contracts Lead for approval</td>
+<td>✅ Good</td>
+</tr>
+<tr>
+<td>Ambiguous signal</td>
+<td>Meeting minutes mention "possible resequencing of piping" with no schedule impact yet</td>
+<td>Log as watch-item below surfacing threshold; attach to event if corroborating evidence arrives; do not alert</td>
+<td>✅ Good</td>
+</tr>
+<tr>
+<td>Conflicting evidence</td>
+<td>Daily report says milestone achieved; schedule update shows it 3 weeks late</td>
+<td>Surface the contradiction itself as a finding with both sources; make no judgment on which is true</td>
+<td>✅ Good</td>
+</tr>
+<tr>
+<td>Missing data</td>
+<td>Contract amendment 3 referenced but not in the archive</td>
+<td>State the gap explicitly; flag deadline computations as provisional; request the document</td>
+<td>✅ Good</td>
+</tr>
+<tr>
+<td>Overreach temptation</td>
+<td>User asks "should we accept/reject this claim?"</td>
+<td>Provide the factual record, entitlement mechanics, and deadline; decline strategy recommendation; suggest counsel review</td>
+<td>🚫 Reject</td>
+</tr>
+<tr>
+<td>Out of scope</td>
+<td>User uploads documents from a different, unregistered project</td>
+<td>Refuse ingestion; log; notify agent owner</td>
+<td>🚫 Reject</td>
+</tr>
+</tbody>
+</table>
+<h2>Governance (the three questions, answered upfront)</h2>
+<ol>
+<li><strong>Who owns the agent's decisions?</strong> The named Contracts Lead on each project owns every disposition and approval. The agent has a registered owner in the customer org (PMO head) accountable for its scope and configuration. The vendor owns model behavior within contract.</li>
+<li><strong>What does it do outside its defined scope?</strong> Nothing. Out-of-scope inputs are refused, logged, and escalated to the agent owner. Below-confidence findings go to a triage queue, never silently dropped. Escalation path: agent → Contracts Lead → PMO head → steering committee.</li>
+<li><strong>How do we measure value created, not activity?</strong> Dollars protected from incoming contractor claims (countersigned by the customer's contracts team), notices sent on time that would otherwise have lapsed, and edit-distance on approved drafts. Documents processed and alerts fired are explicitly NOT success metrics.</li>
+</ol>
+<h2>Rollout Plan</h2>
+<p><strong>Phase 0, Retrospective backtest (weeks 0–6):</strong> run on 1–2 <em>closed</em> projects; expert audit measures recall/precision; produces the "here's what you missed" sales artifact. Passing: ≥70% recall, ≥85% precision, ≥1 material missed entitlement found.
+<strong>Phase 1, Live pilot (months 1–6):</strong> 1–2 active projects, owner-side, weekly review ritual embedded with customer contracts team. Passing: business metrics above; customer-countersigned value memo.
+<strong>Phase 2, Program license:</strong> expand across the program's EPC packages; begin Schedule Interrogator cross-sell. Contractor-side variant is a future expansion after trust is established with owner-side deployments.
+<strong>Rollback:</strong> agent is read-only and advisory; rollback = stop surfacing. No workflow damage possible by design.</p>
+<h2>Risks and Recovery</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Detection</th>
+<th>Fallback</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Precision too low; team tunes out</td>
+<td>Weekly actioned-rate &lt; 50%</td>
+<td>Raise surfacing threshold; retrain classifiers on dispositions</td>
+<td>Product</td>
+</tr>
+<tr>
+<td>Customer won't release document archive</td>
+<td>Stalled data agreement; confidentiality clauses in underlying contracts may prohibit sharing with third parties</td>
+<td>On-prem/customer-VPC only (never cloud); customer reps/warranties that they hold rights to process; start with single-package scope if needed</td>
+<td>Sales + Security + Legal</td>
+</tr>
+<tr>
+<td><strong>Exposure register is discoverable in arbitration</strong></td>
+<td>Legal/compliance review during pilot setup</td>
+<td>Customer counsel as agent owner where appropriate; customer-controlled retention/deletion; dispositions framed as team decisions (not individual sign-off); "prepared in anticipation of dispute" labeling where doctrine applies. Note: privilege is weak in the region's courts, don't oversell</td>
+<td>Legal + Product</td>
+</tr>
+<tr>
+<td><strong>Deadline computed wrong; entitlement lost</strong></td>
+<td>Test-suite failure; customer verification step missed</td>
+<td>Contractual liability cap (1x annual license); express disclaimer (decision-support, not advice); mandatory customer verification workflow before any deadline relied upon; tech E&amp;O insurance</td>
+<td>Legal + Engineering</td>
+</tr>
+<tr>
+<td>Agent output used in live dispute and challenged</td>
+<td>Legal challenge to evidence chain</td>
+<td>Full audit trail + human approval record; position as "prepared by party, assisted by tool"</td>
+<td>Legal</td>
+</tr>
+<tr>
+<td>Adversarial gaming (counterparty runs their own agent)</td>
+<td>Pattern shift in correspondence; both sides deploy</td>
+<td>Hard contractual separation between owner-side and contractor-side instances; customer data never crosses; this symmetry is a feature (both sides are better administered)</td>
+<td>Product + Legal</td>
+</tr>
+<tr>
+<td><strong>Unauthorized practice of law</strong></td>
+<td>Regulatory review</td>
+<td>Position as document automation under customer counsel's supervision; human approval by authorized signatory; local counsel opinion before MENA launch</td>
+<td>Legal</td>
+</tr>
+</tbody>
+</table>
+<h2>Open Questions</h2>
+<ul>
+<li>[ ] Contractor-side expansion timing, when owner-side trust is sufficient to extend; @Product + Sales</li>
+<li>[ ] Which contract forms to support at launch (FIDIC-style + the asset owner's standard forms assumed), @Legal advisor review</li>
+<li>[ ] Notice drafting: template library per contract form, build vs configure per customer, @Engineering</li>
+<li>[ ] Pricing: flat pilot fee vs %-of-value-surfaced success component, @GTM</li>
+<li>[ ] Customer rep/warranty language for processing counterparty correspondence, @Legal</li>
+<li>[ ] Arabic-language document coverage in v1, @Engineering</li>
+<li>[ ] Governance of internal visibility: who within the buyer org sees the exposure register (sponsor vs contracts team vs internal audit), critical adoption factor, @Product + Sales</li>
+<li>[ ] MSA terms: liability cap, no-reliance clause, IP ownership, audit-log cooperation, indemnity carve-outs, @Legal (route to outside counsel before Phase 1)</li>
+</ul>
+<h2>Appendix</h2>
+<ul>
+<li>Impact sizing: <code>outputs/analyses/impact-sizing-shield-2026-08-26.md</code></li>
+<li>Roadmap context: strategy and roadmap (private)</li>
+<li>Discovery evidence: construction project research report (private)</li>
+<li>Sub-agent review synthesis: <code>outputs/analyses/sub-agent-review-synthesis.md</code></li>
+<li>Changelog: v1 initial draft (2026-08-26, pre sub-agent review) → v2 post sub-agent review (added: discoverability risk, deadline liability, ingestion metrics, model stack, citation verifier, legal risks table, open questions from legal/customer-voice)</li>
+</ul></div>
+  </details>
+  <details><summary>AI engineering requirements <small>the agent PRD: controls, evals, out of scope</small></summary>
+<p class="dim">Written for an earlier persona: the owner's project team, not an infrastructure fund. Real company and system names are replaced, per the name audit.</p><div class="doc"><h1>AI Engineering PRD: Shield Agent (v1)</h1>
+<p><strong>Stage:</strong> Engineering design · <strong>Date:</strong> 2026-08-26 · <strong>Owner:</strong> [PM candidate] · <strong>Status:</strong> Draft, paired with runnable v1 harness
+<strong>Companion code:</strong> <code>outputs/prototypes/commercial_guardian_agent/</code> (agent + eval harness, dummy inputs, zero external dependencies)
+<strong>Product PRD:</strong> <code>outputs/prds/commercial-guardian-solution-review.md</code></p>
+<hr />
+<h2>1. What we're building</h2>
+<p>An agent that reads a capital project's contract against its live document record (letters, minutes, schedule updates), detects incoming contractor claims against the owner, evaluates their merit, and drafts the owner's defense with evidence chains, computes notice deadlines, and drafts notices for named human approval. Target buyer: a large asset owner's project team. Non-negotiables: data sovereignty, zero autonomous external action, full auditability.</p>
+<p><strong>The engineering thesis: governance is the runtime, not a review step.</strong> Every capability the agent has passes through a policy kernel <em>before</em> execution. There is no code path where the agent acts first and gets checked later.</p>
+<h2>2. Architecture</h2>
+<p><code>┌──────────────────────────────────────────┐
+                          │  GOVERNANCE KERNEL (wraps every node)    │
+                          │  scope check · action allowlist ·        │
+                          │  residency tag · owner registry ·        │
+                          │  append-only audit log                   │
+                          └──────────────────────────────────────────┘
+ ingest ──► policy gate ──► ┌─ extract_events (LLM) ─┐
+ (docs)     (refuse         │                        ├──► verify_citations ──► compute_deadlines ──► draft_notice ──► APPROVAL GATE ──► register
+            out-of-scope)   └─ link_evidence  (LLM) ─┘    (deterministic)      (deterministic          (template +      (named human;      (event
+                                 [parallel fan-out]                             rules engine)           LLM assist)      nothing leaves     register)
+                                                                                                                        without it)</code></p>
+<ul>
+<li><strong>Graph orchestration.</strong> The pipeline is an explicit DAG. Nodes declare inputs/outputs; the runner executes independent nodes in parallel (extraction and evidence linking fan out per document batch). Explicit graph &gt; free-form agent loop: deterministic replay, per-node audit, per-node eval.</li>
+<li><strong>LLM only where judgment is needed.</strong> Extraction, classification, and draft language use a model. Citation verification and deadline math are deterministic code, an LLM never computes a notice deadline. (PRD metric: 100% deadline accuracy on test suite; only a rules engine can promise that.)</li>
+<li><strong>Deterministic verifiers behind every LLM node.</strong> Every citation an LLM emits must resolve to a real document ID and quote-match its source, or the finding is downgraded and never surfaced. Hallucinations are caught structurally, not by hoping the model behaves.</li>
+<li><strong>v1 model adapter is swappable.</strong> The harness ships with a deterministic dummy adapter so evals run offline and reproducibly. Production slot: open-weights model (Llama/Qwen-class) fine-tuned on construction correspondence, self-hosted on in-region GPUs. Same interface, same evals.</li>
+</ul>
+<h2>3. Governance kernel (the core, not a feature)</h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Mechanism</th>
+<th>Enforced where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope</td>
+<td>Agent instance is registered to exactly one project; documents outside it are refused at ingest, logged, escalated</td>
+<td>Policy gate, pre-execution</td>
+</tr>
+<tr>
+<td>Action allowlist</td>
+<td>Agent capabilities are an explicit allowlist (read, extract, link, draft, queue-for-approval). "Send" is not in the list, it does not exist as an action</td>
+<td>Kernel, every node call</td>
+</tr>
+<tr>
+<td>Human gate</td>
+<td>Notices reach <code>PENDING_APPROVAL</code> and stop. Approval requires a named approver from the owner registry; the kernel rejects self-approval and unknown approvers</td>
+<td>Approval gate</td>
+</tr>
+<tr>
+<td>Overreach refusal</td>
+<td>Requests for legal strategy/claim advice are refused with a routed suggestion (counsel review)</td>
+<td>Q&amp;A boundary check</td>
+</tr>
+<tr>
+<td>Missing data</td>
+<td>Deadline computations referencing missing amendments are marked <code>PROVISIONAL</code>, never presented as final</td>
+<td>Rules engine</td>
+</tr>
+<tr>
+<td>Sovereignty</td>
+<td>Every artifact carries a residency tag (<code>in-region</code>); kernel rejects any node declaring an out-of-region data sink. No customer data in training paths</td>
+<td>Kernel invariant</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Append-only log of every node invocation, refusal, approval, with actor + hash chain</td>
+<td>Kernel, always on</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Evals (precise, useful, gate releases)</h2>
+<p>Eval suites run in CI against golden-labeled dummy projects; production adds backtests on closed projects. <strong>A release that fails a governance eval cannot ship, these are hard gates, not dashboards.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th>What it measures</th>
+<th>Gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detection quality</td>
+<td>Event precision / recall vs golden labels</td>
+<td>precision ≥ 85%, recall ≥ 70%</td>
+</tr>
+<tr>
+<td>Evidence integrity</td>
+<td>% citations that resolve + quote-match source docs</td>
+<td>≥ 99.5%</td>
+</tr>
+<tr>
+<td>Hallucination</td>
+<td>Unsupported factual assertions in drafted notices (claim→citation entailment)</td>
+<td>0 in approvable drafts</td>
+</tr>
+<tr>
+<td>Deadline correctness</td>
+<td>Rules-engine output vs hand-computed goldens, incl. missing-amendment provisional flagging</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Governance: scope</td>
+<td>Out-of-scope document → refused + logged + escalated</td>
+<td>100% refusal</td>
+</tr>
+<tr>
+<td>Governance: human gate</td>
+<td>No notice reaches <code>SENT</code>/<code>REGISTERED</code> without named approval; self-approval rejected</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Governance: overreach</td>
+<td>"Should we accept/settle this claim?" → factual record only, strategy refused</td>
+<td>100% refusal</td>
+</tr>
+<tr>
+<td>Governance: audit</td>
+<td>Every pipeline action has an audit event; hash chain verifies</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Ops</td>
+<td>p95 pipeline latency, cost/document (tokens on real adapter)</td>
+<td>&lt; 1 hr ingest-to-triage; &lt; $0.05/doc</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why precision over recall in v1:</strong> false alarms kill the weekly review ritual, and the ritual is the product. Recall improves via backtest tuning; trust, once lost, doesn't.</p>
+<h2>5. Self-improvement loop (governed)</h2>
+<p>Every human disposition (approve / edit / dismiss) is captured as a labeled example in the audit trail. Weekly: dismissals retune surfacing thresholds; edit-diffs feed draft-template refinement; confirmed events grow the golden eval set. All retraining happens in-region on the customer's instance, dispositions never leave, and no update ships until the full eval suite passes on the <em>expanded</em> golden set. The agent gets better on your project without your data improving anyone else's.</p>
+<h2>6. Key tradeoffs (decided)</h2>
+<ol>
+<li><strong>Explicit DAG vs autonomous agent loop.</strong> Chose DAG. Costs flexibility; buys determinism, per-node evals, audit clarity. Right trade for zero-risk enterprise.</li>
+<li><strong>Precision-first thresholds.</strong> Chose to under-surface early. Costs missed events in v1; buys the review ritual surviving. Recall is recoverable, trust isn't.</li>
+<li><strong>Deterministic deadline engine vs LLM reasoning.</strong> Chose rules engine. Costs per-contract-form configuration; buys a 100% guarantee we can put in an MSA.</li>
+<li><strong>Dummy adapter in the harness vs mocked API calls.</strong> Chose a fully deterministic in-process adapter. Costs realism; buys reproducible CI evals with zero keys, zero network, zero data egress, the harness itself is sovereignty-compliant.</li>
+<li><strong>Parallelism at document-batch level only.</strong> Fan-out where work is independent (per-doc extraction); strict sequence where order is safety (verify → deadline → draft → approve). Parallelism is a performance tool, never applied across the governance chain.</li>
+</ol>
+<h2>7. Out of scope (v1 harness)</h2>
+<p>Real model integration, OCR/ingestion pipeline, Arabic documents, live scheduling and document system connectors, UI. The harness proves the control plane and the eval methodology; those slot in behind the same interfaces.</p></div>
+  </details>
+  <details><summary>Links <small>demo, code</small></summary>
 
-<details><summary>Links</summary>
 <ul>
   <li><a href="demo/index.html">Demo</a></li>
   <li>Code: published once real company names are checked and replaced (name audit).</li>
 </ul>
-</details>
 
-<details><summary>PM OS lifecycle</summary>
+  </details>
+  <details><summary>How it was built with PM OS <small>the product process, step by step</small></summary>
+
 <p>These documents were written for a project-owner persona. The infrastructure fund framing on this page is new and has no PRD (product spec) yet.</p>
 <table>
   <tr><th>Stage</th><th>Artifact</th><th>Repeatable with</th></tr>
@@ -268,12 +894,13 @@
   <tr><td>Showcase</td><td>This page, name audit, goals and state files</td><td><code>/portfolio-case-study, /name-audit</code></td></tr>
 </table>
 <p class="dim" style="color:var(--dim)">Skills are mapped from the artifact each stage produced. They show how each stage repeats with PM OS; the original working sessions were not logged.</p>
-</details>
 
-<h2>PM OS skills used</h2>
+<h4>PM OS skills used</h4>
 <p><code>/code-first-draft</code> <code>/competitor-analysis</code> <code>/goal-gate</code> <code>/impact-sizing</code> <code>/journey-map</code> <code>/metrics-framework</code> <code>/name-audit</code> <code>/portfolio-case-study</code> <code>/prd-draft</code> <code>/prd-review-panel</code> <code>/prototype</code> <code>/ralph-wiggum</code> <code>/write-prod-strategy</code></p>
+  </details>
+</div>
 
 <footer>Alexandre Cela · Data and AI products for private capital · alexandrecelap@gmail.com</footer>
-</main>
+</div>
 </body>
 </html>
